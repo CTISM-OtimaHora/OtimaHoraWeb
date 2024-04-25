@@ -1,0 +1,26 @@
+.content {
+    display: flex;
+    flex-direction: column;
+    border: 3px solid black;
+    padding: 2%;
+}
+
+.itens {
+    display: flex;
+    flex-direction: column;
+    margin: 3px;
+}
+
+.item {
+    border: 1px solid black;
+    margin: 3px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.foot {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
