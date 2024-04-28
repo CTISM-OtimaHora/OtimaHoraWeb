@@ -5,18 +5,18 @@ import "fmt"
 type Curso struct {
     Id int
     Nome string
-    turmas []Turma
+    Turmas []Turma
 }
 
 func (c * Curso) Add (t Turma) int {
-    t.Id = len(c.turmas)
-    c.turmas = append(c.turmas, t)
+    t.Id = len(c.Turmas)
+    c.Turmas = append(c.Turmas, t)
     return t.Id
 }
 
 func (c * Curso) ToString() string {
     turmas := "["
-    for _, t := range c.turmas {
+    for _, t := range c.Turmas {
         turmas += t.ToString() + ", "
     }
     turmas += "]"

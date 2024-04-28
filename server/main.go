@@ -12,9 +12,15 @@ var Sessions []*Session = []*Session{}
 var next_id int = 0
 
 func new_session(w http.ResponseWriter, r * http.Request) {
-    s := Session{next_id, []Curso{}}
+    s := Session_or_nil(w, r)
+    if s != nil {
+        http.SetCookie(w, &http.Cookie{Name: "id", Value: fmt.Sprint(s.Id), Path: "/", Expires: time.Now().Add(2*time.Hour)})
+        return
+    }
+
+    new_s := Session{next_id, []Curso{}}
     http.SetCookie(w, &http.Cookie{Name: "id", Value: fmt.Sprint(next_id), Path: "/", Expires: time.Now().Add(2*time.Hour)})
-    Sessions = append(Sessions, &s)
+    Sessions = append(Sessions, &new_s)
     w.WriteHeader(200)
     next_id += 1
     return
@@ -26,8 +32,10 @@ func add_curso(w http.ResponseWriter, r * http.Request) {
         return
     }
 
-    s := Session_or_error(w, r)
+    s := Session_or_nil(w, r)
     if s == nil {
+        w.Write([]byte("No session or Session expired"))
+        w.WriteHeader(http.StatusUnauthorized)
         return // errors already in w
     }
 
@@ -46,8 +54,10 @@ func add_turma(w http.ResponseWriter, r * http.Request) {
         w.WriteHeader(http.StatusNotFound)
         return
     }
-    s := Session_or_error(w, r)
+    s := Session_or_nil(w, r)
     if s == nil {
+        w.Write([]byte("No session or Session expired"))
+        w.WriteHeader(http.StatusUnauthorized)
         return // errors already on w
     }
 
@@ -63,9 +73,23 @@ func add_turma(w http.ResponseWriter, r * http.Request) {
     return
 }
 
-func get_curso(w http.ResponseWriter, r * http.Request) {
-    s := Session_or_error(w, r)
+func get_session(w http.ResponseWriter, r * http.Request) {
+    s := Session_or_nil(w, r)
     if s == nil {
+        w.Write([]byte("No session or Session expired"))
+        w.WriteHeader(http.StatusUnauthorized)
+        return // errors already on w
+    }
+
+    json.NewEncoder(w).Encode(s)
+    return
+}
+
+func get_curso(w http.ResponseWriter, r * http.Request) {
+    s := Session_or_nil(w, r)
+    if s == nil {
+        w.Write([]byte("No session or Session expired"))
+        w.WriteHeader(http.StatusUnauthorized)
         return // errors already on w
     }
 
@@ -80,8 +104,10 @@ func get_curso(w http.ResponseWriter, r * http.Request) {
 }
 
 func get_turma(w http.ResponseWriter, r * http.Request) {
-    s := Session_or_error(w, r)
+    s := Session_or_nil(w, r)
     if s == nil {
+        w.Write([]byte("No session or Session expired"))
+        w.WriteHeader(http.StatusUnauthorized)
         return // errors already on w
     }
 
@@ -92,7 +118,7 @@ func get_turma(w http.ResponseWriter, r * http.Request) {
         return
     }
 
-    json.NewEncoder(w).Encode(s.Cursos[curso_idx].turmas[turma_idx])
+    json.NewEncoder(w).Encode(s.Cursos[curso_idx].Turmas[turma_idx])
     return 
 }
 
@@ -113,8 +139,10 @@ func corsMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func main() {
+func has_session(w http.ResponseWriter, r * http.Request) {
+}
 
+func main() {
     last_len := len(Sessions)
     last_time := time.Now()
     go func () {
@@ -136,6 +164,7 @@ func main() {
     r.HandleFunc("/add-session", new_session)
     r.HandleFunc("/add-curso", add_curso)
     r.HandleFunc("/add-turma/{id_curso}", add_turma)
+    r.HandleFunc("/session", get_session)
     r.HandleFunc("/session/{id_curso}", get_curso)
     r.HandleFunc("/session/{id_curso}/{id_turma}", get_turma)
     with_cors := corsMiddleware(r)

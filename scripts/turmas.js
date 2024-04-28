@@ -21,7 +21,7 @@ function new_turma(curso, curso_id, name, turma_id) {
    turma.appendChild(c_name);
 
    let btn = document.createElement("button");
-  
+
    btn.onclick = () => {window.location.replace(`/turma_dashboard.php?curso=${curso}&curso_id=${curso_id}turma=${name}&turma_id=${turma_id}`)}
    btn.textContent = "editar";
    turma.appendChild(btn);
@@ -29,3 +29,13 @@ function new_turma(curso, curso_id, name, turma_id) {
    turma.classList.add("item");
    return turma 
 }
+
+document.addEventListener("DOMContentLoaded", async () => {
+   const params = new URLSearchParams(window.location.search)
+   const res = await fetch(`http://localhost:3000/session/${params.get("curso_id")}`, {credentials:"include"});
+   const curso = await res.json()
+
+   for (turma of curso.Turmas) {
+      document.getElementById("turmas").appendChild(new_turma(params.get("curso"), params.get("curso_id"), turma.Nome, turma.Id));
+   }
+});
