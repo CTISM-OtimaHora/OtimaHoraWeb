@@ -13,9 +13,7 @@
          </div>
          <div class="foot">
             <input type="text" id="new_turma" placeholder="nome da turma">
-            <?php
-               echo '<button id="adicionar_turma" onclick={adcionar_turma("'.$_GET["curso"].'")}>Adicionar</button>';
-            ?>
+            <button id="adicionar_turma" onclick="adcionar_turma()">Adicionar</button>
          </div>
       </div>
 

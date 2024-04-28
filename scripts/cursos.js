@@ -1,10 +1,15 @@
 function adcionar_curso() {
    const name = document.getElementById("new_curso").value;
    document.getElementById("new_curso").value = "";
-   document.getElementById("cursos").appendChild(new_curso(name));
+   curso = {id: undefined, nome: name, turmas: []}
+   fetch("http://localhost:3000/add-curso", {method:"POST", credentials:"include", body:JSON.stringify(curso)})
+   .then(response => response.text()) // Get the plain text ID from the response
+    .then(id => {
+        document.getElementById("cursos").appendChild(new_curso(name, id));
+    });
 }
 
-function new_curso(name) {
+function new_curso(name, id) {
    let curso = document.createElement("div");
 
    let c_name = document.createElement("div");
@@ -12,7 +17,7 @@ function new_curso(name) {
    curso.appendChild(c_name);
 
    let btn = document.createElement("button");
-   btn.onclick = () => {window.location.replace("/turmas.php?curso=" + name)}
+   btn.onclick = () => {window.location.replace(`/turmas.php?curso_id=${id}&curso=${name}`)}
    btn.textContent = "turmas";
    curso.appendChild(btn);
 
@@ -20,3 +25,8 @@ function new_curso(name) {
    curso.classList.add("curso");
    return curso
 }
+
+document.addEventListener('DOMContentLoaded', async function() {
+   await fetch("http://localhost:3000/add-session", {mode: "no-cors", credentials:"include"})
+});
+
