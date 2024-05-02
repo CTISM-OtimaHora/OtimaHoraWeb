@@ -1,10 +1,16 @@
-package main
+package models
 
-import "fmt"
+import (
+    "fmt"
+)
 
 type Session struct {
     Id int
     Cursos []Curso
+}
+
+func NewSession (id int) Session {
+    return Session{Id: id}
 }
 
 func (s * Session) Add (c Curso) int {
@@ -22,3 +28,4 @@ func (s * Session) ToString() string {
     
     return fmt.Sprintf("{id: %v, cursos: %v}", s.Id, cursos)
 }   
+

@@ -1,4 +1,4 @@
-package main
+package models
 
 import "fmt"
 
@@ -6,6 +6,10 @@ type Curso struct {
     Id int
     Nome string
     Turmas []Turma
+}
+
+func NewCurso (id int, nome string) Curso {
+    return Curso{Id: id, Nome: nome, Turmas: make([]Turma, 0)}
 }
 
 func (c * Curso) Add (t Turma) int {
