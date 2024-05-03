@@ -1,0 +1,40 @@
+
+ .calendar {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: auto repeat(5, 1fr);
+    gap: 1px;
+    background: #ccc;
+    padding: 10px;
+ }
+
+ .calendar-header {
+    text-align: center;
+    font-weight: bold;
+    background: #e0e0e0;
+    padding: 10px;
+ }
+
+ .calendar-cell {
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.2s;
+ }
+
+ .yes {
+    background: #4CAF50; /* Green */
+    color: white;
+ }
+
+ .maybe {
+    background: #FFC107; /* Yellow */
+    color: black;
+ }
+
+ .no {
+    background: #F44336; /* Red */
+    color: white;
+ }
