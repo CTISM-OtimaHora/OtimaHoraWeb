@@ -22,7 +22,7 @@ function new_turma(curso, curso_id, name, turma_id) {
 
    let btn = document.createElement("button");
 
-   btn.onclick = () => {window.location.replace(`/turma_dashboard.php?curso=${curso}&curso_id=${curso_id}turma=${name}&turma_id=${turma_id}`)}
+   btn.onclick = () => {window.location.replace(`/turma_dashboard.php?curso=${curso}&curso_id=${curso_id}&turma=${name}&turma_id=${turma_id}`)}
    btn.textContent = "editar";
    turma.appendChild(btn);
 

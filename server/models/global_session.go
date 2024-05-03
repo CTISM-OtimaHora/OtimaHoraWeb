@@ -6,9 +6,8 @@ import (
 )
 
 
-type SessionStore []*Session
 
-var Sessions = SessionStore{}
+var Sessions = []*Session{}
 
 var next_id int = 0
 

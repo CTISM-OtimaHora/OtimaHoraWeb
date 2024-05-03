@@ -18,7 +18,7 @@ func Add_turma_to_curso(w http.ResponseWriter, r * http.Request) {
     if s == nil {
         w.Write([]byte("No session or Session expired"))
         w.WriteHeader(http.StatusUnauthorized)
-        return // errors already on w
+        return 
     }
 
     curso_idx, conv_err := strconv.Atoi(r.PathValue("id_curso"))
@@ -39,7 +39,7 @@ func Get_curso(w http.ResponseWriter, r * http.Request) {
     if s == nil {
         w.Write([]byte("No session or Session expired"))
         w.WriteHeader(http.StatusUnauthorized)
-        return // errors already on w
+        return 
     }
 
     curso_idx, conv_err := strconv.Atoi(r.PathValue("id_curso"))

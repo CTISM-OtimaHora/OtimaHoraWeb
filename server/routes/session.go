@@ -50,7 +50,7 @@ func Get_session(w http.ResponseWriter, r * http.Request) {
     if s == nil {
         w.Write([]byte("No session or Session expired"))
         w.WriteHeader(http.StatusUnauthorized)
-        return // errors already on w
+        return 
     }
 
     json.NewEncoder(w).Encode(s)

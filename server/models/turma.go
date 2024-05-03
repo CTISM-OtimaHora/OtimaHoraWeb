@@ -1,6 +1,9 @@
 package models
 
-import "fmt"
+import (
+	"encoding/json"
+	"bytes"
+)
 
 
 const (
@@ -16,8 +19,8 @@ type Turma struct {
     Horarios [][]uint8 
     Dias int
     Periodos int
-    Disciplinas []string
-    Professores []string
+    Disciplinas []Disciplina
+    Professores []Professor
 }
 
 func NewTurma (Id int, Nome string, dias, periodos int) Turma {
@@ -35,17 +38,28 @@ func NewTurma (Id int, Nome string, dias, periodos int) Turma {
         Horarios: h,
         Dias: dias,
         Periodos: periodos,
-        Disciplinas: make([]string, 0),
-        Professores: make([]string, 0),
+        Disciplinas: make([]Disciplina, 0),
+        Professores: make([]Professor, 0),
     }
 } 
 
+func (t * Turma) AddProfessor (p  Professor) {
+    t.Professores = append(t.Professores, p)
+}
+func (t * Turma) AddDisciplina (d Disciplina) {
+    t.Disciplinas = append(t.Disciplinas, d)
+}
+
 func (t Turma) ToString () string {
-    s := ""
+    b := bytes.NewBuffer(make([]byte, 2000))
+    _ = json.NewEncoder(b).Encode(t)
+    return b.String()
+}
+
+func (t * Turma) SetHorario (h [][]uint8) {
     for i := range t.Horarios {
         for j := range t.Horarios[i] {
-            s += fmt.Sprintf("%v ", t.Horarios[i][j])
+            t.Horarios[i][j] = h[i][j]
         }
     }
-    return fmt.Sprintf("{id: %v, nome: %v, horarios: %vx%v: %v}", t.Id, t.Nome, t.Dias, t.Periodos, s)
 }

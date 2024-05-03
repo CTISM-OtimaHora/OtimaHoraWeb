@@ -54,6 +54,8 @@ func main() {
     r.HandleFunc("/add-session", New_session)
     r.HandleFunc("/add-curso", Add_curso_to_session)
     r.HandleFunc("/add-turma/{id_curso}", Add_turma_to_curso)
+    r.HandleFunc("/add-professor/{id_curso}/{id_turma}", Add_Professor_to_turma)
+    r.HandleFunc("/add-disciplina/{id_curso}/{id_turma}", Add_Disciplina_to_turma)
     r.HandleFunc("/session", Get_session)
     r.HandleFunc("/session/{id_curso}", Get_curso)
     r.HandleFunc("/session/{id_curso}/{id_turma}", Get_turma)

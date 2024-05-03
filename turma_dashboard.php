@@ -37,65 +37,74 @@
             transition: background 0.2s;
          }
 
-         .yes {
-            background: #4CAF50; /* Green */
-            color: white;
+         .sim {
+            color: #4CAF50; /* Green */
          }
 
-         .maybe {
-            background: #FFC107; /* Yellow */
-            color: black;
+         .talvez {
+            color: #FFC107; /* Yellow */
          }
 
-         .no {
-            background: #F44336; /* Red */
-            color: white;
+         .nao {
+            color: #F44336; /* Red */
          }
       </style>
 
       <div class="calendar">
-         <!-- Weekdays header -->
-         <div class="calendar-header" onclick="toggleStatusCol('0')">Monday</div>
-         <div class="calendar-header" onclick="toggleStatusCol('1')">Tuesday</div>
-         <div class="calendar-header" onclick="toggleStatusCol('2')">Wednesday</div>
-         <div class="calendar-header" onclick="toggleStatusCol('3')">Thursday</div>
-         <div class="calendar-header" onclick="toggleStatusCol('4')">Friday</div>
+         <div class="calendar-header" onclick="toggleStatusCol('0')">Segunda-feira</div>
+         <div class="calendar-header" onclick="toggleStatusCol('1')">Terça-feira</div>
+         <div class="calendar-header" onclick="toggleStatusCol('2')">Quarta-feira</div>
+         <div class="calendar-header" onclick="toggleStatusCol('3')">Quinta-feira</div>
+         <div class="calendar-header" onclick="toggleStatusCol('4')">Sexta-feira</div>
 
-         <!-- Week content -->
          <!-- Day 1 -->
-         <div id="0-0" class="calendar-cell yes" onclick="toggleStatus(this)">YES</div>
-         <div id="0-1" class="calendar-cell yes" onclick="toggleStatus(this)">YES</div>
-         <div id="0-2" class="calendar-cell yes" onclick="toggleStatus(this)">YES</div>
-         <div id="0-3" class="calendar-cell yes" onclick="toggleStatus(this)">YES</div>
-         <div id="0-4" class="calendar-cell yes" onclick="toggleStatus(this)">YES</div>
+         <div id="0-0" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
+         <div id="0-1" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
+         <div id="0-2" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
+         <div id="0-3" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
+         <div id="0-4" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
 
          <!-- Day 2 -->
-         <div id="1-0" class="calendar-cell yes" onclick="toggleStatus(this)">YES</div>
-         <div id="1-1" class="calendar-cell yes" onclick="toggleStatus(this)">YES</div>
-         <div id="1-2" class="calendar-cell yes" onclick="toggleStatus(this)">YES</div>
-         <div id="1-3" class="calendar-cell yes" onclick="toggleStatus(this)">YES</div>
-         <div id="1-4" class="calendar-cell yes" onclick="toggleStatus(this)">YES</div>
+         <div id="1-0" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
+         <div id="1-1" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
+         <div id="1-2" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
+         <div id="1-3" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
+         <div id="1-4" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
 
          <!-- Day 3 -->
-         <div id="2-0" class="calendar-cell yes" onclick="toggleStatus(this)">YES</div>
-         <div id="2-1" class="calendar-cell yes" onclick="toggleStatus(this)">YES</div>
-         <div id="2-2" class="calendar-cell yes" onclick="toggleStatus(this)">YES</div>
-         <div id="2-3" class="calendar-cell yes" onclick="toggleStatus(this)">YES</div>
-         <div id="2-4" class="calendar-cell yes" onclick="toggleStatus(this)">YES</div>
+         <div id="2-0" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
+         <div id="2-1" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
+         <div id="2-2" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
+         <div id="2-3" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
+         <div id="2-4" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
 
          <!-- Day 4 -->
-         <div id="3-0" class="calendar-cell yes" onclick="toggleStatus(this)">YES</div>
-         <div id="3-1" class="calendar-cell yes" onclick="toggleStatus(this)">YES</div>
-         <div id="3-2" class="calendar-cell yes" onclick="toggleStatus(this)">YES</div>
-         <div id="3-3" class="calendar-cell yes" onclick="toggleStatus(this)">YES</div>
-         <div id="3-4" class="calendar-cell yes" onclick="toggleStatus(this)">YES</div>
+         <div id="3-0" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
+         <div id="3-1" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
+         <div id="3-2" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
+         <div id="3-3" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
+         <div id="3-4" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
 
          <!-- Day 5 -->
-         <div id="4-0" class="calendar-cell yes" onclick="toggleStatus(this)">YES</div>
-         <div id="4-1" class="calendar-cell yes" onclick="toggleStatus(this)">YES</div>
-         <div id="4-2" class="calendar-cell yes" onclick="toggleStatus(this)">YES</div>
-         <div id="4-3" class="calendar-cell yes" onclick="toggleStatus(this)">YES</div>
-         <div id="4-4" class="calendar-cell yes" onclick="toggleStatus(this)">YES</div>
+         <div id="4-0" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
+         <div id="4-1" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
+         <div id="4-2" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
+         <div id="4-3" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
+         <div id="4-4" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
       </div>
+
+      <div style="display: flex; flex-direction: row; justify-content: space-between;">
+         <div style="display: flex; flex-direction: column;">
+            <h3>Adicionar Professor</h3>  
+            <input type="text" id="professor-input" placeholder="nome do professor"/>
+            <button onclick="add_professor()">Adicionar</button>
+         </div>
+         <div style="display: flex; flex-direction: column;">
+            <h3>Adicionar Disciplina</h3>  
+            <input type="text" id="disciplina-input" placeholder="nome da disciplina"/>
+            <button onclick="add_disciplina()">Adicionar</button>
+         </div>
+      </div>
+
    </body>
 </html>
