@@ -51,14 +51,15 @@
 
 
       <div class="adicionadores">
-         <div class="adicionador">
+         <div class="adicionador" id="professores">
             <h3>Adicionar Professor</h3>
             <input type="text" placeholder="nome do professor" id="professor-input">
             <button onclick="add_professor()">Adicionar</button>
          </div>
-         <div class="adicionador">
+
+         <div class="adicionador" id="disciplinas">
             <h3>Adicionar Disciplina</h3>
-            <input type="text" placeholder="nome da disciplina" id="disiplina-input">
+            <input type="text" placeholder="nome da disciplina" id="disciplina-input">
             <button onclick="add_disciplina()">Adicionar</button>
          </div>
       </div>

@@ -35,6 +35,8 @@ body {
     display: flex;
     flex-direction: row;
     flex-grow: 1;
+    justify-content: space-between;
+    padding: 1%;
 }
 
 .foot {
@@ -96,4 +98,16 @@ body {
 
 .stand, .left, .right, .top, .bottom{
     visibility: hidden;
+}
+
+.adicionadores {
+   display: flex;
+   flex-direction: row;
+   justify-content: space-around;
+   align-items: center;
+}
+
+.adicionador {
+   display: flex;
+   flex-direction: column;
 }

@@ -35,7 +35,7 @@ function add_professor() {
             method: "POST",
             credentials: "include"
         }
-    ).then()
+    ).then(window.location.reload())
 }
 
 function add_disciplina() {
@@ -50,5 +50,27 @@ function add_disciplina() {
             method: "POST",
             credentials: "include"
         }
-    ).then()
+    ).then(window.location.reload())
 }
+
+document.addEventListener('DOMContentLoaded', async () => {
+   const params = new URLSearchParams(window.location.search)
+   const res = await fetch(`http://localhost:3000/session/${params.get("curso_id")}/${params.get("turma_id")}`,
+      {
+         credentials: "include"
+      })
+
+   const turma = await res.json()
+   console.log(turma)
+
+   for (const p of turma.Professores) {
+      const p_div = document.createElement("div")
+      p_div.textContent = p
+      document.getElementById("professores").appendChild(p_div)
+   }
+   for (d of turma.Disciplinas) {
+      const d_div = document.createElement("div")
+      d_div.textContent = d
+      document.getElementById("disciplinas").appendChild(d_div)
+   }
+})
