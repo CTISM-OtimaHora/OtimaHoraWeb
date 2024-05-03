@@ -24,17 +24,14 @@
     transition: background 0.2s;
  }
 
- .yes {
-    background: #4CAF50; /* Green */
-    color: white;
+ .sim {
+    color: #4CAF50; /* Green */
  }
 
- .maybe {
-    background: #FFC107; /* Yellow */
-    color: black;
+ .talvez {
+    color: #FFC107; /* Yellow */
  }
 
- .no {
-    background: #F44336; /* Red */
-    color: white;
+ .nao {
+    color: #F44336; /* Red */
  }
