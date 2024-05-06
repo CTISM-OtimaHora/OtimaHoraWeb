@@ -17,7 +17,7 @@ function new_curso(name, id) {
     curso.appendChild(c_name);
 
     let btn = document.createElement("button");
-    btn.onclick = () => {window.location.replace(`/turmas.php?curso_id=${id}&curso=${name}`)}
+    btn.onclick = () => {window.location.replace(`/turmas.html?curso_id=${id}&curso=${name}`)}
     btn.textContent = "turmas";
     curso.appendChild(btn);
 
