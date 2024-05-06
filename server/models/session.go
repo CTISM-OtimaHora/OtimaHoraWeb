@@ -1,31 +1,38 @@
 package models
 
-import (
-    "fmt"
-)
-
 type Session struct {
-    Id int
-    Cursos []Curso
+    Id              int
+    Cursos          []Curso
+    Professores     []Professor
+    Disciplinas     []Disciplina
+    Contratos       []Contrato
 }
 
 func NewSession (id int) Session {
     return Session{Id: id}
 }
 
-func (s * Session) Add (c Curso) int {
+func (s * Session) AddCurso (c Curso) int {
     c.Id = len(s.Cursos)
     s.Cursos = append(s.Cursos, c)
     return c.Id
 }
 
-func (s * Session) ToString() string {
-    cursos := "["
-    for _, c := range s.Cursos {
-        cursos += c.ToString() + ", "
-    }
-    cursos += "]"
-    
-    return fmt.Sprintf("{id: %v, cursos: %v}", s.Id, cursos)
-}   
+func (s * Session) AddProfessor (p Professor) int {
+    p.Id = len(s.Professores)
+    s.Professores = append(s.Professores, p)
+    return p.Id
+}
+
+func (s * Session) AddDisciplina (d Disciplina) int {
+    d.Id = len(s.Disciplinas)
+    s.Disciplinas = append(s.Disciplinas, d)
+    return d.Id
+}
+
+func (s * Session) AddContrato (c Contrato) int {
+    c.Id = len(s.Contratos)
+    s.Contratos = append(s.Contratos, c)
+    return c.Id
+}
 

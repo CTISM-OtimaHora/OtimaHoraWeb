@@ -1,12 +1,12 @@
 package main
 
 import (
-    "fmt"
+	"fmt"
 	"net/http"
 	"time"
 
-    ."github.com/CTISM-OtimaHora/OtimaHora/models"
-    ."github.com/CTISM-OtimaHora/OtimaHora/routes"
+	m "github.com/CTISM-OtimaHora/OtimaHora/models"
+	. "github.com/CTISM-OtimaHora/OtimaHora/routes"
 )
 
 
@@ -30,32 +30,25 @@ func corsMiddleware(next http.Handler) http.Handler {
 }
 
 func main() {
-    // debug code
-    last_len := len(Sessions)
-    last_time := time.Now()
     go func () {
         for {
-            if new_len := len(Sessions); new_len != last_len || time.Since(last_time) > time.Second * 7 {
-                last_len = new_len
-                last_time = time.Now()
-                sessions := "["
-                for _, s := range Sessions {
-                    sessions += s.ToString() + ", "
-                } 
-                sessions += "]"
-                fmt.Println(sessions)
+            if len(m.Sessions) > 0 {
+                fmt.Printf("Professores: %v\n", m.Sessions[0].Professores)
+                fmt.Printf("Disciplinas: %v\n", m.Sessions[0].Disciplinas)
+                fmt.Printf("Cursos: %v\n", m.Sessions[0].Cursos)
+                time.Sleep(2 * time.Second)
             }
         }
     } ()
-    // end of debug code
+    
 
     r := http.NewServeMux()
 
     r.HandleFunc("/add-session", New_session)
     r.HandleFunc("/add-curso", Add_curso_to_session)
     r.HandleFunc("/add-turma/{id_curso}", Add_turma_to_curso)
-    r.HandleFunc("/add-professor/{id_curso}/{id_turma}", Add_Professor_to_turma)
-    r.HandleFunc("/add-disciplina/{id_curso}/{id_turma}", Add_Disciplina_to_turma)
+    r.HandleFunc("/add-professor/", Add_Professor_to_turma)
+    r.HandleFunc("/add-disciplina/", Add_Disciplina_to_turma)
     r.HandleFunc("/session", Get_session)
     r.HandleFunc("/session/{id_curso}", Get_curso)
     r.HandleFunc("/session/{id_curso}/{id_turma}", Get_turma)

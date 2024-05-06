@@ -1,29 +1,29 @@
 package models
 
-import "fmt"
-
 type Curso struct {
     Id int
     Nome string
+    Dispo Disponibilidade
     Turmas []Turma
+
+}
+
+func (c * Curso) GetId() int {
+    return c.Id
+}
+func (c * Curso) GetNome() string {
+    return c.Nome
+}
+func (c * Curso) GetDisponibilidade() Disponibilidade {
+    return c.Dispo
 }
 
 func NewCurso (id int, nome string) Curso {
     return Curso{Id: id, Nome: nome, Turmas: make([]Turma, 0)}
 }
 
-func (c * Curso) Add (t Turma) int {
+func (c * Curso) AddTurma (t Turma) int {
     t.Id = len(c.Turmas)
     c.Turmas = append(c.Turmas, t)
     return t.Id
-}
-
-func (c * Curso) ToString() string {
-    turmas := "["
-    for _, t := range c.Turmas {
-        turmas += t.ToString() + ", "
-    }
-    turmas += "]"
-    return fmt.Sprintf("{id: %v, nomes: %v turmas: %v}", c.Id, c.Nome, turmas)
-    
 }

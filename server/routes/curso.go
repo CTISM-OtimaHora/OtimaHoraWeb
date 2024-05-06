@@ -29,7 +29,7 @@ func Add_turma_to_curso(w http.ResponseWriter, r * http.Request) {
         return
     }
     
-    w.Write([]byte(fmt.Sprint(s.Cursos[curso_idx].Add(turma))))
+    w.Write([]byte(fmt.Sprint(s.Cursos[curso_idx].AddTurma(turma))))
     return
 }
 

@@ -41,7 +41,7 @@ func Add_curso_to_session(w http.ResponseWriter, r * http.Request) {
         w.Write([]byte("Malformed body"))
         return
     }
-    w.Write([]byte(fmt.Sprint(s.Add(curso))))
+    w.Write([]byte(fmt.Sprint(s.AddCurso(curso))))
     return
 }
 

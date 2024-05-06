@@ -1,26 +1,122 @@
-<html>
-    <head>
-        <script src="https://unpkg.com/scrollreveal"></script>
-        <title>OtimaHora</title>
-        <script src="scripts/cursos.js"></script>
-        <meta charset="UTF-8">
-        <link rel="stylesheet" href="styles/main.css">
-    </head>
-    <body>
-        <div class="titulo">
-            <h1 class="right">Bem vindo ao OtimaHora, um sistema para criação de horários para a sua instituição! </h1>
-        </div>
-        <div class="content">
-            
-            <h2>Adicione os cursos da sua instituição: </h2>
-            <div class="itens" id="cursos">
-            </div>
-            <div class="foot">
-                <input class="input" type="text" id="new_curso" placeholder="nome do curso">
-                <button class="addCurso" id="adicionar_curso" onclick="adcionar_curso()">Adicionar</button>
-            </div>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>OtimaHora</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            height: 90vh;
+            padding: 10px;
+            gap: 10px;
+        }
+
+        .panel {
+            background-color: #f0f0f0;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .panel h2 {
+            margin-top: 0;
+        }
+
+        .panel ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+
+        .panel ul li {
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .panel button {
+            background-color: #008cba;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .panel button:hover {
+            background-color: #005f5f;
+        }
+
+        .panel button.add:hover {
+            background-color: #357a38;
+        }
+    </style>
+    <script src="scripts/index.js"></script>
+</head>
+<body>
+
+    <div class="navbar">
+        OtimaHora
+    </div>
+
+    <div class="dashboard">
+        <div class="panel">
+            <h2>Professores</h2>
+            <ul id="professores">
+                <li>Professor 1</li>
+                <li>Professor 2</li>
+                <li>Professor 3</li>
+            </ul>
+            <button><a style="text-decoration: none;" href="/professores.html">Editar</a></button>
         </div>
 
-        <script src="scripts/scrollReveal.js"></script>
-    </body>
+        <div class="panel">
+            <h2>Cursos</h2>
+            <ul id="cursos">
+                <li>Curso 1</li>
+                <li>Curso 2</li>
+                <li>Curso 3</li>
+            </ul>
+            <button><a style="text-decoration: none;" href="/cursos.html">Editar</a></button>
+        </div>
+
+        <div class="panel">
+            <h2>Disciplinas</h2>
+            <ul id="disciplinas">
+                <li>Disciplina 1</li>
+                <li>Disciplina 2</li>
+                <li>Disciplina 3</li>
+            </ul>
+            <button><a style="text-decoration: none;" href="/disciplinas.html">Editar</a></button>
+        </div>
+
+        <div class="panel">
+            <h2>Contratos</h2>
+            <ul id="contratos">
+                <li>Contrato 1</li>
+                <li>Contrato 2</li>
+                <li>Contrato 3</li>
+            </ul>
+            <button><a style="text-decoration: none;" href="/contratos.html">Editar</a></button>
+        </div>
+    </div>
+
+</body>
 </html>
+

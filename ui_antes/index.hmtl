@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <script src="https://unpkg.com/scrollreveal"></script>
+        <title>OtimaHora</title>
+        <script src="scripts/cursos.js"></script>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="styles/main.css">
+    </head>
+    <body>
+        <div class="titulo">
+            <h1 class="right">Bem vindo ao OtimaHora, um sistema para criação de horários para a sua instituição! </h1>
+        </div>
+        <div class="content">
+            
+            <h2>Adicione os cursos da sua instituição: </h2>
+            <div class="itens" id="cursos">
+            </div>
+            <div class="foot">
+                <input class="input" type="text" id="new_curso" placeholder="nome do curso">
+                <button class="addCurso" id="adicionar_curso" onclick="adcionar_curso()">Adicionar</button>
+            </div>
+        </div>
+
+        <script src="scripts/scrollReveal.js"></script>
+    </body>
+</html>
