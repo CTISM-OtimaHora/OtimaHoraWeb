@@ -2,77 +2,15 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="styles/main.css">
     <title>OtimaHora</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
-
-        .navbar {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            font-size: 20px;
-        }
-
-        .dashboard {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            height: 90vh;
-            padding: 10px;
-            gap: 10px;
-        }
-
-        .panel {
-            background-color: #f0f0f0;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .panel h2 {
-            margin-top: 0;
-        }
-
-        .panel ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 10px 0;
-        }
-
-        .panel ul li {
-            padding: 5px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .panel button {
-            background-color: #008cba;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-right: 10px;
-        }
-
-        .panel button:hover {
-            background-color: #005f5f;
-        }
-
-        .panel button.add:hover {
-            background-color: #357a38;
-        }
-    </style>
+   
     <script src="scripts/index.js"></script>
 </head>
 <body>
 
     <div class="navbar">
-        OtimaHora
+        <h1 class="titulo">OtimaHora</h1>
     </div>
 
     <div class="dashboard">
@@ -116,7 +54,7 @@
             <button><a style="text-decoration: none;" href="/contratos.html">Editar</a></button>
         </div>
     </div>
-
+    <script src="scripts/scrollReveal.js"></script>
 </body>
 </html>
 

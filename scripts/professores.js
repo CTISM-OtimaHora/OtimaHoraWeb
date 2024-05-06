@@ -26,6 +26,7 @@ function new_professor(name, professor_id) {
     btn.onclick = () => {
         window.location.replace(`/professor_dashboard.html?professor=${name}&professor_id=${professor_id}`);
     };
+    btn.classList.add('add')
     btn.textContent = "Editar";
     professor.appendChild(btn);
 
