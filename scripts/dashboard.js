@@ -25,6 +25,17 @@ function toggleStatusCol(col_idx) {
         toggleStatus(document.getElementById(`${i}-${col_idx}`));
     }
 }
+function toggleStatusRow(row_idx) {
+    for (let i = 0; i < DIAS; i ++) {
+        toggleStatus(document.getElementById(`${row_idx}-${i}`));
+    }
+}
+
+function toggleAll() {
+    for (let i = 0; i < PERIODOS; i++) {
+        toggleStatusRow(i)
+    }
+}
 
 
 function get_disp() {
