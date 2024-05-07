@@ -12,43 +12,77 @@ function toggleStatus(cell) {
       cell.classList.add("sim");
       cell.textContent = "SIM";
    } else {
-          cell.classList.add("sim");
-          cell.textContent = "SIM";
+      cell.classList.add("sim");
+      cell.textContent = "SIM";
    }
 }
 
+const PERIODOS = 5
+const DIAS = 5
+
 function toggleStatusCol(col_idx) {
-    for (let i = 0; i < 5; i ++) {
+    for (let i = 0; i < PERIODOS; i ++) {
         toggleStatus(document.getElementById(`${i}-${col_idx}`));
     }
 }
 
-function add_professor() {
-    const prof_name = document.getElementById("professor-input").value
-    document.getElementById("professor-input").value = ""
 
-    const params = new URLSearchParams(window.location.search)
+function get_disp() {
+    const obj = {
+        segunda: [],
+        terca: [],
+        quarta: [],
+        quinta: [],
+        sexta: [],
+    }   
 
-    fetch(`http://localhost:3000/add-professor/${params.get("curso_id")}/${params.get("turma_id")}`, 
-        {
-            body: JSON.stringify(prof_name),
-            method: "POST",
-            credentials: "include"
+
+
+    let day_idx = 0
+    Object.keys(obj).forEach(day => {
+        for (let p_idx = 0; p_idx < PERIODOS; p_idx++) {
+            const text = document.getElementById(`${p_idx}-${day_idx}`).textContent
+            let value = 1
+
+            if (text === "TALVEZ") {
+                value = 0
+            }
+            if (text === "NAO") {
+                value = -1
+            }
+
+            obj[day].push(value)
         }
-    ).then()
+        day_idx += 1
+    });
+
+    return obj
 }
 
-function add_disciplina() {
-    const dis_name = document.getElementById("disciplina-input").value
-    document.getElementById("disciplina-input").value = ""
+function set_disp(obj) {
+    let day_idx = 0
+    Object.keys(obj).forEach(day => {
+        for (let p_idx = 0; p_idx < PERIODOS; p_idx++) {
+            const value = obj[day][p_idx]
+            let text = "SIM"
 
-    const params = new URLSearchParams(window.location.search)
+            if (value == 0) {
+                text = "TALVEZ"
+            }
+            if (value == -1) {
+                text = "NAO"
+            }
 
-    fetch(`http://localhost:3000/add-disciplina/${params.get("curso_id")}/${params.get("turma_id")}`, 
-        {
-            body: JSON.stringify(dis_name),
-            method: "POST",
-            credentials: "include"
+            const cell = document.getElementById(`${p_idx}-${day_idx}`)
+            cell.textContent = text
+            cell.classList.remove("sim")
+            cell.classList.remove("talvez")
+            cell.classList.remove("nao")
+            cell.classList.add(text.toLowerCase())
         }
-    ).then()
+        day_idx += 1
+    });
 }
+
+window.get_disp = get_disp
+window.set_disp = set_disp
