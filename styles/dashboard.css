@@ -1,0 +1,41 @@
+.calendar{
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: auto repeat(6, 1fr);
+    gap: 1px;
+    background: #ccc;
+    padding: 10px;
+    
+ }
+
+ .calendar-header, .calendar-nav{
+    text-align: center;
+    font-weight: bold;
+    background: #e0e0e0;
+    padding: 10px;
+
+ }
+
+ .calendar-cell {
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.2s;
+ }
+
+ .sim {
+   background-color: #4CAF50;
+    color: #1e441f; /* Green */
+ }
+
+ .talvez {
+   background-color: #FFC107;
+    color: #4e3c05; /* Yellow */
+ }
+
+ .nao {
+   background-color: #F44336;
+    color: #7e221c; /* Red */
+ }
