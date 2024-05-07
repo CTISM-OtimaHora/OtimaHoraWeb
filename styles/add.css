@@ -15,14 +15,20 @@
 }
 
 .item {
+<<<<<<< HEAD
     max-width: 100%;
     border-bottom: 1px solid #747474;
     box-shadow: -5px 0 0 0px #23629c;
+=======
+    border: 1px solid black;
+    margin: 3px;
+>>>>>>> a6ba2ba4d5165d4bcd24b581ce6b5265317a395c
     display: flex;
     flex-direction: row;
     flex-grow: 1;
     justify-content: space-between;
     padding: 1%;
+<<<<<<< HEAD
     transition: 0.2s;
 }
 .item:last-child{
@@ -30,6 +36,8 @@
 }
 .item:hover{
     background-color: #b4b4b4;
+=======
+>>>>>>> a6ba2ba4d5165d4bcd24b581ce6b5265317a395c
 }
 
 .foot {
