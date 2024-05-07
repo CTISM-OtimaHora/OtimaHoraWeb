@@ -18,7 +18,6 @@ func New_session(w http.ResponseWriter, r * http.Request) {
 
     new_s := CreateSession() 
     http.SetCookie(w, &http.Cookie{Name: "id", Value: fmt.Sprint(new_s.Id), Path: "/", Expires: time.Now().Add(2*time.Hour)})
-    w.WriteHeader(200)
     return
 }
 

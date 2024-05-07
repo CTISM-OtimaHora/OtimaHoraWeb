@@ -36,5 +36,4 @@ func AddContrato (w http.ResponseWriter, r * http.Request) {
     
     
     w.Write([]byte(fmt.Sprint(s.AddContrato(NewContrato(len(s.Contratos), ents)))))
-    w.WriteHeader(200)
 }

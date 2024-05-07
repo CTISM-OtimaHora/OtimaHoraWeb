@@ -29,5 +29,4 @@ func Add_Professor_to_turma(w http.ResponseWriter, r * http.Request) {
     }
     
     w.Write([]byte(fmt.Sprint(s.AddProfessor(prof))))
-    w.WriteHeader(200)
 }

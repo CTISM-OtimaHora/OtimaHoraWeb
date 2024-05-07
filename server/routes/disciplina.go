@@ -29,5 +29,4 @@ func Add_Disciplina_to_turma(w http.ResponseWriter, r * http.Request) {
     }
     
     w.Write([]byte(fmt.Sprint(s.AddDisciplina(dis))))
-    w.WriteHeader(200)
 }
