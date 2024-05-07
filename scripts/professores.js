@@ -24,7 +24,7 @@ function new_professor(name, professor_id) {
 
     const btn = document.createElement("button");
     btn.onclick = () => {
-        window.location.replace(`/professor_dashboard.html?professor=${name}&professor_id=${professor_id}`);
+        window.location.replace(`/dashboard.html?professor=${name}&professor_id=${professor_id}`);
     };
     btn.classList.add('add')
     btn.textContent = "Editar";
