@@ -12,10 +12,10 @@ const (
 type Disponibilidade [][]int8
 
 func NewDisponibilidade() Disponibilidade {
-    d := make([][]int8, DIAS)
-    for i := range DIAS {
-        d[i] = make([]int8, PERIODOS)
-        for j := range PERIODOS {
+    d := make([][]int8, PERIODOS)
+    for i := range PERIODOS {
+        d[i] = make([]int8, DIAS)
+        for j := range DIAS {
             d[i][j] = YES
         }
     }
@@ -29,8 +29,8 @@ func AndDisp (ents []Entidade) Disponibilidade {
     }
 
     d := NewDisponibilidade()
-    for i := range DIAS {
-        for j := range PERIODOS {
+    for i := range PERIODOS {
+        for j := range DIAS {
             var dispo_do_dia int8
             dispo_do_dia = YES
             for _, disp := range dispos {
@@ -43,5 +43,4 @@ func AndDisp (ents []Entidade) Disponibilidade {
     }
     return d
 }
-
 

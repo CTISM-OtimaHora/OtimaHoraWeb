@@ -37,21 +37,12 @@ function toggleAll() {
     }
 }
 
-
 function get_disp() {
-    const obj = {
-        segunda: [],
-        terca: [],
-        quarta: [],
-        quinta: [],
-        sexta: [],
-    }   
+    const mat = []
 
-
-
-    let day_idx = 0
-    Object.keys(obj).forEach(day => {
-        for (let p_idx = 0; p_idx < PERIODOS; p_idx++) {
+    for (let p_idx = 0; p_idx < PERIODOS; p_idx ++){
+        const row = []
+        for (let day_idx = 0; day_idx < DIAS; day_idx++) {
             const text = document.getElementById(`${p_idx}-${day_idx}`).textContent
             let value = 1
 
@@ -62,19 +53,18 @@ function get_disp() {
                 value = -1
             }
 
-            obj[day].push(value)
+            row.push(value)
         }
-        day_idx += 1
-    });
+        mat.push(row)
+    }
 
-    return obj
+    return mat 
 }
 
-function set_disp(obj) {
-    let day_idx = 0
-    Object.keys(obj).forEach(day => {
-        for (let p_idx = 0; p_idx < PERIODOS; p_idx++) {
-            const value = obj[day][p_idx]
+function set_disp(matrix) {
+    for (let p_idx = 0; p_idx < PERIODOS; p_idx++) {
+        for (let day_idx = 0; day_idx < DIAS; day_idx++) {
+            const value = matrix[p_idx][day_idx]
             let text = "SIM"
 
             if (value == 0) {
@@ -91,9 +81,37 @@ function set_disp(obj) {
             cell.classList.remove("nao")
             cell.classList.add(text.toLowerCase())
         }
-        day_idx += 1
-    });
+    }
 }
+
+
+function save_disp() {
+    const params = new URLSearchParams(window.location.search)
+    const obj = get_disp()
+
+     fetch(`http://localhost:3000/set-disp/${params.get("tipo")}/${params.get("id")}`, 
+        {
+            credentials: "include",
+            method: "POST",
+            body: JSON.stringify(obj)
+        }).then(alert("saved"))
+}
+
+document.addEventListener('DOMContentLoaded', async function() {
+    const params = new URLSearchParams(window.location.search)
+
+    const res = await fetch(`http://localhost:3000/get-disp/${params.get("tipo")}/${params.get("id")}`, 
+        {
+            credentials: "include",
+            method: "GET",
+        })
+
+    const disp = await res.json()
+    console.log(disp)
+    set_disp(disp)
+})
 
 window.get_disp = get_disp
 window.set_disp = set_disp
+
+window.save_disp = save_disp

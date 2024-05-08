@@ -3,7 +3,7 @@ function adicionar_professor() {
     document.getElementById("new_professor").value = "";
     const professor = { id: undefined, nome: name };
 
-    fetch(`http://localhost:3000/add-professor/`, {
+    fetch(`http://localhost:3000/add-professor`, {
         method: "POST",
         credentials: "include",
         body: JSON.stringify(professor)
@@ -24,7 +24,7 @@ function new_professor(name, professor_id) {
 
     const btn = document.createElement("button");
     btn.onclick = () => {
-        window.location.replace(`/dashboard.html?professor=${name}&professor_id=${professor_id}`);
+        window.location.replace(`/dashboard.html?tipo=professor&professor=${name}&id=${professor_id}`);
     };
     btn.classList.add('add')
     btn.textContent = "Editar";

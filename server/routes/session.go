@@ -10,7 +10,7 @@ import (
 )
 
 func New_session(w http.ResponseWriter, r * http.Request) {
-    s := Session_or_nil(w, r)
+    s := Session_or_nil(r)
     if s != nil {
         http.SetCookie(w, &http.Cookie{Name: "id", Value: fmt.Sprint(s.Id), Path: "/", Expires: time.Now().Add(2*time.Hour)})
         return
@@ -27,7 +27,7 @@ func Add_curso_to_session(w http.ResponseWriter, r * http.Request) {
         return
     }
 
-    s := Session_or_nil(w, r)
+    s := Session_or_nil(r)
     if s == nil {
         w.Write([]byte("No session or Session expired"))
         w.WriteHeader(http.StatusUnauthorized)
@@ -45,7 +45,7 @@ func Add_curso_to_session(w http.ResponseWriter, r * http.Request) {
 }
 
 func Get_session(w http.ResponseWriter, r * http.Request) {
-    s := Session_or_nil(w, r)
+    s := Session_or_nil(r)
     if s == nil {
         w.Write([]byte("No session or Session expired"))
         w.WriteHeader(http.StatusUnauthorized)

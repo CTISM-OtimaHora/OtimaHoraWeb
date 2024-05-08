@@ -9,7 +9,7 @@ import (
 )
 
 func Get_turma(w http.ResponseWriter, r * http.Request) {
-    s := Session_or_nil(w, r)
+    s := Session_or_nil(r)
     if s == nil {
         w.Write([]byte("No session or Session expired"))
         w.WriteHeader(http.StatusUnauthorized)

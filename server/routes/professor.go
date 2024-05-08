@@ -8,13 +8,13 @@ import (
 	. "github.com/CTISM-OtimaHora/OtimaHora/models"
 )
 
-func Add_Professor_to_turma(w http.ResponseWriter, r * http.Request) {
+func Add_Professor(w http.ResponseWriter, r * http.Request) {
     if r.Method != "POST" {
         w.WriteHeader(404)
         return
     }   
     
-    s := Session_or_nil(w, r)
+    s := Session_or_nil(r)
     if s == nil {
         w.Write([]byte("No session or Session expired"))
         w.WriteHeader(http.StatusUnauthorized)

@@ -11,7 +11,7 @@ var Sessions = []*Session{}
 
 var next_id int = 0
 
-func Session_or_nil(w http.ResponseWriter, r * http.Request) *Session {
+func Session_or_nil(r * http.Request) *Session {
     session_cookie, err := r.Cookie("id")
     if err != nil {
         return nil

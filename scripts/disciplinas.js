@@ -3,7 +3,7 @@ function adicionar_disciplina() {
     document.getElementById("new_disciplina").value = "";
     const disciplina = { id: undefined, nome: name };
 
-    fetch(`http://localhost:3000/add-disciplina/`, {
+    fetch(`http://localhost:3000/add-disciplina`, {
         method: "POST",
         credentials: "include",
         body: JSON.stringify(disciplina)
@@ -24,7 +24,7 @@ function new_disciplina(name, disciplina_id) {
 
     const btn = document.createElement("button");
     btn.onclick = () => {
-        window.location.replace(`/disciplina_dashboard.html?disciplina=${name}&disciplina_id=${disciplina_id}`);
+        window.location.replace(`/dashboard.html?tipo=disciplina&disciplina=${name}&id=${disciplina_id}`);
     };
     btn.textContent = "Editar";
     disciplina.appendChild(btn);
