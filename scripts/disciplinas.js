@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
     const s = await res.json();
 
-    for (const disciplina of s.Profesores) {
+    for (const disciplina of s.Disciplinas) {
         document.getElementById("disciplinas").appendChild(new_disciplina(
             disciplina.Nome,
             disciplina.Id

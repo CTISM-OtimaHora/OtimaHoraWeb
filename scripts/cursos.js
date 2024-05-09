@@ -1,4 +1,4 @@
-function adcionar_curso() {
+function adicionar_curso() {
     const name = document.getElementById("new_curso").value;
     document.getElementById("new_curso").value = "";
     curso = {id: undefined, nome: name, turmas: []}
@@ -17,7 +17,7 @@ function new_curso(name, id) {
     curso.appendChild(c_name);
 
     let btn = document.createElement("button");
-    btn.onclick = () => {window.location.replace(`/turmas.php?id=${id}&curso=${name}`)}
+    btn.onclick = () => {window.location.replace(`/dashboard.html?tipo=curso&id=${id}&curso=${name}`)}
     btn.textContent = "turmas";
     curso.appendChild(btn);
 
@@ -27,8 +27,6 @@ function new_curso(name, id) {
 }
 
 document.addEventListener('DOMContentLoaded', async function() {
-    await fetch("http://localhost:3000/add-session", {credentials:"include"})
-
     const res = await fetch("http://localhost:3000/session", {credentials:"include"})
     const obj = await res.json()
 
