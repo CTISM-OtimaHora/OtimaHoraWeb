@@ -37,8 +37,6 @@ func (s * Session) AddDisciplina (d Disciplina) int {
 }
 
 func (s * Session) AddContrato (c Contrato) int {
-    c.Dispo = NewDisponibilidade()
-
     c.Id = len(s.Contratos)
     s.Contratos = append(s.Contratos, c)
     return c.Id

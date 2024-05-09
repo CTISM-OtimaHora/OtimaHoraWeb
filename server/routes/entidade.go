@@ -84,6 +84,8 @@ func Get_entidade_generic(w http.ResponseWriter, r * http.Request) {
             disp = s.Disciplinas[id].Dispo
         case "curso":
             disp = s.Cursos[id].Dispo
+        case "contrato":
+            disp = s.Contratos[id].Dispo
     }
 
     if err := json.NewEncoder(w).Encode(disp); err != nil {

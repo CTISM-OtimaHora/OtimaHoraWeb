@@ -1,0 +1,46 @@
+<html>
+    <head>
+        <title>Contratos</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="styles/main.css">
+        <link rel="stylesheet" href="styles/add.css">
+        <script src="scripts/contratos.js"></script>
+    </head>
+    <body>
+        <h1 id="title">Contratos:</h1>
+        <div class="content-big">
+            <h2>Criação de Contratos</h2>
+            <div class="selects">
+                <label for="professores">Professor:</label>
+                <select id="professores" name="professores">
+                    <option value="default">Selecione um professor</option>
+                </select>
+
+                <label for="disciplinas">Disciplina:</label>
+                <select id="disciplinas" name="disciplinas">
+                    <option value="default">Selecione uma disciplina</option>
+
+                </select>
+
+                <label for="cursos">Turma:</label>
+                <select id="cursos" name="cursos">
+                    <option value="default">Selecione uma turma</option>
+
+                </select>
+
+                <label for="recursos">Recurso:</label>
+                <select id="recursos" name="recursos">
+                    <option value="default">Selecione um recurso</option>
+                </select>
+            </div>
+
+            <div class="foot">
+                <button class="create" id="adicionar_contrato" onclick="adicionar_contrato()">Criar</button>
+            </div>
+
+            <div id="contratos" class="contratos">
+
+            </div>
+        </div>
+    </body>
+</html>

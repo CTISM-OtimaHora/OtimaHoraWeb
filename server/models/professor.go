@@ -20,3 +20,6 @@ func (p * Professor) GetNome() string {
 func (p * Professor) GetDisponibilidade() Disponibilidade {
     return p.Dispo
 }
+func (p * Professor) GetTipo() string {
+    return "professor"
+}

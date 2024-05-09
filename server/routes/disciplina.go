@@ -8,7 +8,7 @@ import (
     ."github.com/CTISM-OtimaHora/OtimaHora/models"
 )
 
-func Add_Disciplina_to_turma(w http.ResponseWriter, r * http.Request) {
+func Add_Disciplina(w http.ResponseWriter, r * http.Request) {
     if r.Method != "POST" {
         w.WriteHeader(404)
         return

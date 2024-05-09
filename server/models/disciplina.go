@@ -19,4 +19,7 @@ func (d * Disciplina) GetNome() string {
 func (d * Disciplina) GetDisponibilidade() Disponibilidade {
     return d.Dispo
 }
+func (d * Disciplina) GetTipo() string {
+    return "disciplina"
+}
 

@@ -17,6 +17,9 @@ func (c * Curso) GetNome() string {
 func (c * Curso) GetDisponibilidade() Disponibilidade {
     return c.Dispo
 }
+func (c * Curso) GetTipo() string {
+    return "curso"
+}
 
 func NewCurso (id int, nome string) Curso {
     return Curso{Id: id, Nome: nome, Turmas: make([]Turma, 0)}

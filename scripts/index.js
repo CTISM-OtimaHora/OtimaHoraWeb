@@ -60,7 +60,14 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
             count += 1
             let child = document.createElement("li")
-            child.textContent = c.Nome
+            
+            let string = ""
+            for (const p of c.Participantes) {
+                string += `${p.Tipo}: ${p.Nome} + `
+            }
+            string = string.slice(0, -3)
+            child.textContent = string
+
             document.getElementById("contratos").appendChild(child)
         }
     } else {

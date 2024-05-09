@@ -99,15 +99,45 @@ function save_disp() {
 
 document.addEventListener('DOMContentLoaded', async function() {
     const params = new URLSearchParams(window.location.search)
+    let disp;
 
-    const res = await fetch(`http://localhost:3000/get-disp/${params.get("tipo")}/${params.get("id")}`, 
-        {
-            credentials: "include",
-            method: "GET",
-        })
+    if (params.get("tipo") == "contrato") {
+        const res = await fetch(`http://localhost:3000/get-contrato/${params.get("id")}`, 
+            {
+                credentials: "include",
+                method: "GET",
+            })
+        const cont = await res.json()
+        disp = cont.Dispo
 
-    const disp = await res.json()
-    console.log(disp)
+        const part = document.getElementById("participantes")
+        part.style.display = "flex"
+        part.style.flexDirection = "column"
+
+        for (const p of cont.Participantes) {
+            console.log(p)
+            const child = document.createElement("div")
+            child.style.display = "flex"
+            child.textContent = `${p.Tipo} - ${p.Nome}`
+
+            const bttn = document.createElement("button")
+            bttn.textContent = "Ver"
+            bttn.onclick = () => {
+                window.location.replace(`/dashboard.html?tipo=${p.Tipo}&${p.Tipo}=${p.Nome}&id=${p.Id}`);
+            }
+            child.appendChild(bttn)
+            part.appendChild(child)
+        }
+    } else {
+        const res = await fetch(`http://localhost:3000/get-disp/${params.get("tipo")}/${params.get("id")}`, 
+            {
+                credentials: "include",
+                method: "GET",
+            })
+
+        disp = await res.json()
+    }
+
     set_disp(disp)
 })
 
