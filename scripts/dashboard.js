@@ -128,6 +128,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             child.appendChild(bttn)
             part.appendChild(child)
         }
+        document.getElementById("save").style.display = "none"
     } else {
         const res = await fetch(`http://localhost:3000/get-disp/${params.get("tipo")}/${params.get("id")}`, 
             {
