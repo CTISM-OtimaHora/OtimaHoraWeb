@@ -76,5 +76,11 @@ func Get_generic_slice(w http.ResponseWriter, r * http.Request) {
                 return
             }
             return
+        case "recurso":
+            if json.NewEncoder(w).Encode(s.Recursos) != nil {
+                w.WriteHeader(http.StatusInternalServerError)
+                return
+            }
+            return
     }
 }
