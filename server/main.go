@@ -41,19 +41,28 @@ func main() {
 	r := http.NewServeMux()
 
 	r.HandleFunc("/add-session", New_session)
+	r.HandleFunc("/session", Get_session)
+	r.HandleFunc("/session/slice/{tipo}", Get_generic_slice)
+
+    // useless
 	r.HandleFunc("/add-curso", Add_curso_to_session)
-	r.HandleFunc("/add-turma/{id_curso}", Add_turma_to_curso)
 	r.HandleFunc("/add-professor", Add_Professor)
 	r.HandleFunc("/add-disciplina", Add_Disciplina)
-	r.HandleFunc("/session", Get_session)
+    r.HandleFunc("/add-contrato", AddContrato)
+
+    // useless
+    r.HandleFunc("/get-contrato/{id}", GetContrato)
 	r.HandleFunc("/session/{id_curso}", Get_curso)
 	r.HandleFunc("/session/{id_curso}/{id_turma}", Get_turma)
 
-	r.HandleFunc("/get-disp/{tipo}/{id}", Get_entidade_generic)
-	r.HandleFunc("/set-disp/{tipo}/{id}", Set_entidade_generic)
+    // useless
+	r.HandleFunc("/add-turma/{id_curso}", Add_turma_to_curso)
 
-    r.HandleFunc("/add-contrato", AddContrato)
-    r.HandleFunc("/get-contrato/{id}", GetContrato)
+	r.HandleFunc("/get-disp/{tipo}/{id}", Get_dispo_generic)
+	r.HandleFunc("/set-disp/{tipo}/{id}", Set_dispo_generic)
+    r.HandleFunc("/session/get/{tipo}/{id}", Get_generic )
+    r.HandleFunc("/session/add/{tipo}", Add_generic )
+
 
 	with_cors := corsMiddleware(r)
 	http.ListenAndServe("localhost:3000", with_cors)
