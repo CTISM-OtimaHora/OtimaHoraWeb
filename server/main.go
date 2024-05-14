@@ -44,20 +44,6 @@ func main() {
 	r.HandleFunc("/session", Get_session)
 	r.HandleFunc("/session/slice/{tipo}", Get_generic_slice)
 
-    // useless
-	r.HandleFunc("/add-curso", Add_curso_to_session)
-	r.HandleFunc("/add-professor", Add_Professor)
-	r.HandleFunc("/add-disciplina", Add_Disciplina)
-    r.HandleFunc("/add-contrato", AddContrato)
-
-    // useless
-    r.HandleFunc("/get-contrato/{id}", GetContrato)
-	r.HandleFunc("/session/{id_curso}", Get_curso)
-	r.HandleFunc("/session/{id_curso}/{id_turma}", Get_turma)
-
-    // useless
-	r.HandleFunc("/add-turma/{id_curso}", Add_turma_to_curso)
-
 	r.HandleFunc("/get-disp/{tipo}/{id}", Get_dispo_generic)
 	r.HandleFunc("/set-disp/{tipo}/{id}", Set_dispo_generic)
     r.HandleFunc("/session/get/{tipo}/{id}", Get_generic )

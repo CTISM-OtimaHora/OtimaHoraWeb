@@ -198,12 +198,20 @@ func Add_generic(w http.ResponseWriter, r * http.Request) {
             w.Write([]byte(fmt.Sprint(s.AddCurso(cur))))
             return
         case "contrato":
-            var con Contrato 
+            var ents []SearchEntidade 
 
-            if json.NewDecoder(r.Body).Decode(&con) != nil {
+            if json.NewDecoder(r.Body).Decode(&ents) != nil {
                 w.WriteHeader(http.StatusInternalServerError)
                 return
             }
+
+            a := GetEntidadesOrNilSlice(ents, s)
+            if a == nil {
+                w.WriteHeader(http.StatusInternalServerError)
+                return
+            }
+
+            con := NewContrato(0, a)
 
             w.Write([]byte(fmt.Sprint(s.AddContrato(con))))
             return

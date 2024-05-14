@@ -11,9 +11,15 @@ function adicionar_contrato() {
         recs.options[recs.selectedIndex],
     ]
 
-    selected = selected.filter((e) => e && e.value != "default").map((e) => {return {id: parseInt(e.value), nome: e.textContent, tipo: e.alt}});
+    selected = selected
+        .filter((e) => e && e.value != "default")
+        .map(
+            (e) => {return {
+                id: parseInt(e.value), nome: e.textContent, tipo: e.alt
+            }});
 
-    fetch("http://localhost:3000/add-contrato", {
+
+    fetch("http://localhost:3000/session/add/contrato", {
         credentials: "include",
         method: "POST",
         body: JSON.stringify(selected)

@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     let disp;
 
     if (params.get("tipo") == "contrato") {
-        const res = await fetch(`http://localhost:3000/get-contrato/${params.get("id")}`, 
+        const res = await fetch(`http://localhost:3000/session/get/contrato/${params.get("id")}`, 
             {
                 credentials: "include",
                 method: "GET",

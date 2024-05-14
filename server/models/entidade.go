@@ -54,3 +54,15 @@ func (e SearchEntidade) GetEntidadeOrNil(s * Session) Entidade {
     }
     return nil
 }
+
+func GetEntidadesOrNilSlice(es []SearchEntidade, s * Session) []Entidade {
+    es2 := make([]Entidade, len(es))
+    for i := range es {
+        a := es[i].GetEntidadeOrNil(s)
+        if a == nil {
+            return nil
+        }
+        es2[i] = a
+    }
+    return es2
+}
