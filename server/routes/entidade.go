@@ -48,6 +48,8 @@ func Set_dispo_generic(w http.ResponseWriter, r * http.Request) {
             s.Disciplinas[id].Dispo = disp
         case "curso":
             s.Cursos[id].Dispo = disp
+        case "recurso":
+            s.Recursos[id].Dispo = disp
     }
 }
 
@@ -87,6 +89,8 @@ func Get_dispo_generic(w http.ResponseWriter, r * http.Request) {
             disp = s.Cursos[id].Dispo
         case "contrato":
             disp = s.Contratos[id].Dispo
+        case "recurso":
+            disp = s.Recursos[id].Dispo
     }
 
     if err := json.NewEncoder(w).Encode(disp); err != nil {
@@ -141,6 +145,12 @@ func Get_generic(w http.ResponseWriter, r * http.Request) {
             return
         case "contrato":
             if json.NewEncoder(w).Encode(s.Contratos[id]) != nil {
+                w.WriteHeader(http.StatusInternalServerError)
+                return
+            }
+            return
+        case "recurso":
+            if json.NewEncoder(w).Encode(s.Recursos[id]) != nil {
                 w.WriteHeader(http.StatusInternalServerError)
                 return
             }
@@ -214,6 +224,16 @@ func Add_generic(w http.ResponseWriter, r * http.Request) {
             con := NewContrato(0, a)
 
             w.Write([]byte(fmt.Sprint(s.AddContrato(con))))
+            return
+        case "recurso":
+            var rec Recurso
+
+            if json.NewDecoder(r.Body).Decode(&rec) != nil {
+                w.WriteHeader(http.StatusInternalServerError)
+                return
+            }
+
+            w.Write([]byte(fmt.Sprint(s.AddRecurso(rec))))
             return
     }
 }

@@ -6,6 +6,7 @@ type Session struct {
     Professores     []Professor
     Disciplinas     []Disciplina
     Contratos       []Contrato
+    Recursos        []Recurso
 }
 
 func NewSession (id int) Session {
@@ -26,6 +27,14 @@ func (s * Session) AddProfessor (p Professor) int {
     p.Id = len(s.Professores)
     s.Professores = append(s.Professores, p)
     return p.Id
+}
+
+func (s * Session) AddRecurso (r Recurso) int {
+    r.Dispo = NewDisponibilidade()
+
+    r.Id = len(s.Recursos)
+    s.Recursos = append(s.Recursos, r)
+    return r.Id
 }
 
 func (s * Session) AddDisciplina (d Disciplina) int {

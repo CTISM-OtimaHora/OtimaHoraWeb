@@ -38,6 +38,21 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     count = 0
+    if (sess.Recursos) {
+        for (const r of sess.Recursos) {
+            if (count == 3) {
+                break
+            }
+            count += 1
+            let child = document.createElement("li")
+            child.textContent = r.Nome
+            document.getElementById("recursos").appendChild(child)
+        }
+    } else {
+        document.getElementById("recursos").appendChild(document.createTextNode("Nenhum recurso criado"))
+    }
+
+    count = 0
     if (sess.Cursos) {
         for (c of sess.Cursos) {
             if (count == 3) {

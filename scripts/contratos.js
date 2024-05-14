@@ -83,6 +83,16 @@ document.addEventListener("DOMContentLoaded", async () => {
             document.getElementById("cursos").appendChild(child);
         }
     }
+    if (s.Recursos) {
+        for (const recurso of s.Recursos) {
+            const child = document.createElement("option")
+            child.value = recurso.Id
+            child.textContent = recurso.Nome
+            child.alt = "recurso"
+
+            document.getElementById("recursos").appendChild(child);
+        }
+    }
 
 
     if (s.Contratos) {

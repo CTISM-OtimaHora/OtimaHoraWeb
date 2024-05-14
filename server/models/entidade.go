@@ -49,8 +49,7 @@ func (e SearchEntidade) GetEntidadeOrNil(s * Session) Entidade {
         case "curso":
             return Entidade(&s.Cursos[e.Id])
         case "recurso":
-            // TODO
-            // return Entidade(&s.Recursos[e.Id])
+            return Entidade(&s.Recursos[e.Id])
     }
     return nil
 }
