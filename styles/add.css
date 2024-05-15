@@ -7,15 +7,7 @@
     padding: 2%;
     min-height: 200px;
 }
-.content-big {
-    margin: 0 auto;
-    width: 90%;
-    display: flex;
-    flex-direction: column;
-    background-color: rgb(202, 202, 202);
-    padding: 2%;
-    min-height: 200px;
-}
+
 
 .itens {
     display: flex;

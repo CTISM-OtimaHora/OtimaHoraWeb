@@ -2,40 +2,41 @@
     <head>
         <title>Contratos</title>
         <meta charset="UTF-8">
+        <link rel="stylesheet" href="styles/contratos.css">
         <link rel="stylesheet" href="styles/main.css">
         <link rel="stylesheet" href="styles/add.css">
         <script src="scripts/contratos.js"></script>
     </head>
     <body>
         <h1 id="title">Contratos:</h1>
-        <div class="content-big">
+        <div class="container">
             <h2>Criação de Contratos</h2>
             <div class="selects">
-                <label for="professores">Professor:</label>
-                <select id="professores" name="professores">
+                
+                <label class="descrip" for="professores">Professor:</label>
+                <select class="select" id="professores" name="professores">
                     <option value="default">Selecione um professor</option>
                 </select>
 
-                <label for="disciplinas">Disciplina:</label>
-                <select id="disciplinas" name="disciplinas">
+                <label class="descrip" for="disciplinas">Disciplina:</label>
+                <select class="select" id="disciplinas" name="disciplinas">
                     <option value="default">Selecione uma disciplina</option>
-
                 </select>
 
-                <label for="cursos">Turma:</label>
-                <select id="cursos" name="cursos">
+                <label class="descrip" for="cursos">Turma:</label>
+                <select class="select" id="cursos" name="cursos">
                     <option value="default">Selecione uma turma</option>
-
                 </select>
 
-                <label for="recursos">Recurso:</label>
-                <select id="recursos" name="recursos">
+                <label class="descrip" for="recursos">Recurso:</label>
+                <select class="select" id="recursos" name="recursos">
                     <option value="default">Selecione um recurso</option>
                 </select>
+
             </div>
 
             <div class="foot">
-                <button class="create" id="adicionar_contrato" onclick="adicionar_contrato()">Criar</button>
+                <button class="add" id="adicionar_contrato" onclick="adicionar_contrato()">Criar</button>
             </div>
 
             <div id="contratos" class="contratos">

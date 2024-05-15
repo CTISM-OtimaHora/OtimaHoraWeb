@@ -11,7 +11,7 @@ import (
 
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5000")
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5500")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "*")
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
@@ -46,9 +46,8 @@ func main() {
 
 	r.HandleFunc("/get-disp/{tipo}/{id}", Get_dispo_generic)
 	r.HandleFunc("/set-disp/{tipo}/{id}", Set_dispo_generic)
-    r.HandleFunc("/session/get/{tipo}/{id}", Get_generic )
-    r.HandleFunc("/session/add/{tipo}", Add_generic )
-
+	r.HandleFunc("/session/get/{tipo}/{id}", Get_generic)
+	r.HandleFunc("/session/add/{tipo}", Add_generic)
 
 	with_cors := corsMiddleware(r)
 	http.ListenAndServe("localhost:3000", with_cors)

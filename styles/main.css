@@ -13,14 +13,7 @@ body {
     animation-direction: alternate;
  }
 
-.selects {
-    display: flex;
-    flex-direction: row;
-}
 
-select {
-    margin: 10px;
-}
 
  .titulo{
     margin: 0 auto;
