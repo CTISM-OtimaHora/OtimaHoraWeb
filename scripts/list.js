@@ -29,7 +29,7 @@ function new_item(name, id) {
 
     const btn = document.createElement("button");
     btn.onclick = () => {
-        window.location.replace(`/dashboard.html?tipo=${tipo}&${tipo}=${name}&id=${id}`);
+        window.location.replace(`/OtimaHoraWeb/dashboard.html?tipo=${tipo}&${tipo}=${name}&id=${id}`);
     };
     btn.classList.add('add')
     btn.textContent = "Editar";

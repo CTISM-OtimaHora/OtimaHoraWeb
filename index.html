@@ -6,49 +6,51 @@
     <title>OtimaHora</title>
    <link rel="stylesheet" href="styles/add.css">
     <script src="scripts/index.js"></script>
+    <script src="http://www.w3schools.com/lib/w3data.js"></script>
 </head>
 <body>
-
-    <div class="navbar">
-        <h1 class="titulo">OtimaHora</h1>
-    </div>
+    <div w3-include-html="/OtimaHoraWeb/header.html"></div>
 
     <div class="dashboard">
         <div class="panel">
             <h2>Professores</h2>
             <ul id="professores">
             </ul>
-            <a class="add"  href="/list.html?tipo=professor">Editar Professores</a>
+            <a class="add"  href="/OtimaHoraWeb/list.html?tipo=professor">Editar Professores</a>
         </div>
 
         <div class="panel">
             <h2>Cursos</h2>
             <ul id="cursos">
             </ul>
-            <a class="add" style="text-decoration: none;" href="/list.html?tipo=curso">Editar Cursos</a>
+            <a class="add" style="text-decoration: none;" href="/OtimaHoraWeb/list.html?tipo=curso">Editar Cursos</a>
         </div>
 
         <div class="panel">
             <h2>Disciplinas</h2>
             <ul id="disciplinas">
             </ul>
-            <a class="add" href="/list.html?tipo=disciplina">Editar Disciplinas</a>
+            <a class="add" href="/OtimaHoraWeb/list.html?tipo=disciplina">Editar Disciplinas</a>
         </div>
 
         <div class="panel">
             <h2>Recursos</h2>
             <ul id="recursos">
             </ul>
-            <a class="add" href="/list.html?tipo=recurso">Editar Recursos</a>
+            <a class="add" href="/OtimaHoraWeb/list.html?tipo=recurso">Editar Recursos</a>
         </div>
 
         <div class="panel">
             <h2>Contratos</h2>
             <ul id="contratos">
             </ul>
-            <a class="add" href="/contratos.html">Editar Contratos</a>
+            <a class="add" href="/OtimaHoraWeb/contratos.html">Editar Contratos</a>
         </div>
     </div>
+    
+    <script>
+        w3IncludeHTML()
+    </script>
     <script src="scripts/scrollReveal.js"></script>
 </body>
 </html>

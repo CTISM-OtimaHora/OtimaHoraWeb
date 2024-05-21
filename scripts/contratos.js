@@ -38,7 +38,7 @@ function new_contrato(id, participantes) {
     bttn.classList.add("add")
     bttn.textContent = "Ver"
     bttn.onclick = () => {
-        window.location.replace(`/dashboard.html?tipo=contrato&id=${id}`);
+        window.location.replace(`/OtimaHoraWeb/dashboard.html?tipo=contrato&id=${id}`);
     }
     contrato.appendChild(bttn)
 
