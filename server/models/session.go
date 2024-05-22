@@ -13,7 +13,7 @@ func NewSession (id int) Session {
     return Session{Id: id}
 }
 
-func (s * Session) AddCurso (c Curso) int {
+func AddCurso (s * Session, c Curso) int {
     c.Dispo = NewDisponibilidade()
 
     c.Id = len(s.Cursos)
@@ -21,7 +21,7 @@ func (s * Session) AddCurso (c Curso) int {
     return c.Id
 }
 
-func (s * Session) AddProfessor (p Professor) int {
+func AddProfessor (s * Session, p Professor) int {
     p.Dispo = NewDisponibilidade()
 
     p.Id = len(s.Professores)
@@ -29,7 +29,7 @@ func (s * Session) AddProfessor (p Professor) int {
     return p.Id
 }
 
-func (s * Session) AddRecurso (r Recurso) int {
+func AddRecurso (s * Session, r Recurso) int {
     r.Dispo = NewDisponibilidade()
 
     r.Id = len(s.Recursos)
@@ -37,7 +37,7 @@ func (s * Session) AddRecurso (r Recurso) int {
     return r.Id
 }
 
-func (s * Session) AddDisciplina (d Disciplina) int {
+func AddDisciplina (s * Session, d Disciplina) int {
     d.Dispo = NewDisponibilidade()
 
     d.Id = len(s.Disciplinas)
@@ -51,3 +51,19 @@ func (s * Session) AddContrato (c Contrato) int {
     return c.Id
 }
 
+
+func ProfessorGeter(s * Session) []Professor {
+    return s.Professores
+}
+func DisciplinaGeter(s * Session) []Disciplina {
+    return s.Disciplinas
+}
+func CursoGetter(s * Session) []Curso {
+    return s.Cursos
+}
+func ContratoGetter(s * Session) []Contrato {
+    return s.Contratos
+}
+func RecursoGetter(s * Session) []Recurso {
+    return s.Recursos
+}

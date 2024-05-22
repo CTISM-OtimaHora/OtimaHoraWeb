@@ -5,7 +5,7 @@ function adicionar() {
 
     const params = new URLSearchParams(window.location.search)
 
-    fetch(`http://localhost:3000/session/add/${params.get("tipo")}`, {
+    fetch(`http://localhost:3000/${params.get("tipo")}/add`, {
         method: "POST",
         credentials: "include",
         body: JSON.stringify(obj)
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("title").textContent = tipo
     document.getElementById("title2").textContent = `adicione ou modifique os ${tipo}`
 
-    const res = await fetch(`http://localhost:3000/session/slice/${tipo}`, {
+    const res = await fetch(`http://localhost:3000/${tipo}/slice`, {
         credentials: "include"
     });
     const itens = await res.json();

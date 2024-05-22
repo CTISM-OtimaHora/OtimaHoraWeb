@@ -10,11 +10,6 @@ import (
 )
 
 func AddContrato (w http.ResponseWriter, r * http.Request) {
-    if r.Method != "POST" {
-        w.WriteHeader(404)
-        return
-    }   
-    
     s := Session_or_nil(r)
     if s == nil {
         w.Write([]byte("No session or Session expired"))
@@ -46,11 +41,6 @@ func AddContrato (w http.ResponseWriter, r * http.Request) {
 }
 
 func GetContrato(w http.ResponseWriter, r * http.Request) {
-    if r.Method != "GET" {
-        w.WriteHeader(404)
-        return
-    }
-
     s := Session_or_nil(r)
     if s == nil {
         w.Write([]byte("No session or Session expired"))

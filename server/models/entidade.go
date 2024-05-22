@@ -7,7 +7,7 @@ package models
 type Entidade interface {
     GetId() int
     GetNome() string
-    GetDisponibilidade() Disponibilidade 
+    GetDisponibilidade() *Disponibilidade 
     GetTipo() string
 }
 

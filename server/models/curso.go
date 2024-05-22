@@ -8,16 +8,16 @@ type Curso struct {
 
 }
 
-func (c * Curso) GetId() int {
+func (c  Curso) GetId() int {
     return c.Id
 }
-func (c * Curso) GetNome() string {
+func (c  Curso) GetNome() string {
     return c.Nome
 }
-func (c * Curso) GetDisponibilidade() Disponibilidade {
-    return c.Dispo
+func (c  Curso) GetDisponibilidade() *Disponibilidade {
+    return &c.Dispo
 }
-func (c * Curso) GetTipo() string {
+func (c  Curso) GetTipo() string {
     return "curso"
 }
 

@@ -16,8 +16,8 @@ func (r Recurso) GetId() int {
 func (r Recurso) GetNome() string {
     return r.Nome
 }
-func (r Recurso) GetDisponibilidade() Disponibilidade {
-    return r.Dispo
+func (r Recurso) GetDisponibilidade() *Disponibilidade {
+    return &r.Dispo
 }
 func (r Recurso) GetTipo() string {
     return "recurso"

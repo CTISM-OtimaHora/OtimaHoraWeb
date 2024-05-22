@@ -12,8 +12,8 @@ func (t * Turma) GetId() int {
 func (t * Turma) GetNome() string {
     return t.Nome
 }
-func (t * Turma) GetDisponibilidade() Disponibilidade {
-    return t.Horarios
+func (t * Turma) GetDisponibilidade() *Disponibilidade {
+    return &t.Horarios
 }
 func (t * Turma) GetTipo() string {
     return "turma"

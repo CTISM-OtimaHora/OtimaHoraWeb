@@ -89,7 +89,7 @@ function save_disp() {
     const params = new URLSearchParams(window.location.search)
     const obj = get_disp()
 
-     fetch(`http://localhost:3000/set-disp/${params.get("tipo")}/${params.get("id")}`, 
+     fetch(`http://localhost:3000/${params.get("tipo")}/disp/set/${params.get("id")}`, 
         {
             credentials: "include",
             method: "POST",
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     let disp;
 
     if (params.get("tipo") == "contrato") {
-        const res = await fetch(`http://localhost:3000/session/get/contrato/${params.get("id")}`, 
+        const res = await fetch(`http://localhost:3000/contrato/get/${params.get("id")}`, 
             {
                 credentials: "include",
                 method: "GET",
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
         document.getElementById("save").style.display = "none"
     } else {
-        const res = await fetch(`http://localhost:3000/get-disp/${params.get("tipo")}/${params.get("id")}`, 
+        const res = await fetch(`http://localhost:3000/${params.get("tipo")}/disp/get/${params.get("id")}`, 
             {
                 credentials: "include",
                 method: "GET",

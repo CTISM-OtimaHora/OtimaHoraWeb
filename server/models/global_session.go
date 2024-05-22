@@ -31,8 +31,3 @@ func CreateSession () *Session {
     return &s
 }
 
-func AddSession (sess * Session) {
-    Sessions = append(Sessions, sess)
-}
-
-

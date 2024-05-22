@@ -19,7 +19,7 @@ function adicionar_contrato() {
             }});
 
 
-    fetch("http://localhost:3000/session/add/contrato", {
+    fetch("http://localhost:3000/contrato/add", {
         credentials: "include",
         method: "POST",
         body: JSON.stringify(selected)

@@ -23,7 +23,7 @@ func NewDisponibilidade() Disponibilidade {
 }
 
 func AndDisp (ents []Entidade) Disponibilidade {
-    dispos := make([]Disponibilidade, len(ents))
+    dispos := make([]*Disponibilidade, len(ents))
     for i := range ents {
         dispos[i] = ents[i].GetDisponibilidade()
     }
@@ -34,8 +34,8 @@ func AndDisp (ents []Entidade) Disponibilidade {
             var dispo_do_dia int8
             dispo_do_dia = YES
             for _, disp := range dispos {
-                if disp[i][j] < dispo_do_dia {
-                    dispo_do_dia = disp[i][j]
+                if (*disp)[i][j] < dispo_do_dia {
+                    dispo_do_dia = (*disp)[i][j]
                 }
             }
             d[i][j] = dispo_do_dia
