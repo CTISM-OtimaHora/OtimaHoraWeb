@@ -46,9 +46,10 @@ func main() {
     // professor routes
 	r.HandleFunc("POST /professor/add", AddBuilder(m.AddProfessor))
 	r.HandleFunc("GET /professor/get/{id}", GetBuilder(m.ProfessorGeter))
+	r.HandleFunc("PUT /professor/set/{id}", SetBuilder(m.ProfessorGeter)) // professor tem um setter pra suas disciplinas
     r.HandleFunc("GET /professor/slice", SliceGetBuilder(m.ProfessorGeter))
 	r.HandleFunc("GET /professor/disp/get/{id}", DispoGetBuilder(m.ProfessorGeter))
-	r.HandleFunc("POST /professor/disp/set/{id}", DispoSetBuilder(m.ProfessorGeter))
+	r.HandleFunc("PUT /professor/disp/set/{id}", DispoSetBuilder(m.ProfessorGeter))
 
 
     // disciplina routes
@@ -56,21 +57,21 @@ func main() {
 	r.HandleFunc("GET /disciplina/get/{id}", GetBuilder(m.DisciplinaGeter))
     r.HandleFunc("GET /disciplina/slice", SliceGetBuilder(m.DisciplinaGeter))
 	r.HandleFunc("GET /disciplina/disp/get/{id}", DispoGetBuilder(m.DisciplinaGeter))
-	r.HandleFunc("POST /disciplina/disp/set/{id}", DispoSetBuilder(m.DisciplinaGeter))
+	r.HandleFunc("PUT /disciplina/disp/set/{id}", DispoSetBuilder(m.DisciplinaGeter))
 
     // recurso routes
 	r.HandleFunc("POST /recurso/add", AddBuilder(m.AddRecurso))
 	r.HandleFunc("GET /recurso/get/{id}", GetBuilder(m.RecursoGetter))
     r.HandleFunc("GET /recurso/slice", SliceGetBuilder(m.RecursoGetter))
 	r.HandleFunc("GET /recurso/disp/get/{id}", GetBuilder(m.RecursoGetter))
-	r.HandleFunc("POST /recurso/disp/set/{id}", DispoSetBuilder(m.RecursoGetter))
+	r.HandleFunc("PUT /recurso/disp/set/{id}", DispoSetBuilder(m.RecursoGetter))
 
     // curso routes
 	r.HandleFunc("POST /curso/add", AddBuilder(m.AddCurso))
     r.HandleFunc("GET /curso/get/{id}", GetBuilder(m.CursoGetter))
     r.HandleFunc("GET /curso/slice", SliceGetBuilder(m.CursoGetter))
     r.HandleFunc("GET /curso/disp/get/{id}", GetBuilder(m.CursoGetter))
-    r.HandleFunc("POST /curso/disp/set/{id}", DispoSetBuilder(m.CursoGetter))
+    r.HandleFunc("PUT /curso/disp/set/{id}", DispoSetBuilder(m.CursoGetter))
 
     // contrato routes
 	r.HandleFunc("POST /contrato/add", AddContrato)

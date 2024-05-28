@@ -25,7 +25,7 @@ func NewDisponibilidade() Disponibilidade {
 func AndDisp (ents []Entidade) Disponibilidade {
     dispos := make([]*Disponibilidade, len(ents))
     for i := range ents {
-        dispos[i] = ents[i].GetDisponibilidade()
+        dispos[i] = ents[i].GetDispo()
     }
 
     d := NewDisponibilidade()

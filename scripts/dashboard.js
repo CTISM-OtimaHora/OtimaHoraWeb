@@ -85,16 +85,32 @@ function set_disp(matrix) {
 }
 
 
-function save_disp() {
+function save_item() {
     const params = new URLSearchParams(window.location.search)
-    const obj = get_disp()
-
-     fetch(`http://localhost:3000/${params.get("tipo")}/disp/set/${params.get("id")}`, 
-        {
-            credentials: "include",
-            method: "POST",
-            body: JSON.stringify(obj)
-        }).then(alert("saved"))
+    const dispo = get_disp()
+    
+    if (params.get("tipo") === "professor") {
+        const dis_ids = [...document.querySelectorAll(".disciplina-check:checked")].map(e => parseInt(e.value))
+        const obj = {
+            Id: parseInt(params.get("id")),
+            Nome: params.get(params.get("tipo")),
+            Dispo: dispo,
+            Disciplinas_ids: dis_ids
+        }
+        fetch(`http://localhost:3000/professor/set/${params.get("id")}`, 
+            {
+                credentials: "include",
+                method: "PUT",
+                body: JSON.stringify(obj)
+            }).then(alert("saved"))
+    } else {
+        fetch(`http://localhost:3000/${params.get("tipo")}/disp/set/${params.get("id")}`, 
+            {
+                credentials: "include",
+                method: "PUT",
+                body: JSON.stringify(dispo)
+            }).then(alert("saved"))
+    }
 }
 
 document.addEventListener('DOMContentLoaded', async function() {
@@ -110,7 +126,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const cont = await res.json()
         disp = cont.Dispo
 
-        const part = document.getElementById("participantes")
+        const part = document.getElementById("adicional")
         part.style.display = "flex"
         part.style.flexDirection = "column"
 
@@ -139,10 +155,43 @@ document.addEventListener('DOMContentLoaded', async function() {
         disp = await res.json()
     }
 
+    if (params.get("tipo") == "professor") {
+        const dis_div = document.getElementById("adicional");
+        const res = await fetch("http://localhost:3000/disciplina/slice", {method: "GET", credentials: "include"})
+        const dis_arr = await res.json()
+
+        const res2 = await fetch(`http://localhost:3000/professor/get/${params.get("id")}`, {credentials: "include"})
+        const prof = await res2.json()
+        if (!prof.Disciplinas_ids) {
+            prof.Disciplinas_ids = []
+        }
+
+        for (const dis of dis_arr) {
+            const check = document.createElement("input")
+            check.type = "checkbox"
+
+            if (prof.Disciplinas_ids.includes(dis.Id)) {
+                check.checked = true
+            }
+
+            check.classList.add("disciplina-check")
+            check.id = dis.Id
+            check.name = dis.Nome
+            check.value= dis.Id
+            check.id = dis.Nome
+            const label = document.createElement("label")
+            label.textContent = dis.Nome
+            label.for = dis.Nome
+            dis_div.appendChild(check)
+            dis_div.appendChild(label)
+        }
+    }
+
+
     set_disp(disp)
 })
 
 window.get_disp = get_disp
 window.set_disp = set_disp
 
-window.save_disp = save_disp
+window.save_item = save_item

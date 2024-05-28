@@ -52,18 +52,18 @@ func (s * Session) AddContrato (c Contrato) int {
 }
 
 
-func ProfessorGeter(s * Session) []Professor {
-    return s.Professores
+func ProfessorGeter(s * Session) *[]Professor {
+    return &s.Professores
 }
-func DisciplinaGeter(s * Session) []Disciplina {
-    return s.Disciplinas
+func DisciplinaGeter(s * Session) *[]Disciplina {
+    return &s.Disciplinas
 }
-func CursoGetter(s * Session) []Curso {
-    return s.Cursos
+func CursoGetter(s * Session) *[]Curso {
+    return &s.Cursos
 }
-func ContratoGetter(s * Session) []Contrato {
-    return s.Contratos
+func ContratoGetter(s * Session) *[]Contrato {
+    return &s.Contratos
 }
-func RecursoGetter(s * Session) []Recurso {
-    return s.Recursos
+func RecursoGetter(s * Session) *[]Recurso {
+    return &s.Recursos
 }

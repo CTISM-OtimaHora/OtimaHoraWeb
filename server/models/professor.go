@@ -4,11 +4,12 @@ type Professor struct {
     Id int
     Nome string
     Dispo Disponibilidade
+        Disciplinas_ids []int
 }
 
 
 func NewProfessor(id int, nome string) Professor {
-    return Professor {Id: id, Nome: nome, Dispo: NewDisponibilidade()}
+    return Professor {Id: id, Nome: nome, Dispo: NewDisponibilidade(), Disciplinas_ids: []int{}}
 }
 
 func (p Professor) GetId() int {
@@ -17,7 +18,7 @@ func (p Professor) GetId() int {
 func (p  Professor) GetNome() string {
     return p.Nome
 }
-func (p  Professor) GetDisponibilidade() *Disponibilidade {
+func (p  Professor) GetDispo() *Disponibilidade {
     return &p.Dispo
 }
 func (p  Professor) GetTipo() string {

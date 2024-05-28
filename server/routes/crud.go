@@ -9,7 +9,7 @@ import (
 	. "github.com/CTISM-OtimaHora/OtimaHora/models"
 )
 
-func GetBuilder[T Entidade] (slice_geter func(*Session) []T) func(http.ResponseWriter, * http.Request) {
+func GetBuilder[T Entidade] (slice_geter func(*Session) *[]T) func(http.ResponseWriter, * http.Request) {
     return func (w http.ResponseWriter, r * http.Request) {
         s := Session_or_nil(r)
         if s == nil {
@@ -24,7 +24,7 @@ func GetBuilder[T Entidade] (slice_geter func(*Session) []T) func(http.ResponseW
             return
         }
 
-        if json.NewEncoder(w).Encode(slice_geter(s)[id]) != nil {
+        if json.NewEncoder(w).Encode((*slice_geter(s))[id]) != nil {
             w.WriteHeader(http.StatusInternalServerError)
             return
         }
@@ -54,7 +54,7 @@ func AddBuilder[T Entidade] (slice_adder func(sess *Session, en T) int) func (ht
     }
 }
 
-func SliceGetBuilder[T Entidade] (slice_geter func(*Session) []T) func(http.ResponseWriter, * http.Request) {
+func SetBuilder[T Entidade] (slice_geter func(*Session) *[]T) func(http.ResponseWriter, * http.Request) {
     return func (w http.ResponseWriter, r * http.Request) {
         s := Session_or_nil(r)
         if s == nil {
@@ -63,7 +63,37 @@ func SliceGetBuilder[T Entidade] (slice_geter func(*Session) []T) func(http.Resp
             return 
         }
 
-        if json.NewEncoder(w).Encode(slice_geter(s)) != nil {
+        id, conv_err := strconv.Atoi(r.PathValue("id"))
+        if conv_err != nil {
+            w.WriteHeader(http.StatusBadRequest)
+            return
+        }
+        
+        var e T 
+
+        if err := json.NewDecoder(r.Body).Decode(&e); err != nil {
+            w.WriteHeader(http.StatusBadRequest)
+            w.Write([]byte("malformed body 1: " + err.Error()))
+            return
+        }
+
+        fmt.Printf("antes: %v\n", slice_geter(s))
+        (*slice_geter(s))[id] = e
+        fmt.Printf("dps: %v\n", slice_geter(s))
+        return   
+    }
+}
+
+func SliceGetBuilder[T Entidade] (slice_geter func(*Session) *[]T) func(http.ResponseWriter, * http.Request) {
+    return func (w http.ResponseWriter, r * http.Request) {
+        s := Session_or_nil(r)
+        if s == nil {
+            w.WriteHeader(http.StatusUnauthorized)
+            w.Write([]byte("No session or Session expired"))
+            return 
+        }
+
+        if json.NewEncoder(w).Encode((*slice_geter(s))) != nil {
             w.WriteHeader(http.StatusInternalServerError)
             return
         }
@@ -72,7 +102,9 @@ func SliceGetBuilder[T Entidade] (slice_geter func(*Session) []T) func(http.Resp
     }
 }
 
-func DispoGetBuilder[T Entidade] (slice_geter func(*Session) []T) func(http.ResponseWriter, * http.Request) {
+
+
+func DispoGetBuilder[T Entidade] (slice_geter func(*Session) *[]T) func(http.ResponseWriter, * http.Request) {
     return func (w http.ResponseWriter, r * http.Request) {
         s := Session_or_nil(r)
         if s == nil {
@@ -87,7 +119,7 @@ func DispoGetBuilder[T Entidade] (slice_geter func(*Session) []T) func(http.Resp
             return
         }
 
-        if json.NewEncoder(w).Encode(slice_geter(s)[id].GetDisponibilidade()) != nil {
+        if json.NewEncoder(w).Encode((*slice_geter(s))[id].GetDispo()) != nil {
             w.WriteHeader(http.StatusInternalServerError)
             return
         }
@@ -96,7 +128,7 @@ func DispoGetBuilder[T Entidade] (slice_geter func(*Session) []T) func(http.Resp
     }
 }
 
-func DispoSetBuilder[T Entidade] (slice_geter func(*Session) []T) func(http.ResponseWriter, * http.Request) {
+func DispoSetBuilder[T Entidade] (slice_geter func(*Session) *[]T) func(http.ResponseWriter, * http.Request) {
     return func (w http.ResponseWriter, r * http.Request) {
         s := Session_or_nil(r)
         if s == nil {
@@ -119,7 +151,7 @@ func DispoSetBuilder[T Entidade] (slice_geter func(*Session) []T) func(http.Resp
             return
         }
 
-        p := slice_geter(s)[id].GetDisponibilidade()
+        p := (*slice_geter(s))[id].GetDispo()
 
         for i := range len(d) {
             for j := range len(d[0]) {

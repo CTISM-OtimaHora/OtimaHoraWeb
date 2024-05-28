@@ -14,7 +14,7 @@ func (c  Curso) GetId() int {
 func (c  Curso) GetNome() string {
     return c.Nome
 }
-func (c  Curso) GetDisponibilidade() *Disponibilidade {
+func (c  Curso) GetDispo() *Disponibilidade {
     return &c.Dispo
 }
 func (c  Curso) GetTipo() string {
