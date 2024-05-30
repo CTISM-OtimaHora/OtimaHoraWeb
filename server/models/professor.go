@@ -4,7 +4,7 @@ type Professor struct {
     Id int
     Nome string
     Dispo Disponibilidade
-        Disciplinas_ids []int
+    Disciplinas_ids []int
 }
 
 

@@ -21,6 +21,32 @@ func AddSession(w http.ResponseWriter, r * http.Request) {
     return
 }
 
+func AddSessionFromDocument(w http.ResponseWriter, r * http.Request) {
+    server_session := Session_or_nil(r)
+    if server_session == nil {
+        server_session = CreateSession()
+    }
+
+    file, _, err := r.FormFile("document")
+    if err != nil {
+        w.WriteHeader(http.StatusBadRequest)
+        w.Write([]byte("Bad Request: " + err.Error()))
+        return
+    }
+    
+    var file_session Session
+    if err := json.NewDecoder(file).Decode(&file_session); err != nil {
+        w.WriteHeader(http.StatusBadRequest)
+        w.Write([]byte("Bad request: " + err.Error()))
+        return
+    }
+
+    // just ignore the ID
+    id_saver := server_session.Id
+    (*server_session) = file_session
+    server_session.Id =  id_saver
+}
+
 func GetSession(w http.ResponseWriter, r * http.Request) {
     s := Session_or_nil(r)
     if s == nil {
@@ -32,3 +58,4 @@ func GetSession(w http.ResponseWriter, r * http.Request) {
     json.NewEncoder(w).Encode(s)
     return
 }
+ 

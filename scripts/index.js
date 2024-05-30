@@ -1,3 +1,27 @@
+function download() {
+    fetch("http://localhost:3000/session", {credentials: "include"})
+        .then(response => response.text())
+        .then(json_string => {
+            console.log(json_string)
+            const a = document.createElement('a')
+            const blob = new Blob([json_string])
+            a.href = URL.createObjectURL(blob)
+            a.download = "document.json"
+            a.click()
+            URL.revokeObjectURL(a.href)
+        })
+}
+
+function load() {
+    const form_data = new FormData()
+    const file_input = document.getElementById("file_entry")
+    form_data.append("document", file_input.files[0])
+    fetch("http://localhost:3000/add-session-document", {method:"POST", credentials: "include", body: form_data}) 
+        .then(window.location.reload())
+}
+
+
+
 document.addEventListener('DOMContentLoaded', async function() {
     await fetch("http://localhost:3000/add-session", {credentials:"include"})
 
@@ -90,3 +114,4 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
 });
+

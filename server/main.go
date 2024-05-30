@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
-	"time"
+	// "fmt"
+	// "time"
 
 	m "github.com/CTISM-OtimaHora/OtimaHora/models"
 	. "github.com/CTISM-OtimaHora/OtimaHora/routes"
@@ -27,20 +27,21 @@ func corsMiddleware(next http.Handler) http.Handler {
 }
 
 func main() {
-	go func() {
-		for {
-			if len(m.Sessions) > 0 {
-				fmt.Printf("Professores: %v\n", m.Sessions[0].Professores)
-				fmt.Printf("Disciplinas: %v\n", m.Sessions[0].Disciplinas)
-				fmt.Printf("Cursos: %v\n", m.Sessions[0].Cursos)
-				time.Sleep(2 * time.Second)
-			}
-		}
-	}()
+	// go func() {
+	// 	for {
+	// 		if len(m.Sessions) > 0 {
+	// 			fmt.Printf("Professores: %v\n", m.Sessions[0].Professores)
+	// 			fmt.Printf("Disciplinas: %v\n", m.Sessions[0].Disciplinas)
+	// 			fmt.Printf("Cursos: %v\n", m.Sessions[0].Cursos)
+	// 			time.Sleep(2 * time.Second)
+	// 		}
+	// 	}
+	// }()
 
 	r := http.NewServeMux()
 
 	r.HandleFunc("GET /add-session", AddSession)
+    r.HandleFunc("POST /add-session-document", AddSessionFromDocument)
 	r.HandleFunc("GET /session", GetSession)
 
     // professor routes
