@@ -50,6 +50,42 @@ document.addEventListener("DOMContentLoaded", async () => {
         credentials: "include"
     });
     const s = await res.json()
+
+    const profs = document.getElementById("professores")
+    profs.addEventListener("change", () => {
+        if (!s.Professores || !s.Disciplinas) {
+            return;
+        }
+        const dis_div = document.getElementById("disciplinas")
+
+        const selected = profs.options[profs.selectedIndex]
+        let valid_dis_ids = s.Disciplinas.map((d) => d.Id)
+        if (selected.value !== "default") {
+            const select_prof = s.Professores.filter((e) =>e.Id == selected.value)[0]
+
+            if (select_prof.Disciplinas_ids) {
+                valid_dis_ids = select_prof.Disciplinas_ids
+            }
+        }
+
+        const def = dis_div.firstElementChild
+        dis_div.innerHTML = ""
+        dis_div.appendChild(def)
+
+        for (const disciplina of s.Disciplinas) {
+            if (!valid_dis_ids.includes(disciplina.Id)) {
+                continue
+            }
+
+            const child = document.createElement("option")
+            child.value = disciplina.Id
+            child.textContent = disciplina.Nome
+            child.alt = "disciplina"
+
+            document.getElementById("disciplinas").appendChild(child);
+        }
+
+    })
     
     if (s.Professores) {
         for (const professor of s.Professores) {
