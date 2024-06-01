@@ -45,11 +45,50 @@ function new_contrato(id, participantes) {
     return contrato
 }
 
+function new_option_child(child_obj, tipo) {
+    const child = document.createElement("option")
+    child.value = child_obj.Id
+    child.textContent = child_obj.Nome
+    child.alt = tipo
+    return child
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
     const res = await fetch(`http://localhost:3000/session`, {
         credentials: "include"
     });
     const s = await res.json()
+
+    
+    if (s.Professores) {
+        for (const professor of s.Professores) {
+            document.getElementById("professores").appendChild(new_option_child(professor, "professor"));
+        }
+    }
+
+    if (s.Disciplinas) {
+        for (const disciplina of s.Disciplinas) {
+            document.getElementById("disciplinas").appendChild(new_option_child(disciplina, "disciplina"));
+        }
+    }
+
+    if (s.Cursos) {
+        for (const curso of s.Cursos) {
+            document.getElementById("cursos").appendChild(new_option_child(curso, "curso"));
+        }
+    }
+    if (s.Recursos) {
+        for (const recurso of s.Recursos) {
+            document.getElementById("recursos").appendChild(new_option_child(recurso, "recurso"))
+        }
+    }
+
+
+    if (s.Contratos) {
+        for (const c of s.Contratos) {
+            document.getElementById("contratos").appendChild(new_contrato(c.Id, c.Participantes))
+        }
+    }
 
     const profs = document.getElementById("professores")
     profs.addEventListener("change", () => {
@@ -68,6 +107,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         }
 
+        // manter a opção "selecionar"
         const def = dis_div.firstElementChild
         dis_div.innerHTML = ""
         dis_div.appendChild(def)
@@ -77,64 +117,30 @@ document.addEventListener("DOMContentLoaded", async () => {
                 continue
             }
 
-            const child = document.createElement("option")
-            child.value = disciplina.Id
-            child.textContent = disciplina.Nome
-            child.alt = "disciplina"
+            document.getElementById("disciplinas").appendChild(new_option_child(disciplina, "disciplina"));
+        }
+    })
 
-            document.getElementById("disciplinas").appendChild(child);
+    const dis_list = document.getElementById("disciplinas")
+    dis_list.addEventListener("change", () => {
+        const selected_dis_div = dis_list.options[dis_list.selectedIndex] 
+        const valid_profs = s.Professores.filter((p) => p.Disciplinas_ids.includes(parseInt(selected_dis_div.value)))
+        
+        const def = profs.firstElementChild
+        profs.innerHTML = ""
+        profs.appendChild(def)
+
+        if (valid_profs.lenght == 0) {
+            profs.innerHTML = ""
+            const bad = document.createElement("option")
+            bad.textContent = "Nenhuma professor pode lecionar essa disciplina"
+            profs.appendChild(bad)
+            return
+        }
+
+        for (const professor of valid_profs) {
+            profs.appendChild(new_option_child(professor, "professor"))
         }
 
     })
-    
-    if (s.Professores) {
-        for (const professor of s.Professores) {
-            const child = document.createElement("option")
-            child.value = professor.Id
-            child.textContent = professor.Nome
-            child.alt = "professor"
-
-            document.getElementById("professores").appendChild(child);
-        }
-    }
-
-    if (s.Disciplinas) {
-        for (const disciplina of s.Disciplinas) {
-            const child = document.createElement("option")
-            child.value = disciplina.Id
-            child.textContent = disciplina.Nome
-            child.alt = "disciplina"
-
-            document.getElementById("disciplinas").appendChild(child);
-        }
-    }
-
-    if (s.Cursos) {
-        for (const curso of s.Cursos) {
-            const child = document.createElement("option")
-            child.value = curso.Id
-            child.textContent = curso.Nome
-            child.alt = "curso"
-
-            document.getElementById("cursos").appendChild(child);
-        }
-    }
-    if (s.Recursos) {
-        for (const recurso of s.Recursos) {
-            const child = document.createElement("option")
-            child.value = recurso.Id
-            child.textContent = recurso.Nome
-            child.alt = "recurso"
-
-            document.getElementById("recursos").appendChild(child);
-        }
-    }
-
-
-    if (s.Contratos) {
-        for (const c of s.Contratos) {
-            console.log(c)
-            document.getElementById("contratos").appendChild(new_contrato(c.Id, c.Participantes))
-        }
-    }
 });
