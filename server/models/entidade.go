@@ -1,6 +1,5 @@
 package models
 
-
 // é necessário definir dois tipos de entidades, uma interface genérica para as funcionalidaes de back-end e uma Entidade de Busca concreta
 // que é o tipo utilizado pelo front-end esta é jsonificavel e permite conversão simples para generica
 
@@ -42,14 +41,14 @@ func (e SearchEntidade) GetNome() string {
 
 func (e SearchEntidade) GetEntidadeOrNil(s * Session) Entidade {
     switch e.Tipo {
-        case "professor":
-            return Entidade(&s.Professores[e.Id])
-        case "disciplina":
-            return Entidade(&s.Disciplinas[e.Id])
-        case "curso":
-            return Entidade(&s.Cursos[e.Id])
-        case "recurso":
-            return Entidade(&s.Recursos[e.Id])
+    case "professor":
+        return Entidade(s.Professores[e.Id])
+    case "disciplina":
+        return Entidade(s.Disciplinas[e.Id])
+    case "curso":
+        return Entidade(s.Cursos[e.Id])
+    case "recurso":
+        return Entidade(s.Recursos[e.Id])
     }
     return nil
 }

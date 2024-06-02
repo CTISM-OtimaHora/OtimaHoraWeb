@@ -22,6 +22,7 @@ func AddSession(w http.ResponseWriter, r * http.Request) {
 }
 
 func AddSessionFromDocument(w http.ResponseWriter, r * http.Request) {
+    fmt.Println("OIII")
     server_session := Session_or_nil(r)
     if server_session == nil {
         server_session = CreateSession()

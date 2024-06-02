@@ -9,7 +9,7 @@ type Professor struct {
 
 
 func NewProfessor(id int, nome string) Professor {
-    return Professor {Id: id, Nome: nome, Dispo: NewDisponibilidade(), Disciplinas_ids: []int{}}
+    return Professor {Id: id, Nome: nome, Dispo: NewDisponibilidade(), Disciplinas_ids: make([]int, 0)}
 }
 
 func (p Professor) GetId() int {

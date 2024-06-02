@@ -1,5 +1,7 @@
 package models
 
+import "fmt"
+
 type Contrato struct {
     Id int
     Participantes []SearchEntidade
@@ -14,4 +16,20 @@ func NewContrato(id int, entidades []Entidade) Contrato {
         Participantes: ToSearchSlice(entidades),
         Dispo: AndDisp(entidades),
     }
+}
+
+func (c Contrato) GetId() int {
+    return c.Id
+}
+
+func (c Contrato) GetNome() string {
+    return fmt.Sprintf("Contrato %d", c.Id)
+}
+
+func (c Contrato) GetDispo() *Disponibilidade {
+    return  &c.Dispo
+}
+
+func (c Contrato) GetTipo() string {
+    return "contrato"
 }

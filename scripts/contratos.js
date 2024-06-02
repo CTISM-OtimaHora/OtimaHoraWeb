@@ -98,12 +98,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         const dis_div = document.getElementById("disciplinas")
 
         const selected = profs.options[profs.selectedIndex]
-        let valid_dis_ids = s.Disciplinas.map((d) => d.Id)
+        let valid_disciplinas = s.Disciplinas
+
         if (selected.value !== "default") {
             const select_prof = s.Professores.filter((e) =>e.Id == selected.value)[0]
 
             if (select_prof.Disciplinas_ids) {
-                valid_dis_ids = select_prof.Disciplinas_ids
+                valid_disciplinas = s.Disciplinas.filter((d) => select_prof.Disciplinas_ids.includes(d.Id))
+            }
+            
+            const selected_dis = dis_div.options[dis_div.selectedIndex]
+            if (selected_dis.value !== "default") {
+                if (select_prof.Disciplinas_ids.includes(parseInt(selected_dis.value))) {
+                    return
+                }
             }
         }
 
@@ -112,11 +120,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         dis_div.innerHTML = ""
         dis_div.appendChild(def)
 
-        for (const disciplina of s.Disciplinas) {
-            if (!valid_dis_ids.includes(disciplina.Id)) {
-                continue
-            }
-
+        for (const disciplina of valid_disciplinas) {
             document.getElementById("disciplinas").appendChild(new_option_child(disciplina, "disciplina"));
         }
     })
@@ -124,7 +128,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     const dis_list = document.getElementById("disciplinas")
     dis_list.addEventListener("change", () => {
         const selected_dis_div = dis_list.options[dis_list.selectedIndex] 
-        const valid_profs = s.Professores.filter((p) => p.Disciplinas_ids.includes(parseInt(selected_dis_div.value)))
+        let valid_profs = s.Professores
+
+        if (selected_dis_div.value != "default") {
+            valid_profs = s.Professores.filter((p) => p.Disciplinas_ids !== null).filter((p) => p.Disciplinas_ids.includes(parseInt(selected_dis_div.value)))
+
+            const selected_prof = profs.options[profs.selectedIndex]
+            if (selected_prof.value !== "default") {
+                if (valid_profs.map((p) => p.Id).includes(parseInt(selected_prof.value))) {
+                    return
+                }
+            }
+        }
+
         
         const def = profs.firstElementChild
         profs.innerHTML = ""

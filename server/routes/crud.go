@@ -1,4 +1,4 @@
-package routes
+    package routes
 
 import (
     "net/http"
@@ -9,7 +9,7 @@ import (
 	. "github.com/CTISM-OtimaHora/OtimaHora/models"
 )
 
-func GetBuilder[T Entidade] (slice_geter func(*Session) *[]T) func(http.ResponseWriter, * http.Request) {
+func GetBuilder[T Entidade] (map_geter func(*Session) map[int]T) func(http.ResponseWriter, * http.Request) {
     return func (w http.ResponseWriter, r * http.Request) {
         s := Session_or_nil(r)
         if s == nil {
@@ -24,7 +24,7 @@ func GetBuilder[T Entidade] (slice_geter func(*Session) *[]T) func(http.Response
             return
         }
 
-        if json.NewEncoder(w).Encode((*slice_geter(s))[id]) != nil {
+        if json.NewEncoder(w).Encode(map_geter(s)[id]) != nil {
             w.WriteHeader(http.StatusInternalServerError)
             return
         }
@@ -54,7 +54,7 @@ func AddBuilder[T Entidade] (slice_adder func(sess *Session, en T) int) func (ht
     }
 }
 
-func SetBuilder[T Entidade] (slice_geter func(*Session) *[]T) func(http.ResponseWriter, * http.Request) {
+func SetBuilder[T Entidade] (map_geter func(*Session) map[int]T) func(http.ResponseWriter, * http.Request) {
     return func (w http.ResponseWriter, r * http.Request) {
         s := Session_or_nil(r)
         if s == nil {
@@ -77,34 +77,12 @@ func SetBuilder[T Entidade] (slice_geter func(*Session) *[]T) func(http.Response
             return
         }
 
-        fmt.Printf("antes: %v\n", slice_geter(s))
-        (*slice_geter(s))[id] = e
-        fmt.Printf("dps: %v\n", slice_geter(s))
+        map_geter(s)[id] = e
         return   
     }
 }
 
-func SliceGetBuilder[T Entidade] (slice_geter func(*Session) *[]T) func(http.ResponseWriter, * http.Request) {
-    return func (w http.ResponseWriter, r * http.Request) {
-        s := Session_or_nil(r)
-        if s == nil {
-            w.WriteHeader(http.StatusUnauthorized)
-            w.Write([]byte("No session or Session expired"))
-            return 
-        }
-
-        if json.NewEncoder(w).Encode((*slice_geter(s))) != nil {
-            w.WriteHeader(http.StatusInternalServerError)
-            return
-        }
-
-        return   
-    }
-}
-
-
-
-func DispoGetBuilder[T Entidade] (slice_geter func(*Session) *[]T) func(http.ResponseWriter, * http.Request) {
+func DeleteBuilder[T Entidade] (map_geter func(*Session) map[int]T) func(http.ResponseWriter, * http.Request) {
     return func (w http.ResponseWriter, r * http.Request) {
         s := Session_or_nil(r)
         if s == nil {
@@ -119,7 +97,27 @@ func DispoGetBuilder[T Entidade] (slice_geter func(*Session) *[]T) func(http.Res
             return
         }
 
-        if json.NewEncoder(w).Encode((*slice_geter(s))[id].GetDispo()) != nil {
+        delete(map_geter(s), id)
+        return   
+    }
+}
+
+func SliceGetBuilder[T Entidade] (map_geter func(*Session) map[int]T) func(http.ResponseWriter, * http.Request) {
+    return func (w http.ResponseWriter, r * http.Request) {
+        s := Session_or_nil(r)
+        if s == nil {
+            w.WriteHeader(http.StatusUnauthorized)
+            w.Write([]byte("No session or Session expired"))
+            return 
+        }
+
+        m := map_geter(s)
+        slice := make([]T, 0, len(m))
+        for _, v := range m {
+            slice = append(slice, v)
+        }
+
+        if json.NewEncoder(w).Encode(slice) != nil {
             w.WriteHeader(http.StatusInternalServerError)
             return
         }
@@ -128,7 +126,33 @@ func DispoGetBuilder[T Entidade] (slice_geter func(*Session) *[]T) func(http.Res
     }
 }
 
-func DispoSetBuilder[T Entidade] (slice_geter func(*Session) *[]T) func(http.ResponseWriter, * http.Request) {
+
+
+func DispoGetBuilder[T Entidade] (map_geter func(*Session) map[int]T) func(http.ResponseWriter, * http.Request) {
+    return func (w http.ResponseWriter, r * http.Request) {
+        s := Session_or_nil(r)
+        if s == nil {
+            w.WriteHeader(http.StatusUnauthorized)
+            w.Write([]byte("No session or Session expired"))
+            return 
+        }
+
+        id, conv_err := strconv.Atoi(r.PathValue("id"))
+        if conv_err != nil {
+            w.WriteHeader(http.StatusBadRequest)
+            return
+        }
+
+        if json.NewEncoder(w).Encode(*map_geter(s)[id].GetDispo()) != nil {
+            w.WriteHeader(http.StatusInternalServerError)
+            return
+        }
+
+        return   
+    }
+}
+
+func DispoSetBuilder[T Entidade] (map_geter func(*Session) map[int]T) func(http.ResponseWriter, * http.Request) {
     return func (w http.ResponseWriter, r * http.Request) {
         s := Session_or_nil(r)
         if s == nil {
@@ -151,7 +175,7 @@ func DispoSetBuilder[T Entidade] (slice_geter func(*Session) *[]T) func(http.Res
             return
         }
 
-        p := (*slice_geter(s))[id].GetDispo()
+        p := map_geter(s)[id].GetDispo()
 
         for i := range len(d) {
             for j := range len(d[0]) {

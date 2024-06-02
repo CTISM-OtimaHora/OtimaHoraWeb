@@ -17,7 +17,8 @@ function load() {
     const file_input = document.getElementById("file_entry")
     form_data.append("document", file_input.files[0])
     fetch("http://localhost:3000/add-session-document", {method:"POST", credentials: "include", body: form_data}) 
-        .then(window.location.reload())
+    .then(response => response.status)
+    .then(status => window.location.reload())
 }
 
 
