@@ -33,7 +33,15 @@ function new_item(name, id) {
     };
     btn.classList.add('add')
     btn.textContent = "Editar";
-    obj.appendChild(btn);
+    const rem_btn = document.createElement("button");
+    rem_btn.onclick = () => {
+        fetch(`http://localhost:3000/${params.get("tipo")}/delete/${id}`, {credentials: "include", method:"DELETE"}).then(obj.parentNode.removeChild(obj))
+    };
+    rem_btn.classList.add('rem')
+    rem_btn.textContent = "Remover";
+
+    obj.appendChild(btn)
+    obj.appendChild(rem_btn);
 
     return obj;
 }

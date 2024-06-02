@@ -1,10 +1,10 @@
-    package routes
+package routes
 
 import (
-    "net/http"
-    "encoding/json"
-    "strconv"
-    "fmt"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"strconv"
 
 	. "github.com/CTISM-OtimaHora/OtimaHora/models"
 )
@@ -96,7 +96,7 @@ func DeleteBuilder[T Entidade] (map_geter func(*Session) map[int]T) func(http.Re
             w.WriteHeader(http.StatusBadRequest)
             return
         }
-
+        
         delete(map_geter(s), id)
         return   
     }

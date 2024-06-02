@@ -1,10 +1,9 @@
 package models
 
 import (
-	"encoding/binary"
-	"encoding/json"
-
-	"github.com/google/uuid"
+    "encoding/json"
+    "github.com/google/uuid"
+    "encoding/binary"
 )
 
 type Session struct {
@@ -38,8 +37,8 @@ func AddCurso (s * Session, c Curso) int {
 func AddProfessor (s * Session, p Professor) int {
     p.Dispo = NewDisponibilidade()
 
-    // gera uuid, pega o final, converte pra binario 32, converte pra 32bit sinalizado
-    p.Id = int(binary.BigEndian.Uint32([]byte(uuid.NewString())[:4]))
+    // gera uuid, pega o final, converte pra binario 64, converte pra 32bit sinalizado
+    p.Id = int(binary.BigEndian.Uint64([]byte(uuid.NewString())[:8]))
     s.Professores[p.Id] = p
     return p.Id
 }
@@ -47,7 +46,7 @@ func AddProfessor (s * Session, p Professor) int {
 func AddRecurso (s * Session, r Recurso) int {
     r.Dispo = NewDisponibilidade()
 
-    r.Id = int(binary.BigEndian.Uint32([]byte(uuid.NewString())[:4]))
+    r.Id = int(binary.BigEndian.Uint64([]byte(uuid.NewString())[:8]))
     s.Recursos[r.Id] = r
     return r.Id
 }
@@ -55,13 +54,13 @@ func AddRecurso (s * Session, r Recurso) int {
 func AddDisciplina (s * Session, d Disciplina) int {
     d.Dispo = NewDisponibilidade()
 
-    d.Id = int(binary.BigEndian.Uint32([]byte(uuid.NewString())[:4]))
+    d.Id = int(binary.BigEndian.Uint64([]byte(uuid.NewString())[:8]))
     s.Disciplinas[d.Id] = d
     return d.Id
 }
 
 func (s * Session) AddContrato (c Contrato) int {
-    c.Id = int(binary.BigEndian.Uint32([]byte(uuid.NewString())[:4]))
+    c.Id = int(binary.BigEndian.Uint64([]byte(uuid.NewString())[:8]))
     s.Contratos[c.Id] = c
     return c.Id
 }

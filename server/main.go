@@ -48,6 +48,7 @@ func main() {
 
     // professor routes
 	r.HandleFunc("POST /professor/add", AddBuilder(m.AddProfessor))
+	r.HandleFunc("DELETE /professor/delete/{id}", DeleteBuilder(m.ProfessorGeter))
 	r.HandleFunc("GET /professor/get/{id}", GetBuilder(m.ProfessorGeter))
 	r.HandleFunc("PUT /professor/set/{id}", SetBuilder(m.ProfessorGeter)) // professor tem um setter pra suas disciplinas
     r.HandleFunc("GET /professor/slice", SliceGetBuilder(m.ProfessorGeter))
@@ -57,6 +58,7 @@ func main() {
 
     // disciplina routes
 	r.HandleFunc("POST /disciplina/add", AddBuilder(m.AddDisciplina))
+	r.HandleFunc("DELETE /disciplina/delete/{id}", DeleteBuilder(m.DisciplinaGeter))
 	r.HandleFunc("GET /disciplina/get/{id}", GetBuilder(m.DisciplinaGeter))
     r.HandleFunc("GET /disciplina/slice", SliceGetBuilder(m.DisciplinaGeter))
 	r.HandleFunc("GET /disciplina/disp/get/{id}", DispoGetBuilder(m.DisciplinaGeter))
@@ -64,16 +66,18 @@ func main() {
 
     // recurso routes
 	r.HandleFunc("POST /recurso/add", AddBuilder(m.AddRecurso))
+	r.HandleFunc("DELETE /recurso/delete/{id}", DeleteBuilder(m.RecursoGetter))
 	r.HandleFunc("GET /recurso/get/{id}", GetBuilder(m.RecursoGetter))
     r.HandleFunc("GET /recurso/slice", SliceGetBuilder(m.RecursoGetter))
-	r.HandleFunc("GET /recurso/disp/get/{id}", GetBuilder(m.RecursoGetter))
+	r.HandleFunc("GET /recurso/disp/get/{id}", DispoGetBuilder(m.RecursoGetter))
 	r.HandleFunc("PUT /recurso/disp/set/{id}", DispoSetBuilder(m.RecursoGetter))
 
     // curso routes
 	r.HandleFunc("POST /curso/add", AddBuilder(m.AddCurso))
+    r.HandleFunc("DELETE /curso/delete/{id}", DeleteBuilder(m.CursoGetter))
     r.HandleFunc("GET /curso/get/{id}", GetBuilder(m.CursoGetter))
     r.HandleFunc("GET /curso/slice", SliceGetBuilder(m.CursoGetter))
-    r.HandleFunc("GET /curso/disp/get/{id}", GetBuilder(m.CursoGetter))
+    r.HandleFunc("GET /curso/disp/get/{id}", DispoGetBuilder(m.CursoGetter))
     r.HandleFunc("PUT /curso/disp/set/{id}", DispoSetBuilder(m.CursoGetter))
 
     // contrato routes
