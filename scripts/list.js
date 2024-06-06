@@ -25,6 +25,8 @@ function new_item(name, id) {
 
     const p_name = document.createElement("div");
     p_name.textContent = name;
+    p_name.classList.add("nome")
+
     obj.appendChild(p_name);
 
     const btn = document.createElement("button");

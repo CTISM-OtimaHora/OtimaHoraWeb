@@ -10,7 +10,15 @@
 </head>
 <body>
     <div w3-include-html="/OtimaHoraWeb/header.html"></div>
+    <div style="margin: 10px auto; width: 90%; display: flex;">
+        <div class="download" id="save" onclick="download()">Baixar documento</div>
 
+        
+        <div class="upload" id="file_container" onclick="document.getElementById('file_entry').click();">
+            <input type="file" id="file_entry" style="display: none;" onchange="load()">
+            <label>Carregar Documento existente</label>
+        </div>
+    </div>
     <div class="dashboard">
         <div class="panel">
             <h2>Professores</h2>
@@ -49,17 +57,7 @@
     </div>
 
     
-    <div style="display: flex;">
-        <div class="download" id="save" onclick="download()">Baixar documento</div>
-
-        <div id="file_container" onclick="document.getElementById('file_entry').click();">
-            <div class="upload" id="file_container" onclick="document.getElementById('file_entry').click();">
-                <input type="file" id="file_entry" style="display: none;" onchange="load()">
-                <input  type="file" id="file_entry" style="display: none;" onchange="load()">
-                <label>Carregar Documento existente</label>
-            </div>
-        </div>
-    </div>
+    
     <script>
         w3IncludeHTML()
     </script>

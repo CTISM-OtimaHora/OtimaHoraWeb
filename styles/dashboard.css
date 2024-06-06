@@ -15,7 +15,17 @@
     padding: 10px;
 
  }
+ .adicional{
+   display: flex;
+   align-items: center;
+   padding: 10px;
+   background-color:none ;
+}
 
+
+ .disciplina-check{
+   color: blue;
+ }
  .calendar-cell {
     background: #fff;
     border: 1px solid #ccc;
