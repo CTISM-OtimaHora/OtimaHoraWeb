@@ -93,8 +93,8 @@ func map_to_slice[T Entidade, A comparable](m map[A]T) []T {
 
 func slice_to_map[T Entidade](s []T) map[int]T {
     m := make(map[int]T)
-    for i, v := range s {
-        m[i] = v
+    for _, v := range s {
+        m[v.GetId()] = v
     }
     return m 
 }
