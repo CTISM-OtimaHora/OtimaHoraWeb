@@ -76,13 +76,8 @@ func SetBuilder[T Entidade] (map_geter func(*Session) map[int]T) func(http.Respo
             w.Write([]byte("malformed body 1: " + err.Error()))
             return
         }
-        fmt.Println("antes")
-        fmt.Println(map_geter(s))
-
         delete (map_geter(s), id)
         map_geter(s)[id] = e
-        fmt.Println("depois")
-        fmt.Println(map_geter(s))
 
         return   
     }
