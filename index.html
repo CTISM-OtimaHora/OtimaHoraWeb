@@ -48,13 +48,18 @@
         </div>
     </div>
 
-    <div id="save" onclick="download()">Baixar documento</div>
     
-    <div id="file_container" onclick="document.getElementById('file_entry').click();">
-        <input type="file" id="file_entry" style="display: none;" onchange="load()">
-        <label>Carregar Documento existente</label>
-    </div>
+    <div style="display: flex;">
+        <div class="download" id="save" onclick="download()">Baixar documento</div>
 
+        <div id="file_container" onclick="document.getElementById('file_entry').click();">
+            <div class="upload" id="file_container" onclick="document.getElementById('file_entry').click();">
+                <input type="file" id="file_entry" style="display: none;" onchange="load()">
+                <input  type="file" id="file_entry" style="display: none;" onchange="load()">
+                <label>Carregar Documento existente</label>
+            </div>
+        </div>
+    </div>
     <script>
         w3IncludeHTML()
     </script>
