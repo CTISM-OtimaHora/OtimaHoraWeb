@@ -47,14 +47,14 @@
             <a class="add" href="/OtimaHoraWeb/contratos.html">Editar Contratos</a>
         </div>
     </div>
-
-    <div id="save" onclick="download()">Baixar documento</div>
-    
-    <div id="file_container" onclick="document.getElementById('file_entry').click();">
-        <input type="file" id="file_entry" style="display: none;" onchange="load()">
-        <label>Carregar Documento existente</label>
+    <div style="display: flex;">
+        <div class="download" id="save" onclick="download()">Baixar documento</div>
+        
+        <div class="upload" id="file_container" onclick="document.getElementById('file_entry').click();">
+            <input  type="file" id="file_entry" style="display: none;" onchange="load()">
+            <label>Carregar Documento existente</label>
+        </div>
     </div>
-
     <script>
         w3IncludeHTML()
     </script>
