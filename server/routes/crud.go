@@ -76,6 +76,7 @@ func SetBuilder[T Entidade] (map_geter func(*Session) map[int]T) func(http.Respo
             w.Write([]byte("malformed body 1: " + err.Error()))
             return
         }
+
         delete (map_geter(s), id)
         map_geter(s)[id] = e
 
@@ -121,67 +122,6 @@ func SliceGetBuilder[T Entidade] (map_geter func(*Session) map[int]T) func(http.
         if json.NewEncoder(w).Encode(slice) != nil {
             w.WriteHeader(http.StatusInternalServerError)
             return
-        }
-
-        return   
-    }
-}
-
-
-
-func DispoGetBuilder[T Entidade] (map_geter func(*Session) map[int]T) func(http.ResponseWriter, * http.Request) {
-    return func (w http.ResponseWriter, r * http.Request) {
-        s := Session_or_nil(r)
-        if s == nil {
-            w.WriteHeader(http.StatusUnauthorized)
-            w.Write([]byte("No session or Session expired"))
-            return 
-        }
-
-        id, conv_err := strconv.Atoi(r.PathValue("id"))
-        if conv_err != nil {
-            w.WriteHeader(http.StatusBadRequest)
-            return
-        }
-
-        if json.NewEncoder(w).Encode(*map_geter(s)[id].GetDispo()) != nil {
-            w.WriteHeader(http.StatusInternalServerError)
-            return
-        }
-
-        return   
-    }
-}
-
-func DispoSetBuilder[T Entidade] (map_geter func(*Session) map[int]T) func(http.ResponseWriter, * http.Request) {
-    return func (w http.ResponseWriter, r * http.Request) {
-        s := Session_or_nil(r)
-        if s == nil {
-            w.WriteHeader(http.StatusUnauthorized)
-            w.Write([]byte("No session or Session expired"))
-            return 
-        }
-
-        id, conv_err := strconv.Atoi(r.PathValue("id"))
-        if conv_err != nil {
-            w.WriteHeader(http.StatusBadRequest)
-            return
-        }
-        
-        var d Disponibilidade
-
-        if err := json.NewDecoder(r.Body).Decode(&d); err != nil {
-            w.WriteHeader(http.StatusBadRequest)
-            w.Write([]byte("malformed body 1: " + err.Error()))
-            return
-        }
-
-        p := map_geter(s)[id].GetDispo()
-
-        for i := range len(d) {
-            for j := range len(d[0]) {
-                (*p)[i][j] = d[i][j]           
-            }
         }
 
         return   

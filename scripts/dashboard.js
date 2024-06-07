@@ -88,29 +88,25 @@ function set_disp(matrix) {
 function save_item() {
     const params = new URLSearchParams(window.location.search)
     const dispo = get_disp()
-    
+    const obj = {
+        Id: parseInt(params.get("id")),
+        Nome: params.get(params.get("tipo")),
+        Dispo: dispo,
+    }
+
     if (params.get("tipo") === "professor") {
         const dis_ids = [...document.querySelectorAll(".disciplina-check:checked")].map(e => parseInt(e.value))
-        const obj = {
-            Id: parseInt(params.get("id")),
-            Nome: params.get(params.get("tipo")),
-            Dispo: dispo,
-            Disciplinas_ids: dis_ids
-        }
-        fetch(`http://localhost:3000/professor/set/${params.get("id")}`, 
-            {
-                credentials: "include",
-                method: "PUT",
-                body: JSON.stringify(obj)
-            }).then(alert("saved"))
-    } else {
-        fetch(`http://localhost:3000/${params.get("tipo")}/disp/set/${params.get("id")}`, 
-            {
-                credentials: "include",
-                method: "PUT",
-                body: JSON.stringify(dispo)
-            }).then(alert("saved"))
+        obj.Disciplinas_ids = dis_ids
     }
+    console.log(obj)
+
+    fetch(`http://localhost:3000/${params.get("tipo")}/set/${params.get("id")}`, 
+        {
+            credentials: "include",
+            method: "PUT",
+            body: JSON.stringify(obj)
+        }).then(alert("saved"))
+
 }
 
 document.addEventListener('DOMContentLoaded', async function() {
@@ -146,13 +142,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
         document.getElementById("save").style.display = "none"
     } else {
-        const res = await fetch(`http://localhost:3000/${params.get("tipo")}/disp/get/${params.get("id")}`, 
+        const res = await fetch(`http://localhost:3000/${params.get("tipo")}/get/${params.get("id")}`, 
             {
                 credentials: "include",
                 method: "GET",
             })
 
-        disp = await res.json()
+        const j = await res.json()
+        disp = j.Dispo
     }
 
     if (params.get("tipo") == "professor") {
