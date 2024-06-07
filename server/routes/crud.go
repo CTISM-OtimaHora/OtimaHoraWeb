@@ -80,6 +80,8 @@ func SetBuilder[T Entidade] (map_geter func(*Session) map[int]T) func(http.Respo
         delete (map_geter(s), id)
         map_geter(s)[id] = e
 
+        s.UpdateContratos(e)
+
         return   
     }
 }
@@ -100,6 +102,8 @@ func DeleteBuilder[T Entidade] (map_geter func(*Session) map[int]T) func(http.Re
         }
         
         delete(map_geter(s), id)
+        s.UpdateContratosDelete(id)
+    
         return   
     }
 }

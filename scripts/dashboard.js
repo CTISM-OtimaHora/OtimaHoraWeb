@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             const bttn = document.createElement("button")
             bttn.textContent = "Ver"
             bttn.onclick = () => {
-                window.location.replace(`/dashboard.html?tipo=${p.Tipo}&${p.Tipo}=${p.Nome}&id=${p.Id}`);
+                window.location.replace(`/OtimaHoraWeb/dashboard.html?tipo=${p.Tipo}&${p.Tipo}=${p.Nome}&id=${p.Id}`);
             }
             child.appendChild(bttn)
             part.appendChild(child)

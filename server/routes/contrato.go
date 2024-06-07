@@ -3,8 +3,8 @@ package routes
 import (
 	"encoding/json"
 	"fmt"
-    "strconv"
 	"net/http"
+	"strconv"
 
 	. "github.com/CTISM-OtimaHora/OtimaHora/models"
 )

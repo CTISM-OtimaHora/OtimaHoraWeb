@@ -1,21 +1,30 @@
 package models
 
-import "fmt"
+import (
+	"fmt"
+)
 
+// Participantes deve ser do tipo SearchEntidade pois quando convertido "de" ou "para" JSON
+// é importante que a informação seja independende da Session, coisa que uma simples Entidade
+// não é
 type Contrato struct {
     Id int
     Participantes []SearchEntidade
     Dispo       Disponibilidade
 }
 
-// é necessario recever entidades e não SearchEntidades pois seach entidades não possuem disponibilidades
-// armazena-se as entidades em forma simplificada pois sua conversão para forma complexa é trivial
 func NewContrato(id int, entidades []Entidade) Contrato {
     return Contrato {
         Id: id,
         Participantes: ToSearchSlice(entidades),
         Dispo: AndDisp(entidades),
     }
+}
+
+type json_contrato struct {
+    Id int
+    Participantes []SearchEntidade
+    Dispo Disponibilidade
 }
 
 func (c Contrato) GetId() int {

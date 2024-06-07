@@ -3,6 +3,7 @@ package models
 import (
 	"encoding/binary"
 	"encoding/json"
+	"slices"
 
 	"github.com/google/uuid"
 )
@@ -64,6 +65,39 @@ func (s * Session) AddContrato (c Contrato) int {
     c.Id = int(binary.BigEndian.Uint32([]byte(uuid.NewString())[:4]))
     s.Contratos[c.Id] = c
     return c.Id
+}
+
+func (s * Session) UpdateContratos (changed Entidade) {
+    for i, c := range s.Contratos {
+        if !slices.ContainsFunc(c.Participantes, func(e SearchEntidade)bool{return e.Tipo == changed.GetTipo() && e.GetId() == changed.GetId()}) {
+            continue
+        }
+        
+        new_c := NewContrato(0, make([]Entidade, 0)) // empty
+
+        c.Participantes[slices.IndexFunc(c.Participantes, func(e SearchEntidade)bool {
+            return e.Tipo == changed.GetTipo() && e.GetId() == changed.GetId()
+        })] = ToSearch(changed)
+
+        new_c.Participantes = c.Participantes
+        new_c.Id = c.Id
+        new_c.Dispo = AndDisp(GetEntidadesOrNilSlice(c.Participantes, s)) // garanteed to not be nil 
+
+        delete (s.Contratos, i)
+        s.Contratos[i] = new_c
+    }
+}
+
+// isso e perigoso pq se dois IDs forem identicos vai apgar coisa q não deve
+// mas a chance e minuscula
+func (s * Session) UpdateContratosDelete (changed_id int) {
+    for i, c := range s.Contratos {
+        if !slices.ContainsFunc(c.Participantes, func(e SearchEntidade)bool{return e.Id == changed_id}) {
+            continue
+        }
+        
+        delete (s.Contratos, i)
+    }
 }
 
 

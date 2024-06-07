@@ -2,7 +2,6 @@ function download() {
     fetch("http://localhost:3000/session", {credentials: "include"})
         .then(response => response.text())
         .then(json_string => {
-            console.log(json_string)
             const a = document.createElement('a')
             const blob = new Blob([json_string])
             a.href = URL.createObjectURL(blob)
