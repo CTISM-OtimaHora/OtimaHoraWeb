@@ -22,7 +22,7 @@ func (c  Curso) GetTipo() string {
 }
 
 func NewCurso (id int, nome string) Curso {
-    return Curso{Id: id, Nome: nome, Turmas: make([]Turma, 0)}
+    return Curso{Id: id, Nome: nome, Dispo: NewDisponibilidade(), Turmas:  make([]Turma, 0)}
 }
 
 func (c * Curso) AddTurma (t Turma) int {
