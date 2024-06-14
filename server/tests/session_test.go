@@ -57,7 +57,7 @@ func Test_session_contratos_update(t * testing.T) {
 
 
     delete(s.Professores, c.Id)
-    s.UpdateSessionFromDelete(c.Id)
+    s.UpdateSessionFromDelete(c)
 
     cons := make([]int, 0, len(s.Contratos))
     for _, c := range s.Contratos {
