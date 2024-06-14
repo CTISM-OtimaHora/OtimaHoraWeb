@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	. "github.com/CTISM-OtimaHora/OtimaHora/models"
 )
@@ -101,8 +102,15 @@ func DeleteBuilder[T Entidade] (map_geter func(*Session) map[int]T) func(http.Re
             return
         }
         
+        tipo := strings.Split(strings.TrimSpace(r.RequestURI), "/")[1] // 1 e não 0 pq a URI é uma porra
+        ent := SearchEntidade{Id: id, Tipo: tipo}.GetEntidadeOrNil(s)
+        if ent == nil {
+            w.WriteHeader(http.StatusBadRequest)
+            return
+        }
+        
         delete(map_geter(s), id)
-        s.UpdateContratosDelete(id)
+        s.UpdateSessionFromDelete(ent)
     
         return   
     }

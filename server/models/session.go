@@ -88,15 +88,23 @@ func (s * Session) UpdateContratos (changed Entidade) {
     }
 }
 
-// isso e perigoso pq se dois IDs forem identicos vai apgar coisa q não deve
-// mas a chance e minuscula
-func (s * Session) UpdateContratosDelete (changed_id int) {
+func (s * Session) UpdateSessionFromDelete (changed Entidade) {
     for i, c := range s.Contratos {
-        if !slices.ContainsFunc(c.Participantes, func(e SearchEntidade)bool{return e.Id == changed_id}) {
+        if !slices.ContainsFunc(c.Participantes, func(e SearchEntidade)bool{return e.Id == changed.GetId() && e.Tipo == changed.GetTipo()}) {
             continue
         }
         
         delete (s.Contratos, i)
+    }
+
+    // deve também alterar currículos
+    if changed.GetTipo() == "disciplina" {
+        for _, c := range s.Cursos {
+            _, ok := c.Curriculo[changed.GetId()]
+            if ok {
+                delete(c.Curriculo, changed.GetId())
+            }
+        }
     }
 }
 

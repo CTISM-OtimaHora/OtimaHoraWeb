@@ -112,21 +112,17 @@ function save_item() {
 document.addEventListener('DOMContentLoaded', async function() {
     const params = new URLSearchParams(window.location.search)
     let disp;
+    const res = await fetch(`http://localhost:3000/${params.get("tipo")}/get/${params.get("id")}`, {credentials: "include"})
+    const obj = await res.json()
 
     if (params.get("tipo") == "contrato") {
-        const res = await fetch(`http://localhost:3000/contrato/get/${params.get("id")}`, 
-            {
-                credentials: "include",
-                method: "GET",
-            })
-        const cont = await res.json()
-        disp = cont.Dispo
+        disp = obj.Dispo
 
         const part = document.getElementById("adicional")
         part.style.display = "flex"
         part.style.flexDirection = "column"
 
-        for (const p of cont.Participantes) {
+        for (const p of obj.Participantes) {
             console.log(p)
             const child = document.createElement("div")
             child.style.display = "flex"
@@ -142,14 +138,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
         document.getElementById("save").style.display = "none"
     } else {
-        const res = await fetch(`http://localhost:3000/${params.get("tipo")}/get/${params.get("id")}`, 
-            {
-                credentials: "include",
-                method: "GET",
-            })
-
-        const j = await res.json()
-        disp = j.Dispo
+        disp = obj.Dispo
     }
 
     if (params.get("tipo") == "professor") {
@@ -157,17 +146,15 @@ document.addEventListener('DOMContentLoaded', async function() {
         const res = await fetch("http://localhost:3000/disciplina/slice", {method: "GET", credentials: "include"})
         const dis_arr = await res.json()
 
-        const res2 = await fetch(`http://localhost:3000/professor/get/${params.get("id")}`, {credentials: "include"})
-        const prof = await res2.json()
-        if (!prof.Disciplinas_ids) {
-            prof.Disciplinas_ids = []
+        if (!obj.Disciplinas_ids) {
+            obj.Disciplinas_ids = []
         }
 
         for (const dis of dis_arr) {
             const check = document.createElement("input")
             check.type = "checkbox"
 
-            if (prof.Disciplinas_ids.includes(dis.Id)) {
+            if (obj.Disciplinas_ids.includes(dis.Id)) {
                 check.checked = true
             }
 
@@ -182,6 +169,73 @@ document.addEventListener('DOMContentLoaded', async function() {
             dis_div.appendChild(check)
             dis_div.appendChild(label)
         }
+    }
+
+    if (params.get("tipo") === "curso") {
+        if (obj.Etapas === null) {
+            obj.Etapas = []
+        }
+        if (obj.Curriculo === null) {
+            obj.Curriculo = {}
+        }
+
+        const ad = document.getElementById("adicional");
+        const res = await fetch("http://localhost:3000/disciplina/slice", {method: "GET", credentials: "include"})
+        const dis_arr = await res.json()
+
+        const sim = document.createElement('div')
+        const nao = document.createElement('div')
+
+        for (const dis of dis_arr) {
+            if (obj.Curriculo[dis.Id] !== undefined) {
+                const s = document.createElement('div')
+                s.textContent = dis.Nome + ' ' + obj.Curriculo[dis.Id].Horas + " " + obj.Curriculo[dis.Id].Formato
+                sim.appendChild(s)
+            } else {
+                const s = document.createElement("div")
+                s.textContent = dis.Nome
+                const btn = document.createElement("button")
+                btn.textContent = "add"
+                btn.onclick = async () => {
+                    failed =  true
+
+                    let str;
+                    while (failed == true) {
+                        str = prompt("Insira a quantidade de horas e o formato desejado. Exemplo: 10 5+5").split(" ")
+                        if (str[1].split("+").map((x) => parseInt(x)).reduce((a, b) => a+b) !== parseInt(str[0])) {
+                            alert("Formato não soma para horas")
+                            continue
+                        }
+                        failed = false
+                    }
+
+
+
+                    obj.Curriculo[dis.Id] = {Horas: parseInt(str[0]), Formato: str[1]}
+
+                    await fetch(`http://localhost:3000/curso/set/${params.get("id")}`, {
+                        credentials: "include",
+                        method: "PUT",
+                        body: JSON.stringify(obj),
+                    })
+                    window.location.reload()
+                }
+                s.appendChild(btn)
+                nao.appendChild(s)
+            }
+        }
+
+        sim.style.display = "flex"
+        sim.style.flexDirection = "column"
+        sim.style.color = "green"
+        nao.style.display = "flex"
+        nao.style.flexDirection = "column"
+        nao.style.color = "red"
+
+        ad.appendChild(sim)
+        ad.appendChild(nao)
+        ad.style.display = "flex"
+        ad.style.flexDirection = "row"
     }
 
 

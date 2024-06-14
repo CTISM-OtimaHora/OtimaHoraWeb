@@ -1,11 +1,22 @@
 package models
 
+import (
+    "github.com/google/uuid"
+    "encoding/binary"
+)
+
+type HorasAula struct {
+    Horas int
+    Formato string // exemplo 2+2, 4 1+3
+}
+
 type Curso struct {
     Id int
     Nome string
     Dispo Disponibilidade
-    Turmas []Turma
-
+    Etapas [][]Turma
+    Curriculo map[int]HorasAula // ID para Horas aula
+    Horas_total int
 }
 
 func (c  Curso) GetId() int {
@@ -22,11 +33,17 @@ func (c  Curso) GetTipo() string {
 }
 
 func NewCurso (id int, nome string) Curso {
-    return Curso{Id: id, Nome: nome, Dispo: NewDisponibilidade(), Turmas:  make([]Turma, 0)}
+    return Curso{
+        Id: id,
+        Nome: nome,
+        Dispo: NewDisponibilidade(),
+        Etapas:  make([][]Turma, 0),
+        Curriculo: make(map[int]HorasAula),
+    }
 }
 
-func (c * Curso) AddTurma (t Turma) int {
-    t.Id = len(c.Turmas)
-    c.Turmas = append(c.Turmas, t)
+func (c * Curso) AddTurma (etapa int, t Turma) int {
+    t.Id = int(binary.BigEndian.Uint32([]byte(uuid.NewString())[:4]))
+    c.Etapas[etapa] = append(c.Etapas[etapa], t)
     return t.Id
 }
