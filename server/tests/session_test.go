@@ -50,22 +50,28 @@ func Test_session_contratos_update(t * testing.T) {
     c.Id =  m.AddCurso(&s, c)
     r.Id =  m.AddRecurso(&s, r)
 
+    c.Curriculo[d.Id] = m.HorasAula{Horas: 10, Formato: "5+5"}
+
     _ = s.AddContrato(m.NewContrato(0, []m.Entidade{p, d, c, r}))
-    id2 := s.AddContrato(m.NewContrato(1, []m.Entidade{p, d}))
+    _ = s.AddContrato(m.NewContrato(1, []m.Entidade{p, d}))
     _ = s.AddContrato(m.NewContrato(2, []m.Entidade{p, d, c}))
-    id4 := s.AddContrato(m.NewContrato(3, []m.Entidade{d, r}))
+    id4 := s.AddContrato(m.NewContrato(3, []m.Entidade{p, r}))
 
 
-    delete(s.Professores, c.Id)
-    s.UpdateSessionFromDelete(c)
+    delete(s.Professores, d.Id)
+    s.UpdateSessionFromDelete(d)
 
     cons := make([]int, 0, len(s.Contratos))
     for _, c := range s.Contratos {
         cons = append(cons, c.Id)
     }
 
-    if slices.Compare(cons, []int{id2, id4}) != 0  {
+    if slices.Compare(cons, []int{id4}) != 0  {
         t.Errorf("expected all contratos with the removed element to be deleted, no true have %v", cons)
+    }
+
+    if len(c.Curriculo) != 0 {
+        t.Errorf("Removing, Discilplina should clear it from Curriculos, didnt: %v", c.Curriculo)
     }
 
     p.Nome = "lol artur"
