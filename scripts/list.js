@@ -1,5 +1,8 @@
 function adicionar() {
     const name = document.getElementById("new").value;
+    if (!name || name === "") {
+        return
+    }
     document.getElementById("new").value = "";
     const obj = { id: undefined, nome: name };
 
@@ -66,6 +69,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         ));
     }
 
+    document.addEventListener("keypress", (key) => {
+            if (key.key === "Enter") {
+            document.getElementById("adicionar").click()
+        }
+    })
 
 });
 

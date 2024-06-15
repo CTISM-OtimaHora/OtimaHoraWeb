@@ -335,8 +335,16 @@ document.addEventListener('DOMContentLoaded', async function() {
         ad.style.flexDirection = "row"
         reload_etapas()
     }
+    
+    const nome_div = document.getElementById("nome")
+    nome_div.textContent = obj.Nome
 
     document.getElementById("save").onclick = () => save_item(obj)
+    nome_div.onclick = () => {
+        nome_div.textContent = prompt("Insira o novo nome")
+        obj.Nome = nome_div.textContent
+        save_item(obj)
+    }
     set_disp(disp)
 })
 

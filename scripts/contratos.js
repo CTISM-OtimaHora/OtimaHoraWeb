@@ -54,11 +54,76 @@ function new_option_child(child_obj, tipo) {
 }
 
 
-function append_to_select_field(all_objs_arr, allowed_ids, select_div, option_tipo) {
-    all_objs_arr.filter((obj) => allowed_ids.includes(obj.Id)).forEach((obj) => select_div.appendChild(new_option_child(obj, option_tipo)))
-}
+function append_to_select_field(all_objs_arr, session, select_div, option_tipo) {
+    const cursos_div = document.getElementById("cursos")
+    const profs_div = document.getElementById("professores")
+    const disci_div = document.getElementById("disciplinas")
+
+    let allowed_ids = all_objs_arr.map(o => o.Id);
+
+    if (option_tipo === "professor") {
+        const sel_dis_div = disci_div.options[disci_div.selectedIndex]
+        const sel_cur_div = cursos_div.options[cursos_div.selectedIndex]
+        
+        if (sel_cur_div.value !== "default") {
+            const cur = session.Cursos.filter(c => c.Id == parseInt(sel_cur_div.value))[0]
+            allowed_ids = []
+            for (const dis_id of Object.keys(cur.Curriculo).map(k => parseInt(k))) {
+                allowed_ids = allowed_ids.concat(
+                    all_objs_arr
+                    .filter(p => p.Disciplinas_ids.includes(dis_id))
+                    .map(p => p.Id))
+            }
+        } 
+        if (sel_dis_div.value !== "default") {
+            allowed_ids = all_objs_arr.filter(p => p.Disciplinas_ids.includes(parseInt(sel_dis_div.value))).map(p => p.Id)
+        } 
+    }
+
+    if (option_tipo === "disciplina") {
+        const sel_cur_div = cursos_div.options[cursos_div.selectedIndex]
+        const sel_pro_div = profs_div.options[profs_div.selectedIndex]
+
+        if (sel_pro_div.value !== "default") {
+            const pro = session.Professores.filter(p => p.Id === parseInt(sel_pro_div.value))[0]
+            allowed_ids = all_objs_arr.filter(d => pro.Disciplinas_ids.includes(d.Id)).map(p => p.Id)
+        } 
+
+        if (sel_cur_div.value !== "default") {
+            const cur = session.Cursos.filter(c => c.Id === parseInt(sel_cur_div.value))[0]
+            allowed_ids = Object.keys(cur.Curriculo).map(k => parseInt(k))
+            console.log(allowed_ids)
+
+        }
+    }
+
+    if (option_tipo === "curso") {
+        // const sel_dis_div = disci_div.options[disci_div.selectedIndex]
+        // const sel_pro_div = profs_div.options[profs_div.selectedIndex]
+        //
+        // if (sel_pro_div.value !== "default") {
+        //     const pro = session.Professores.filter(p => p.Id === parseInt(sel_pro_div.value))[0]
+        //     allowed_ids = []
+        //     for (dis_id of pro.Disciplinas_ids) {
+        //         dis_id = dis_id.toString()
+        //         allowed_ids = allowed_ids.concat(all_objs_arr.filter(c => Object.keys(c.Curriculo).includes(dis_id)).map(c => c.Id))
+        //     }
+        // }
+        // if (sel_dis_div.value !== "default") {
+        //     console.log("lol")
+        //     allowed_ids = all_objs_arr.filter(c => Object.keys(c.Curriculo).includes(sel_dis_div.value)).map(c=>c.Id)
+        // }
+    }
+
+    all_objs_arr
+        .filter((obj) => allowed_ids.includes(obj.Id))
+        .forEach((obj) => select_div.appendChild(new_option_child(obj, option_tipo)))
+} 
 
 document.addEventListener("DOMContentLoaded", async () => {
+    const cursos_div = document.getElementById("cursos")
+    const profs_div = document.getElementById("professores")
+    const disci_div = document.getElementById("disciplinas")
     const res = await fetch(`http://localhost:3000/session`, {
         credentials: "include"
     });
@@ -97,55 +162,24 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const profs = document.getElementById("professores")
     profs.addEventListener("change", () => {
-        const selected = profs.options[profs.selectedIndex]
-        const dis_div = document.getElementById("disciplinas")
-        
-        if (selected.value == "default") {
-            dis_div.innerHTML = ""
-            dis_div.appendChild(new_option_child({Id: "default", Nome: "Selecione uma Disciplina"}, ""))
-            append_to_select_field(s.Disciplinas, s.Disciplinas.map(d => d.Id), dis_div, "disciplina")
-            return
+        if (disci_div.options[disci_div.selectedIndex].value === "default") {
+            const def = disci_div.firstElementChild
+            disci_div.innerHTML = ""
+            disci_div.appendChild(def)
+            append_to_select_field(s.Disciplinas, s, disci_div, "disciplina")
         }
-
-        if (dis_div.options[dis_div.selectedIndex].value !== "default") {
-            return
-        }
-
-        const select_prof = s.Professores.filter((e) =>e.Id == selected.value)[0]
-
-        const def = dis_div.firstElementChild
-        dis_div.innerHTML = ""
-        dis_div.appendChild(def)
-        append_to_select_field(s.Disciplinas, select_prof.Disciplinas_ids.map(d => parseInt(d)), dis_div, "disciplina")
     })
 
-    const dis_list = document.getElementById("disciplinas")
-    dis_list.addEventListener("change", () => {
-
-        const selected_dis_div = dis_list.options[dis_list.selectedIndex] 
-        if (selected_dis_div.value == "default") {
-            const f = profs.firstElementChild
-            profs.innerHTML = ""
-            profs.appendChild(f)
-            append_to_select_field(s.Professores, s.Professores.map(p => p.Id), profs, "professor")
-            return
-        }
-
-        if (profs.options[profs.selectedIndex].value !== "default") {
-            return
-        }
-
-        const valid_profs = s.Professores.filter(p => p.Disciplinas_ids.includes(parseInt(selected_dis_div.value))).map(p => p.Id)
-
+    
+    disci_div.addEventListener("change", () => {
         const f = profs.firstElementChild
         profs.innerHTML = ""
         profs.appendChild(f)
-        append_to_select_field(s.Professores, valid_profs, profs, "professor")
+        append_to_select_field(s.Professores, s, profs, "professor")
     })
 
-    const cursos = document.getElementById("cursos")
-    cursos.addEventListener("change", () => {
-        const selected_curso_div = cursos.options[cursos.selectedIndex] 
+    cursos_div.addEventListener("change", () => {
+        const selected_curso_div = cursos_div.options[cursos_div.selectedIndex] 
         const def = document.createElement("option")     
         def.textContent = "Selecione uma turma"
         def.value = "default"
@@ -157,23 +191,23 @@ document.addEventListener("DOMContentLoaded", async () => {
             def.textContent = "Selecione uma turma (Selecione um Curso primeiro)"
             def.value = "default"
             turmas.appendChild(def)
-
-            dis_list.innerHTML = ""
-            dis_list.appendChild(new_option_child({Id: "default", Nome: "Selecione uma Disciplina"}, ""))
-            append_to_select_field(s.Disciplinas, s.Disciplinas.map(d => d.Id), dis_list, "disciplina")
-
-            return 
+        } else {
+            turmas.appendChild(def)
+            const selected_curso = s.Cursos.filter((c) => c.Id == parseInt(selected_curso_div.value))[0]
+            selected_curso.Etapas
+                .forEach((etapa) => etapa
+                    .forEach((turma) => {turmas.appendChild(new_option_child(turma, "turma"))}))
         }
-        turmas.appendChild(def)
-
-        const selected_curso = s.Cursos.filter((c) => c.Id == parseInt(selected_curso_div.value))[0]
-        selected_curso.Etapas
-            .forEach((etapa) => etapa
-            .forEach((turma) => {turmas.appendChild(new_option_child(turma, "turma"))}))
 
 
-        dis_list.innerHTML = ""
-        dis_list.appendChild(new_option_child({Id: "default", Nome: "Selecione uma Disciplina"}, ""))
-        append_to_select_field(s.Disciplinas, Object.keys(selected_curso.Curriculo).map(k => parseInt(k)), dis_list, "disciplina")
+        const f1 = disci_div.firstElementChild
+        disci_div.innerHTML = ""
+        disci_div.appendChild(f1)
+        append_to_select_field(s.Disciplinas, s, disci_div, "disciplina")
+
+        const f = profs.firstElementChild
+        profs.innerHTML = ""
+        profs.appendChild(f)
+        append_to_select_field(s.Professores, s, profs, "professor")
     })
 });
