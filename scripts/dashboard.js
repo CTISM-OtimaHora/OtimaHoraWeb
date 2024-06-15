@@ -341,7 +341,12 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     document.getElementById("save").onclick = () => save_item(obj)
     nome_div.onclick = () => {
-        nome_div.textContent = prompt("Insira o novo nome")
+
+        const str = prompt("Insira o novo nome")
+        if (!str || str === "" || str.length == 0 ) {
+            return
+        }
+        nome.textContent = str
         obj.Nome = nome_div.textContent
         save_item(obj)
     }
