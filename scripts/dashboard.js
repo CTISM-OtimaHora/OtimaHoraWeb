@@ -85,22 +85,29 @@ function set_disp(matrix) {
 }
 
 
-function save_item() {
+function save_item(obj = undefined) {
     const params = new URLSearchParams(window.location.search)
     const dispo = get_disp()
-    const obj = {
-        Id: parseInt(params.get("id")),
-        Nome: params.get(params.get("tipo")),
-        Dispo: dispo,
-    }
+    if (obj === undefined) {
+        obj = {
+            Id: parseInt(params.get("id")),
+            Nome: params.get(params.get("tipo")),
+            Dispo: dispo,
+        }
 
-    if (params.get("tipo") === "professor") {
-        const dis_ids = [...document.querySelectorAll(".disciplina-check:checked")].map(e => parseInt(e.value))
-        obj.Disciplinas_ids = dis_ids
-    }
-    console.log(obj)
+        if (params.get("tipo") === "professor") {
+            const dis_ids = [...document.querySelectorAll(".disciplina-check:checked")].map(e => parseInt(e.value))
+            obj.Disciplinas_ids = dis_ids
+        }
+        console.log(obj)
 
-    fetch(`http://localhost:3000/${params.get("tipo")}/set/${params.get("id")}`, 
+    }
+    obj.Dispo = dispo
+    let url = `http://localhost:3000/${params.get("tipo")}/set/${params.get("id")}`
+    if (params.get("tipo") === "turma") {
+        url = `http://localhost:3000/${params.get("tipo")}/set/${params.get("curso_pai")}/${params.get("etapa_pai")}/${params.get("id")}`
+    }
+    fetch(url, 
         {
             credentials: "include",
             method: "PUT",
@@ -112,8 +119,15 @@ function save_item() {
 document.addEventListener('DOMContentLoaded', async function() {
     const params = new URLSearchParams(window.location.search)
     let disp;
-    const res = await fetch(`http://localhost:3000/${params.get("tipo")}/get/${params.get("id")}`, {credentials: "include"})
+    let url = "";
+    if (params.get("tipo") === "turma") {
+        url = `http://localhost:3000/turma/get/${params.get("curso_pai")}/${params.get("etapa_pai")}/${params.get("id")}`
+    } else {
+        url = `http://localhost:3000/${params.get("tipo")}/get/${params.get("id")}`
+    }
+    const res = await fetch(url, {credentials: "include"})
     const obj = await res.json()
+    console.log(obj)
 
     if (params.get("tipo") == "contrato") {
         disp = obj.Dispo
@@ -172,6 +186,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     if (params.get("tipo") === "curso") {
+        const dispo = document.getElementById("dispo")
+        dispo.parentNode.removeChild(dispo)
         if (obj.Etapas === null) {
             obj.Etapas = []
         }
@@ -183,13 +199,97 @@ document.addEventListener('DOMContentLoaded', async function() {
         const res = await fetch("http://localhost:3000/disciplina/slice", {method: "GET", credentials: "include"})
         const dis_arr = await res.json()
 
+        const etapas = document.createElement('div')
+        const etapa_counter = document.createElement('div')
         const sim = document.createElement('div')
         const nao = document.createElement('div')
 
+        const reload_etapas = () => {
+            console.log("called")
+            console.log(obj.Etapas)
+            etapas.innerHTML = "" // clear div
+            for (let [etidx, et] of obj.Etapas.entries()) {
+                const et_d = document.createElement("div")
+                for (const t of et) {
+                    const child = document.createElement("div")
+                    child.style.display = "flex"
+                    child.textContent = t.Nome
+
+                    const bttn = document.createElement("button")
+                    bttn.textContent = "Ver"
+                    bttn.onclick = () => {
+                        save_item(obj)
+                        window.location.replace(`/OtimaHoraWeb/dashboard.html?curso_pai=${obj.Id}&etapa_pai=${t.Etapa_idx}&tipo=turma&$turma=${t.Nome}&id=${t.Id}`);
+                    }
+
+                    const del_bttn = document.createElement("button")
+                    del_bttn.textContent = "Del"
+                    del_bttn.onclick = () => {
+                        save_item(obj)
+                        fetch(`http://localhost:3000/turma/delete/${obj.Id}/${etidx}/${t.Id}`, {credentials: "include", method: "DELETE"}).then(reload_etapas())
+                        obj.Etapas[etidx] = et.filter((e) => e.Id != t.Id) // delete turma on client
+                        reload_etapas()
+                    }
+
+                    child.appendChild(bttn)
+                    child.appendChild(del_bttn)
+                    et_d.appendChild(child)
+                }
+                et_d.style.border = "1px solid red"
+
+                const t_count = document.createElement("div")
+                t_count.textContent = "Turma_count: " + et.length
+                t_count.onclick = async () => {
+                    const count = parseInt(prompt("Insira a quantidade de turmas para esta etapa"))
+                    t_count.textContent = "Turma_count: " + count
+                    et_d.innerHTML = ""
+                    for (let i = 0; i < count; i++) {
+                        const new_t = {Id: 0, Curso_id: obj.Id, Etapa_idx: etidx, Nome:"0", Tipo:"turma"}
+                        const res = await  fetch(`http://localhost:3000/turma/add`, {
+                            credentials: "include",
+                            method: "post",
+                            body: JSON.stringify(new_t)
+                        })
+                        const newid = await res.text()
+                        new_t.Id = parseInt(newid)
+                        new_t['Nome'] = newid
+                        et.push(new_t)
+                    }
+                    et_d.appendChild(t_count)
+                    reload_etapas()
+                }
+
+                et_d.appendChild(t_count)
+                etapas.appendChild(et_d)
+            }
+        }
+
+        etapa_counter.textContent = obj.Etapas.length
+        etapa_counter.onclick = () => {
+            const str = prompt("novo numero de etapas")
+            const new_etapas = []
+            for (let i = 0; i < parseInt(str); i++) {
+                if (obj.Etapas[i]) {
+                    new_etapas.push(obj.Etapas[i])
+                    continue
+                }
+                new_etapas.push([])
+            }
+            obj.Etapas = new_etapas
+            reload_etapas()
+
+            etapa_counter.textContent = str
+        }
+        etapas.style.display = "flex"
+        etapas.style.flexDirection = "row"
+
+
+        let horas_totais = 0
         for (const dis of dis_arr) {
             if (obj.Curriculo[dis.Id] !== undefined) {
                 const s = document.createElement('div')
                 s.textContent = dis.Nome + ' ' + obj.Curriculo[dis.Id].Horas + " " + obj.Curriculo[dis.Id].Formato
+                horas_totais += parseInt(obj.Curriculo[dis.Id].Horas)
                 sim.appendChild(s)
             } else {
                 const s = document.createElement("div")
@@ -209,8 +309,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                         failed = false
                     }
 
-
-
                     obj.Curriculo[dis.Id] = {Horas: parseInt(str[0]), Formato: str[1]}
 
                     await fetch(`http://localhost:3000/curso/set/${params.get("id")}`, {
@@ -224,6 +322,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 nao.appendChild(s)
             }
         }
+        sim.appendChild(document.createTextNode(`Horas Totais: ${horas_totais}`))
 
         sim.style.display = "flex"
         sim.style.flexDirection = "column"
@@ -234,15 +333,18 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         ad.appendChild(sim)
         ad.appendChild(nao)
+        ad.appendChild(etapa_counter)
+        ad.appendChild(etapas)
         ad.style.display = "flex"
         ad.style.flexDirection = "row"
+        reload_etapas()
     }
 
+    document.getElementById("save").onclick = () => save_item(obj)
 
     set_disp(disp)
 })
 
 window.get_disp = get_disp
 window.set_disp = set_disp
-
 window.save_item = save_item

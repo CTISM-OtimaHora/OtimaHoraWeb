@@ -2,20 +2,22 @@ package models
 
 type Turma struct {
     Id      int
+    Curso_id int
+    Etapa_idx int
     Nome    string
     Dispo Disponibilidade
 }
 
-func (t * Turma) GetId() int {
+func (t Turma) GetId() int {
     return t.Id
 }
-func (t * Turma) GetNome() string {
+func (t Turma) GetNome() string {
     return t.Nome
 }
-func (t * Turma) GetDisponibilidade() *Disponibilidade {
+func (t Turma) GetDispo() *Disponibilidade {
     return &t.Dispo
 }
-func (t * Turma) GetTipo() string {
+func (t Turma) GetTipo() string {
     return "turma"
 }
 

@@ -16,7 +16,6 @@ type Curso struct {
     Dispo Disponibilidade
     Etapas [][]Turma
     Curriculo map[int]HorasAula // ID para Horas aula
-    Horas_total int
 }
 
 func (c  Curso) GetId() int {
@@ -43,7 +42,13 @@ func NewCurso (id int, nome string) Curso {
 }
 
 func (c * Curso) AddTurma (etapa int, t Turma) int {
+    for etapa >= len(c.Etapas) {
+        c.Etapas = append(c.Etapas, make([]Turma, 0))
+    }
+
     t.Id = int(binary.BigEndian.Uint32([]byte(uuid.NewString())[:4]))
+    t.Curso_id = c.Id
+    t.Etapa_idx = etapa
     c.Etapas[etapa] = append(c.Etapas[etapa], t)
     return t.Id
 }

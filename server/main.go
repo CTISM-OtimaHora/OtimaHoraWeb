@@ -2,8 +2,6 @@ package main
 
 import (
 	"net/http"
-	// "fmt"
-	// "time"
 
 	m "github.com/CTISM-OtimaHora/OtimaHora/models"
 	. "github.com/CTISM-OtimaHora/OtimaHora/routes"
@@ -29,17 +27,6 @@ func corsMiddleware(next http.Handler) http.Handler {
 }
 
 func main() {
-	// go func() {
-	// 	for {
-	// 		if len(m.Sessions) > 0 {
-	// 			fmt.Printf("Professores: %v\n", m.Sessions[0].Professores)
-	// 			fmt.Printf("Disciplinas: %v\n", m.Sessions[0].Disciplinas)
-	// 			fmt.Printf("Cursos: %v\n", m.Sessions[0].Cursos)
-	// 			time.Sleep(2 * time.Second)
-	// 		}
-	// 	}
-	// }()
-
 	r := http.NewServeMux()
 
 	r.HandleFunc("GET /add-session", AddSession)
@@ -74,6 +61,12 @@ func main() {
     r.HandleFunc("GET /curso/get/{id}", GetBuilder(m.CursoGetter))
     r.HandleFunc("PUT /curso/set/{id}", SetBuilder(m.CursoGetter))
     r.HandleFunc("GET /curso/slice", SliceGetBuilder(m.CursoGetter))
+
+    //  Turma routes
+	r.HandleFunc("POST /turma/add", AddBuilder(m.AddTurma))
+    r.HandleFunc("GET /turma/get/{curso_id}/{etapa_id}/{id}", GetTurma)
+    r.HandleFunc("PUT /turma/set/{curso_id}/{etapa_id}/{id}", SetTurma)
+    r.HandleFunc("DELETE /turma/delete/{curso_id}/{etapa_id}/{id}", DeleteTurma)
 
     // contrato routes
 	r.HandleFunc("POST /contrato/add", AddContrato)

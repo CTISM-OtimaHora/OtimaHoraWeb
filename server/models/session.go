@@ -36,6 +36,12 @@ func AddCurso (s * Session, c Curso) int {
     return c.Id
 }
 
+func AddTurma (s * Session, t Turma) int {
+    curso, _  := s.Cursos[t.Curso_id] // must exist
+    return curso.AddTurma(t.Etapa_idx, t)
+
+} 
+
 func AddProfessor (s * Session, p Professor) int {
     p.Dispo = NewDisponibilidade()
 
