@@ -53,6 +53,11 @@ function new_option_child(child_obj, tipo) {
     return child
 }
 
+
+function append_to_select_field(all_objs_arr, allowed_ids, select_div, option_tipo) {
+    all_objs_arr.filter((obj) => allowed_ids.includes(obj.Id)).forEach((obj) => select_div.appendChild(new_option_child(obj, option_tipo)))
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
     const res = await fetch(`http://localhost:3000/session`, {
         credentials: "include"
@@ -92,71 +97,83 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const profs = document.getElementById("professores")
     profs.addEventListener("change", () => {
-        if (!s.Professores || !s.Disciplinas) {
-            return;
-        }
-        const dis_div = document.getElementById("disciplinas")
-
         const selected = profs.options[profs.selectedIndex]
-        let valid_disciplinas = s.Disciplinas
-
-        if (selected.value !== "default") {
-            const select_prof = s.Professores.filter((e) =>e.Id == selected.value)[0]
-
-            if (select_prof.Disciplinas_ids) {
-                valid_disciplinas = s.Disciplinas.filter((d) => select_prof.Disciplinas_ids.includes(d.Id))
-            }
-            
-            const selected_dis = dis_div.options[dis_div.selectedIndex]
-            if (selected_dis.value !== "default") {
-                if (select_prof.Disciplinas_ids.includes(parseInt(selected_dis.value))) {
-                    return
-                }
-            }
+        const dis_div = document.getElementById("disciplinas")
+        
+        if (selected.value == "default") {
+            dis_div.innerHTML = ""
+            dis_div.appendChild(new_option_child({Id: "default", Nome: "Selecione uma Disciplina"}, ""))
+            append_to_select_field(s.Disciplinas, s.Disciplinas.map(d => d.Id), dis_div, "disciplina")
+            return
         }
 
-        // manter a opção "selecionar"
+        if (dis_div.options[dis_div.selectedIndex].value !== "default") {
+            return
+        }
+
+        const select_prof = s.Professores.filter((e) =>e.Id == selected.value)[0]
+
         const def = dis_div.firstElementChild
         dis_div.innerHTML = ""
         dis_div.appendChild(def)
-
-        for (const disciplina of valid_disciplinas) {
-            document.getElementById("disciplinas").appendChild(new_option_child(disciplina, "disciplina"));
-        }
+        append_to_select_field(s.Disciplinas, select_prof.Disciplinas_ids.map(d => parseInt(d)), dis_div, "disciplina")
     })
 
     const dis_list = document.getElementById("disciplinas")
     dis_list.addEventListener("change", () => {
+
         const selected_dis_div = dis_list.options[dis_list.selectedIndex] 
-        let valid_profs = s.Professores
-
-        if (selected_dis_div.value != "default") {
-            valid_profs = s.Professores.filter((p) => p.Disciplinas_ids !== null).filter((p) => p.Disciplinas_ids.includes(parseInt(selected_dis_div.value)))
-
-            const selected_prof = profs.options[profs.selectedIndex]
-            if (selected_prof.value !== "default") {
-                if (valid_profs.map((p) => p.Id).includes(parseInt(selected_prof.value))) {
-                    return
-                }
-            }
-        }
-
-        
-        const def = profs.firstElementChild
-        profs.innerHTML = ""
-        profs.appendChild(def)
-
-        if (valid_profs.lenght == 0) {
+        if (selected_dis_div.value == "default") {
+            const f = profs.firstElementChild
             profs.innerHTML = ""
-            const bad = document.createElement("option")
-            bad.textContent = "Nenhuma professor pode lecionar essa disciplina"
-            profs.appendChild(bad)
+            profs.appendChild(f)
+            append_to_select_field(s.Professores, s.Professores.map(p => p.Id), profs, "professor")
             return
         }
 
-        for (const professor of valid_profs) {
-            profs.appendChild(new_option_child(professor, "professor"))
+        if (profs.options[profs.selectedIndex].value !== "default") {
+            return
         }
 
+        const valid_profs = s.Professores.filter(p => p.Disciplinas_ids.includes(parseInt(selected_dis_div.value))).map(p => p.Id)
+
+        const f = profs.firstElementChild
+        profs.innerHTML = ""
+        profs.appendChild(f)
+        append_to_select_field(s.Professores, valid_profs, profs, "professor")
+    })
+
+    const cursos = document.getElementById("cursos")
+    cursos.addEventListener("change", () => {
+        const selected_curso_div = cursos.options[cursos.selectedIndex] 
+        const def = document.createElement("option")     
+        def.textContent = "Selecione uma turma"
+        def.value = "default"
+
+        const turmas = document.getElementById("turmas")
+        turmas.innerHTML = ""
+        if (selected_curso_div.value === "default") {
+            const def = document.createElement("option")     
+            def.textContent = "Selecione uma turma (Selecione um Curso primeiro)"
+            def.value = "default"
+            turmas.appendChild(def)
+
+            dis_list.innerHTML = ""
+            dis_list.appendChild(new_option_child({Id: "default", Nome: "Selecione uma Disciplina"}, ""))
+            append_to_select_field(s.Disciplinas, s.Disciplinas.map(d => d.Id), dis_list, "disciplina")
+
+            return 
+        }
+        turmas.appendChild(def)
+
+        const selected_curso = s.Cursos.filter((c) => c.Id == parseInt(selected_curso_div.value))[0]
+        selected_curso.Etapas
+            .forEach((etapa) => etapa
+            .forEach((turma) => {turmas.appendChild(new_option_child(turma, "turma"))}))
+
+
+        dis_list.innerHTML = ""
+        dis_list.appendChild(new_option_child({Id: "default", Nome: "Selecione uma Disciplina"}, ""))
+        append_to_select_field(s.Disciplinas, Object.keys(selected_curso.Curriculo).map(k => parseInt(k)), dis_list, "disciplina")
     })
 });

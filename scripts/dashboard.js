@@ -86,6 +86,7 @@ function set_disp(matrix) {
 
 
 function save_item(obj = undefined) {
+    console.log(obj)
     const params = new URLSearchParams(window.location.search)
     const dispo = get_disp()
     if (obj === undefined) {
@@ -94,13 +95,10 @@ function save_item(obj = undefined) {
             Nome: params.get(params.get("tipo")),
             Dispo: dispo,
         }
-
-        if (params.get("tipo") === "professor") {
-            const dis_ids = [...document.querySelectorAll(".disciplina-check:checked")].map(e => parseInt(e.value))
-            obj.Disciplinas_ids = dis_ids
-        }
-        console.log(obj)
-
+    }
+    if (params.get("tipo") === "professor") {
+        const dis_ids = [...document.querySelectorAll(".disciplina-check:checked")].map(e => parseInt(e.value))
+        obj.Disciplinas_ids = dis_ids
     }
     obj.Dispo = dispo
     let url = `http://localhost:3000/${params.get("tipo")}/set/${params.get("id")}`
@@ -186,8 +184,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     if (params.get("tipo") === "curso") {
-        const dispo = document.getElementById("dispo")
-        dispo.parentNode.removeChild(dispo)
         if (obj.Etapas === null) {
             obj.Etapas = []
         }
@@ -341,7 +337,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     document.getElementById("save").onclick = () => save_item(obj)
-
     set_disp(disp)
 })
 
