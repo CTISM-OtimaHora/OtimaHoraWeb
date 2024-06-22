@@ -131,17 +131,15 @@ document.addEventListener('DOMContentLoaded', async function() {
         disp = obj.Dispo
 
         const part = document.getElementById("adicional")
-        part.style.display = "flex"
-        part.style.flexDirection = "column"
-
+        
         for (const p of obj.Participantes) {
             console.log(p)
-            const child = document.createElement("div")
-            child.style.display = "flex"
+            const child = document.createElement("div")   
+
             child.textContent = `${p.Tipo} - ${p.Nome}`
 
             const bttn = document.createElement("button")
-            bttn.textContent = "Ver"
+            bttn.textContent = ""
             bttn.onclick = () => {
                 window.location.replace(`/OtimaHoraWeb/dashboard.html?tipo=${p.Tipo}&${p.Tipo}=${p.Nome}&id=${p.Id}`);
             }
@@ -208,8 +206,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const et_d = document.createElement("div")
                 for (const t of et) {
                     const child = document.createElement("div")
-                    child.style.display = "flex"
-                    child.textContent = t.Nome
+                    child.classList.add("adicionalItem")
+                    child.textContent = t.Nome 
 
                     const bttn = document.createElement("button")
                     bttn.textContent = "Ver"

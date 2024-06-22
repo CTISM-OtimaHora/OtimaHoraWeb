@@ -15,13 +15,16 @@
     padding: 10px;
 
  }
- .adicional{
+ .adicionalDiv{
    display: flex;
-   align-items: center;
+   
    padding: 10px;
    background-color:none ;
 }
 
+.adicionalItem{
+   color:white;
+}
 
  .disciplina-check{
    color: blue;
