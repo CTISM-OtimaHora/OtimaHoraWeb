@@ -181,6 +181,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
 
+    // parte de curso
     if (params.get("tipo") === "curso") {
         if (obj.Etapas === null) {
             obj.Etapas = []
@@ -193,20 +194,33 @@ document.addEventListener('DOMContentLoaded', async function() {
         const res = await fetch("http://localhost:3000/disciplina/slice", {method: "GET", credentials: "include"})
         const dis_arr = await res.json()
 
+        // esses 4 são os 4 que ficam no adicional
         const etapas = document.createElement('div')
         const etapa_counter = document.createElement('div')
-        const sim = document.createElement('div')
-        const nao = document.createElement('div')
+        const materias_sim = document.createElement('div')
+        const materias_nao = document.createElement('div')
 
         const reload_etapas = () => {
             console.log("called")
             console.log(obj.Etapas)
             etapas.innerHTML = "" // clear div
             for (let [etidx, et] of obj.Etapas.entries()) {
+                // et_ é a cada caixinha que tem várias turmas dentro
                 const et_d = document.createElement("div")
                 for (const t of et) {
+                    // child é cada turminha
                     const child = document.createElement("div")
                     child.textContent = t.Nome 
+                    // renomear a turma
+                    child.onclick = () => {
+                        const str = prompt("Insira o novo nome da turma " + t.Nome)
+                        if (!str || str === "" || str.length == 0 ) {
+                            return
+                        }
+
+                        t.Nome = str
+                        fetch(`http://localhost:3000/turma/set/${obj.Id}/${etidx}/${t.Id}`, {credentials: "include", method: "PUT", body:JSON.stringify(t)}).then(reload_etapas())
+                    }
 
                     const bttn = document.createElement("button")
                     bttn.textContent = "Ver"
@@ -286,7 +300,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const s = document.createElement('div')
                 s.textContent = dis.Nome + ' ' + obj.Curriculo[dis.Id].Horas + " " + obj.Curriculo[dis.Id].Formato
                 horas_totais += parseInt(obj.Curriculo[dis.Id].Horas)
-                sim.appendChild(s)
+                materias_sim.appendChild(s)
             } else {
                 const s = document.createElement("div")
                 s.textContent = dis.Nome
@@ -315,23 +329,23 @@ document.addEventListener('DOMContentLoaded', async function() {
                     window.location.reload()
                 }
                 s.appendChild(btn)
-                nao.appendChild(s)
+                materias_nao.appendChild(s)
             }
         }
-        sim.appendChild(document.createTextNode(`Horas Totais: ${horas_totais}`))
+        materias_sim.appendChild(document.createTextNode(`Horas Totais: ${horas_totais}`))
 
-        sim.style.display = "flex"
-        sim.style.flexDirection = "column"
-        sim.style.color = "green"
-        nao.style.display = "flex"
-        nao.style.flexDirection = "column"
-        nao.style.color = "red"
-        sim.classList.add("adicionalDiv")
-        nao.classList.add("adicionalDiv")
+        materias_sim.style.display = "flex"
+        materias_sim.style.flexDirection = "column"
+        materias_sim.style.color = "green"
+        materias_nao.style.display = "flex"
+        materias_nao.style.flexDirection = "column"
+        materias_nao.style.color = "red"
+        materias_sim.classList.add("adicionalDiv")
+        materias_nao.classList.add("adicionalDiv")
         etapa_counter.classList.add("adicionalDiv")
 
-        ad.appendChild(sim)
-        ad.appendChild(nao)
+        ad.appendChild(materias_sim)
+        ad.appendChild(materias_nao)
         ad.appendChild(etapa_counter)
         ad.appendChild(etapas)
         ad.style.display = "flex"
