@@ -144,3 +144,12 @@ body {
     
     background-color: #5a8d4e;
 }
+
+.save {
+    width: 100%;
+    height: fit-content;
+
+    border: 1px solid white;
+    border-radius: 10px;
+}
+

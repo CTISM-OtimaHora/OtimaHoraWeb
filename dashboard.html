@@ -1,9 +1,9 @@
 <html>
     <head>
-        <script src="scripts/dashboard.js"></script>
-        <link rel="stylesheet" href="styles/main.css">
-        <link rel="stylesheet" href="styles/add.css">
-        <link rel="stylesheet" href="styles/dashboard.css">
+        <script src="/OtimaHoraWeb/scripts/dashboard.js"></script>
+        <link rel="stylesheet" href="/OtimaHoraWeb/styles/main.css">
+        <link rel="stylesheet" href="/OtimaHoraWeb/styles/add.css">
+        <link rel="stylesheet" href="/OtimaHoraWeb/styles/dashboard.css">
         <script src="http://www.w3schools.com/lib/w3data.js"></script>
     </head>
     <body>
@@ -58,12 +58,13 @@
             <div id="4-3" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
             <div id="4-4" class="calendar-cell sim" onclick="toggleStatus(this)">SIM</div>
         </div>
-
-        <a id="save" class="add" onclick="save_item()">Salvar</a>
-
-
         <div id="adicional" class="adicionalDiv">
         </div>
+
+        <center>
+            <a id="save" class="add save" onclick="save_item()">Salvar</a>
+        </center>
+
 
         <script>
             w3IncludeHTML()

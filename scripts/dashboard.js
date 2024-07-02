@@ -206,7 +206,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const et_d = document.createElement("div")
                 for (const t of et) {
                     const child = document.createElement("div")
-                    child.classList.add("adicionalItem")
                     child.textContent = t.Nome 
 
                     const bttn = document.createElement("button")
@@ -227,11 +226,14 @@ document.addEventListener('DOMContentLoaded', async function() {
 
                     child.appendChild(bttn)
                     child.appendChild(del_bttn)
+                    child.classList.add("turma")
                     et_d.appendChild(child)
+                    et_d.classList.add("turma-container")
                 }
-                et_d.style.border = "1px solid red"
+                etapas.classList.add("adicionalDiv")
 
                 const t_count = document.createElement("div")
+                t_count.classList.add("turma-counter")
                 t_count.textContent = "Turma_count: " + et.length
                 t_count.onclick = async () => {
                     const count = parseInt(prompt("Insira a quantidade de turmas para esta etapa"))
@@ -324,6 +326,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         nao.style.display = "flex"
         nao.style.flexDirection = "column"
         nao.style.color = "red"
+        sim.classList.add("adicionalDiv")
+        nao.classList.add("adicionalDiv")
+        etapa_counter.classList.add("adicionalDiv")
 
         ad.appendChild(sim)
         ad.appendChild(nao)
