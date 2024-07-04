@@ -27,7 +27,7 @@ func GetTurma(w http.ResponseWriter, r * http.Request) {
     }
     
     idx := -1
-    for i, t := range s.Cursos[curso_id].Etapas[etapa_id] {
+    for i, t := range s.Cursos[curso_id].Etapas[etapa_id].Turmas {
         if t.Id == turma_id {
             idx = i
             break
@@ -40,7 +40,7 @@ func GetTurma(w http.ResponseWriter, r * http.Request) {
         return
     }
 
-    if err := json.NewEncoder(w).Encode(s.Cursos[curso_id].Etapas[etapa_id][idx]); err != nil {
+    if err := json.NewEncoder(w).Encode(s.Cursos[curso_id].Etapas[etapa_id].Turmas[idx]); err != nil {
         w.WriteHeader(http.StatusBadRequest)
         w.Write([]byte(err.Error()))
         return
@@ -65,7 +65,7 @@ func SetTurma(w http.ResponseWriter, r * http.Request) {
     }
     
     idx := -1
-    for i, t := range s.Cursos[curso_id].Etapas[etapa_id] {
+    for i, t := range s.Cursos[curso_id].Etapas[etapa_id].Turmas {
         if t.Id == turma_id {
             idx = i
             break
@@ -85,7 +85,7 @@ func SetTurma(w http.ResponseWriter, r * http.Request) {
         return
     }
     
-    s.Cursos[curso_id].Etapas[etapa_id][idx] = j_t
+    s.Cursos[curso_id].Etapas[etapa_id].Turmas[idx] = j_t
 }
 
 func DeleteTurma(w http.ResponseWriter, r * http.Request) {
@@ -106,7 +106,7 @@ func DeleteTurma(w http.ResponseWriter, r * http.Request) {
     }
     
     idx := -1
-    for i, t := range s.Cursos[curso_id].Etapas[etapa_id] {
+    for i, t := range s.Cursos[curso_id].Etapas[etapa_id].Turmas {
         if t.Id == turma_id {
             idx = i
             break
@@ -119,5 +119,5 @@ func DeleteTurma(w http.ResponseWriter, r * http.Request) {
         return
     }
 
-    s.Cursos[curso_id].Etapas[etapa_id] = slices.Delete(s.Cursos[curso_id].Etapas[etapa_id], idx, idx+1)
+    s.Cursos[curso_id].Etapas[etapa_id].Turmas = slices.Delete(s.Cursos[curso_id].Etapas[etapa_id].Turmas, idx, idx+1)
 }

@@ -29,7 +29,7 @@ func NewSession (id int) Session {
 }
 
 func AddCurso (s * Session, c Curso) int {
-    c.Dispo = NewDisponibilidade()
+    // c.Dispo = NewDisponibilidade()
 
     c.Id = len(s.Cursos)
     s.Cursos[c.Id] = c
@@ -106,9 +106,11 @@ func (s * Session) UpdateSessionFromDelete (changed Entidade) {
     // deve também alterar currículos
     if changed.GetTipo() == "disciplina" {
         for _, c := range s.Cursos {
-            _, ok := c.Curriculo[changed.GetId()]
-            if ok {
-                delete(c.Curriculo, changed.GetId())
+            for _, e := range c.Etapas {
+                _, ok := e.Curriculo[changed.GetId()]
+                if ok {
+                    delete(e.Curriculo, changed.GetId())
+                }
             }
         }
     }

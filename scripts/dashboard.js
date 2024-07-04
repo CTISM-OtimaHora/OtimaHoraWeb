@@ -88,7 +88,13 @@ function set_disp(matrix) {
 function save_item(obj = undefined) {
     console.log(obj)
     const params = new URLSearchParams(window.location.search)
-    const dispo = get_disp()
+    let dispo = undefined
+
+    // etapa e curso apagam a div com a dispo
+    if (document.getElementById("dispo")) {
+        dispo = get_disp()
+    }
+
     if (obj === undefined) {
         obj = {
             Id: parseInt(params.get("id")),
@@ -105,6 +111,9 @@ function save_item(obj = undefined) {
     if (params.get("tipo") === "turma") {
         url = `http://localhost:3000/${params.get("tipo")}/set/${params.get("curso_pai")}/${params.get("etapa_pai")}/${params.get("id")}`
     }
+    if (params.get("tipo") === "etapa") {
+        url = `http://localhost:3000/${params.get("tipo")}/set/${params.get("curso_pai")}/${params.get("id")}`
+    }
     fetch(url, 
         {
             credentials: "include",
@@ -120,6 +129,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     let url = "";
     if (params.get("tipo") === "turma") {
         url = `http://localhost:3000/turma/get/${params.get("curso_pai")}/${params.get("etapa_pai")}/${params.get("id")}`
+    } else if (params.get("tipo") === "etapa") {
+        url = `http://localhost:3000/etapa/get/${params.get("curso_pai")}/${params.get("id")}`
     } else {
         url = `http://localhost:3000/${params.get("tipo")}/get/${params.get("id")}`
     }
@@ -183,31 +194,27 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // parte de curso
     if (params.get("tipo") === "curso") {
+        document.getElementById("dispo").parentNode.removeChild(document.getElementById("dispo"))
+
         if (obj.Etapas === null) {
             obj.Etapas = []
         }
-        if (obj.Curriculo === null) {
-            obj.Curriculo = {}
-        }
-
+        
+        obj.dispo =  undefined
+    
         const ad = document.getElementById("adicional");
-        const res = await fetch("http://localhost:3000/disciplina/slice", {method: "GET", credentials: "include"})
-        const dis_arr = await res.json()
 
         // esses 4 são os 4 que ficam no adicional
         const etapas = document.createElement('div')
         const etapa_counter = document.createElement('div')
-        const materias_sim = document.createElement('div')
-        const materias_nao = document.createElement('div')
 
         const reload_etapas = () => {
-            console.log("called")
             console.log(obj.Etapas)
             etapas.innerHTML = "" // clear div
             for (let [etidx, et] of obj.Etapas.entries()) {
                 // et_ é a cada caixinha que tem várias turmas dentro
                 const et_d = document.createElement("div")
-                for (const t of et) {
+                for (const t of et.Turmas) {
                     // child é cada turminha
                     const child = document.createElement("div")
                     child.textContent = t.Nome 
@@ -248,7 +255,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
                 const t_count = document.createElement("div")
                 t_count.classList.add("turma-counter")
-                t_count.textContent = "Turma_count: " + et.length
+                t_count.textContent = "Turma count: " + et.Turmas.length
                 t_count.onclick = async () => {
                     const count = parseInt(prompt("Insira a quantidade de turmas para esta etapa"))
                     t_count.textContent = "Turma_count: " + count
@@ -263,13 +270,21 @@ document.addEventListener('DOMContentLoaded', async function() {
                         const newid = await res.text()
                         new_t.Id = parseInt(newid)
                         new_t['Nome'] = newid
-                        et.push(new_t)
+                        et.Turmas.push(new_t)
                     }
                     et_d.appendChild(t_count)
                     reload_etapas()
                 }
 
+                const et_bttn = document.createElement("button")
+                et_bttn.textContent = "ver"
+                et_bttn.onclick = () => {
+                    save_item(obj)
+                    window.location.replace(`/OtimaHoraWeb/dashboard.html?curso_pai=${obj.Id}&tipo=etapa&etapa=${etidx}&id=${etidx}`);
+                }
+
                 et_d.appendChild(t_count)
+                et_d.appendChild(et_bttn)
                 etapas.appendChild(et_d)
             }
         }
@@ -283,7 +298,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     new_etapas.push(obj.Etapas[i])
                     continue
                 }
-                new_etapas.push([])
+                new_etapas.push({Curso_id: obj.Id, Idx_in_curso: i, Turmas:[], Curriculo: {}})
             }
             obj.Etapas = new_etapas
             reload_etapas()
@@ -294,11 +309,46 @@ document.addEventListener('DOMContentLoaded', async function() {
         etapas.style.flexDirection = "row"
 
 
+        etapa_counter.classList.add("adicionalDiv")
+
+        ad.appendChild(etapa_counter)
+        ad.appendChild(etapas)
+        ad.style.display = "flex"
+        ad.style.flexDirection = "row"
+        reload_etapas()
+    }
+
+    if (params.get("tipo") === "etapa") {
+        document.getElementById("dispo").parentNode.removeChild(document.getElementById("dispo"))
+
+        const ad = document.getElementById("adicional");
+
+        const res = await fetch("http://localhost:3000/disciplina/slice", {method: "GET", credentials: "include"})
+        const dis_arr = await res.json()
+
+        const materias_sim = document.createElement('div')
+        const materias_nao = document.createElement('div')
+
         let horas_totais = 0
         for (const dis of dis_arr) {
             if (obj.Curriculo[dis.Id] !== undefined) {
                 const s = document.createElement('div')
                 s.textContent = dis.Nome + ' ' + obj.Curriculo[dis.Id].Horas + " " + obj.Curriculo[dis.Id].Formato
+                const btn = document.createElement("button")
+                btn.textContent = "remove"
+                btn.onclick = async () => {
+                    obj.Curriculo[dis.Id] = undefined
+
+                    await fetch(`http://localhost:3000/etapa/set/${obj.Curso_id}/${params.get("id")}`, {
+                        credentials: "include",
+                        method: "PUT",
+                        body: JSON.stringify(obj),
+                    })
+                    window.location.reload()
+                }
+                s.appendChild(btn)
+
+
                 horas_totais += parseInt(obj.Curriculo[dis.Id].Horas)
                 materias_sim.appendChild(s)
             } else {
@@ -321,7 +371,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
                     obj.Curriculo[dis.Id] = {Horas: parseInt(str[0]), Formato: str[1]}
 
-                    await fetch(`http://localhost:3000/curso/set/${params.get("id")}`, {
+                    await fetch(`http://localhost:3000/etapa/set/${obj.Curso_id}/${params.get("id")}`, {
                         credentials: "include",
                         method: "PUT",
                         body: JSON.stringify(obj),
@@ -342,16 +392,57 @@ document.addEventListener('DOMContentLoaded', async function() {
         materias_nao.style.color = "red"
         materias_sim.classList.add("adicionalDiv")
         materias_nao.classList.add("adicionalDiv")
-        etapa_counter.classList.add("adicionalDiv")
 
-        ad.appendChild(materias_sim)
-        ad.appendChild(materias_nao)
-        ad.appendChild(etapa_counter)
-        ad.appendChild(etapas)
-        ad.style.display = "flex"
-        ad.style.flexDirection = "row"
-        reload_etapas()
+        const materias = document.createElement("div")
+        const turmas_div = document.createElement("div")
+
+        materias.appendChild(materias_sim)
+        materias.appendChild(materias_nao)
+        materias.classList.add("materias-container")
+
+        ad.appendChild(materias)
+        ad.appendChild(turmas_div)
+        ad.style.flexDirection = "column"
+        
+        for (t of obj.Turmas) {
+            // child é cada turminha
+            const child = document.createElement("div")
+            child.textContent = t.Nome 
+            // renomear a turma
+            child.onclick = () => {
+                const str = prompt("Insira o novo nome da turma " + t.Nome)
+                if (!str || str === "" || str.length == 0 ) {
+                    return
+                }
+
+                t.Nome = str
+                fetch(`http://localhost:3000/turma/set/${obj.Curso_id}/${etidx}/${t.Id}`, {credentials: "include", method: "PUT", body:JSON.stringify(t)}).then(reload_etapas())
+            }
+
+            const bttn = document.createElement("button")
+            bttn.textContent = "Ver"
+            bttn.onclick = () => {
+                save_item(obj)
+                window.location.replace(`/OtimaHoraWeb/dashboard.html?curso_pai=${obj.Curso_id}&etapa_pai=${t.Etapa_idx}&tipo=turma&$turma=${t.Nome}&id=${t.Id}`);
+            }
+
+            const del_bttn = document.createElement("button")
+            del_bttn.textContent = "Del"
+            del_bttn.onclick = () => {
+                save_item(obj)
+                fetch(`http://localhost:3000/turma/delete/${obj.Id}/${etidx}/${t.Id}`, {credentials: "include", method: "DELETE"}).then(reload_etapas())
+                obj.Etapas[etidx] = et.filter((e) => e.Id != t.Id) // delete turma on client
+                reload_etapas()
+            }
+
+            child.appendChild(bttn)
+            child.appendChild(del_bttn)
+            child.classList.add("turma")
+            turmas_div.appendChild(child)
+        }
     }
+
+    // end etapa
     
     const nome_div = document.getElementById("nome")
     nome_div.textContent = obj.Nome
@@ -367,7 +458,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         obj.Nome = nome_div.textContent
         save_item(obj)
     }
-    set_disp(disp)
+
+    if (params.get("tipo") !== "etapa" && params.get("tipo") !== "curso") {
+        set_disp(disp)
+    }
 })
 
 window.get_disp = get_disp

@@ -55,7 +55,8 @@ function new_option_child(child_obj, tipo) {
 
 
 function append_to_select_field(all_objs_arr, session, select_div, option_tipo) {
-    const cursos_div = document.getElementById("cursos")
+    // const cursos_div = document.getElementById("cursos")
+    const turmas_div = document.getElementById("turmas")
     const profs_div = document.getElementById("professores")
     const disci_div = document.getElementById("disciplinas")
 
@@ -63,12 +64,21 @@ function append_to_select_field(all_objs_arr, session, select_div, option_tipo) 
 
     if (option_tipo === "professor") {
         const sel_dis_div = disci_div.options[disci_div.selectedIndex]
-        const sel_cur_div = cursos_div.options[cursos_div.selectedIndex]
+        const sel_tur_div = turmas_div.options[turmas_div.selectedIndex]
         
-        if (sel_cur_div.value !== "default") {
-            const cur = session.Cursos.filter(c => c.Id == parseInt(sel_cur_div.value))[0]
+        if (sel_tur_div.value !== "default") {
+            let etapa = undefined;
+            for (const curso  of session.Cursos) {
+                for (const et of curso.Etapas) {
+                    if (et.Turmas.map(t => t.Id).includes(parseInt(sel_tur_div.value))) {
+                        etapa = et
+                    }
+                }
+            }
+
+            console.log(etapa)
             allowed_ids = []
-            for (const dis_id of Object.keys(cur.Curriculo).map(k => parseInt(k))) {
+            for (const dis_id of Object.keys(etapa.Curriculo).map(k => parseInt(k))) {
                 allowed_ids = allowed_ids.concat(
                     all_objs_arr
                     .filter(p => p.Disciplinas_ids.includes(dis_id))
@@ -81,7 +91,7 @@ function append_to_select_field(all_objs_arr, session, select_div, option_tipo) 
     }
 
     if (option_tipo === "disciplina") {
-        const sel_cur_div = cursos_div.options[cursos_div.selectedIndex]
+        const sel_tur_div = turmas_div.options[turmas_div.selectedIndex]
         const sel_pro_div = profs_div.options[profs_div.selectedIndex]
 
         if (sel_pro_div.value !== "default") {
@@ -89,9 +99,17 @@ function append_to_select_field(all_objs_arr, session, select_div, option_tipo) 
             allowed_ids = all_objs_arr.filter(d => pro.Disciplinas_ids.includes(d.Id)).map(p => p.Id)
         } 
 
-        if (sel_cur_div.value !== "default") {
-            const cur = session.Cursos.filter(c => c.Id === parseInt(sel_cur_div.value))[0]
-            allowed_ids = Object.keys(cur.Curriculo).map(k => parseInt(k))
+        if (sel_tur_div.value !== "default") {
+            let etapa = undefined;
+            for (const curso  of session.Cursos) {
+                for (const et of curso.Etapas) {
+                    if (et.Turmas.map(t => t.Id).includes(parseInt(sel_tur_div.value))) {
+                        etapa = et
+                    }
+                }
+            }
+            console.log(etapa)
+            allowed_ids = Object.keys(etapa.Curriculo).map(k => parseInt(k))
             console.log(allowed_ids)
 
         }
@@ -123,6 +141,7 @@ function append_to_select_field(all_objs_arr, session, select_div, option_tipo) 
 document.addEventListener("DOMContentLoaded", async () => {
     const cursos_div = document.getElementById("cursos")
     const profs_div = document.getElementById("professores")
+    const turmas_div = document.getElementById("turmas")
     const disci_div = document.getElementById("disciplinas")
     const res = await fetch(`http://localhost:3000/session`, {
         credentials: "include"
@@ -178,6 +197,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         append_to_select_field(s.Professores, s, profs, "professor")
     })
 
+    turmas_div.addEventListener("change", () => {
+        const f1 = disci_div.firstElementChild
+        disci_div.innerHTML = ""
+        disci_div.appendChild(f1)
+        append_to_select_field(s.Disciplinas, s, disci_div, "disciplina")
+
+        const f = profs.firstElementChild
+        profs.innerHTML = ""
+        profs.appendChild(f)
+        append_to_select_field(s.Professores, s, profs, "professor")
+    })
+
     cursos_div.addEventListener("change", () => {
         const selected_curso_div = cursos_div.options[cursos_div.selectedIndex] 
         const def = document.createElement("option")     
@@ -195,10 +226,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             turmas.appendChild(def)
             const selected_curso = s.Cursos.filter((c) => c.Id == parseInt(selected_curso_div.value))[0]
             selected_curso.Etapas
-                .forEach((etapa) => etapa
+                .forEach((etapa) => etapa.Turmas
                     .forEach((turma) => {turmas.appendChild(new_option_child(turma, "turma"))}))
         }
-
 
         const f1 = disci_div.firstElementChild
         disci_div.innerHTML = ""
@@ -209,5 +239,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         profs.innerHTML = ""
         profs.appendChild(f)
         append_to_select_field(s.Professores, s, profs, "professor")
+
     })
 });
