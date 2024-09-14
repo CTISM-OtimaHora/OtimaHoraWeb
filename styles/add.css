@@ -5,7 +5,7 @@
     flex-direction: column;
     background-color: rgb(202, 202, 202);
     padding: 2%;
-    min-height: 200px;
+    
 }
 
 
@@ -47,19 +47,29 @@
     border-radius: 4px;
     padding: 3px 4px;
     cursor: pointer;
+    transition: 0.1s;
+}.add:hover{
+    scale: 1.1;
 }
+
+.criar{
+    padding: 10px;
+}
+
 .add:active{
     scale: 0.9;
 }
 .rem{
     text-decoration: none;
     color: white;
-    border: 1px solid rgb(255, 238, 0); 
+    border: 1px solid rgb(163, 5, 5); 
     margin-right: 5px;
-    background-color: rgb(255, 153, 0);
+    background-color: rgb(152, 10, 10);
     border-radius: 4px;
     padding: 3px 4px;
     cursor: pointer;
+    transition: 0.1s;
+
 }
 .rem:active{
     scale: 0.9;

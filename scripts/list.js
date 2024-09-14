@@ -53,8 +53,7 @@ function new_item(name, id) {
 
 document.addEventListener("DOMContentLoaded", async () => {
     const tipo =  new URLSearchParams(window.location.search).get("tipo")
-    document.getElementById("title").textContent = tipo
-    document.getElementById("title2").textContent = `adicione ou modifique os ${tipo}`
+    document.getElementById("title2").textContent = `Alterar ${tipo}:`
 
     const res = await fetch(`http://localhost:3000/${tipo}/slice`, {
         credentials: "include"

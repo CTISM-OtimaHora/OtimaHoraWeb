@@ -4,9 +4,25 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
     background: #f0f0f0;
+}
+
+.center{
+    background-color: rgb(220, 210, 210);
+    padding: 40px 30px;
+    margin:  10px 30%;
+    display: flex;
+    
+    height: fit-content;
+}
+.adicionalDiv{
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items:  baseline;
 }
 
  iframe[seamless] {
@@ -22,6 +38,14 @@ body {
     visibility: hidden;
 }
 .navbar {
+    box-shadow: 0 1px 10px 0 black;
+    font-size: larger;
+    background-color: #121111;
+    color: white;
+    font-family: 'Courier New';
+    text-align: center;
+    padding: 10px;
+    
     display: flex;
     justify-content: flex-start;
     margin: 0;
@@ -42,27 +66,21 @@ body {
     color: white;
     text-decoration: none; /* Remove underline */
     font-size: medium; /* Set medium text size */
-    border-bottom: 1px solid #262626;
+    border-bottom: 1px solid #5e5a5a;
     padding: 5px;
     transition: 0.1s;
-    background-color: #363636;
+    background-color: #121111;
 }
 .navbar ul li a:hover{
-    background-color: #545454;
-    border-bottom: 1px solid rgb(208, 208, 208);
+    background-color: #232121;
+    border-bottom: 1px solid rgb(255, 255, 255);
 }
 
 
 
 /* ddddddddddddddddd */
 
-.navbar {
-    font-size: larger;
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 10px;
-}
+
 .nome{
     width: 50%;
 }

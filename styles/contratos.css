@@ -5,7 +5,8 @@
     flex-direction: column;
     background-color: rgb(202, 202, 202);
     padding: 2%;
-    min-height: 200px;
+    min-height: fit-content;
+    margin-bottom: 5px;
 }
 
 .selects {
@@ -20,12 +21,13 @@
     border: none;
     border-radius: 4px;
     padding: 10px;
-    transition: 0.4s;
+    transition: 0.1s;
 }
 .select:hover{
     background-color: #5a5a5a91;
 }
 .select:focus{
+    color: white;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     background-color: #5a5a5a;
