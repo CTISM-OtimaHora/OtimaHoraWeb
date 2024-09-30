@@ -50,6 +50,7 @@ func AddBuilder[T Entidade] (slice_adder func(sess *Session, en T) int) func (ht
             w.Write([]byte("malformed body 1: " + err.Error()))
             return
         }
+        fmt.Printf("Addded  %v\n", e)
 
         w.Write([]byte(fmt.Sprint(slice_adder(s, e))))
     }

@@ -1,13 +1,14 @@
 function adicionar_contrato() {
     const profs = document.getElementById('professores');
     const dis = document.getElementById('disciplinas');
-    const cursos = document.getElementById('cursos');
+    // CURSO NÂO TEM DISPO // const cursos = document.getElementById('cursos');
+    const turmas = document.getElementById('turmas');
     const recs = document.getElementById('recursos');
 
     let selected = [
         profs.options[profs.selectedIndex],
         dis.options[dis.selectedIndex],
-        cursos.options[cursos.selectedIndex],
+        turmas.options[turmas.selectedIndex],
         recs.options[recs.selectedIndex],
     ]
 
