@@ -63,14 +63,6 @@ func main() {
 
 	//  Turma routes
 	r.HandleFunc("POST /turma/add", AddBuilder(m.AddTurma))
-	r.HandleFunc("GET /turma/get/{curso_id}/{etapa_id}/{id}", GetTurma)
-	r.HandleFunc("PUT /turma/set/{curso_id}/{etapa_id}/{id}", SetTurma)
-	r.HandleFunc("DELETE /turma/delete/{curso_id}/{etapa_id}/{id}", DeleteTurma)
-
-	r.HandleFunc("POST /etapa/add", AddBuilder(m.AddEtapa))
-	r.HandleFunc("GET /etapa/get/{curso_id}/{id}", GetEtapa)
-	r.HandleFunc("PUT /etapa/set/{curso_id}/{id}", SetEtapa)
-	r.HandleFunc("DELETE /etapa/delete/{curso_id}/{id}", DeleteEtapa)
 
 	// contrato routes
 	r.HandleFunc("POST /contrato/add", AddContrato)

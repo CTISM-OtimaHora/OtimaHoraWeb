@@ -14,11 +14,8 @@ func (t Turma) GetId() int {
 func (t Turma) GetNome() string {
     return t.Nome
 }
-func (t Turma) GetDispo() *Disponibilidade {
-    return &t.Dispo
-}
-func (t Turma) GetTipo() string {
-    return "turma"
+func (t Turma) GetDispo() Disponibilidade {
+    return t.Dispo
 }
 
 func NewTurma (Id int, Nome string, dias, periodos int) Turma {

@@ -6,10 +6,7 @@ import requests
 SERVER = "http://localhost:3000"
 
 sess = requests.session()
-if len(sys.argv) >= 6:
-    sess.cookies.set("id", sys.argv[5])
-else:
-    sess.get(SERVER+"/add-session")
+sess.get(SERVER+"/add-session")
 res = sess.post(SERVER+"/curso/add", json={'Id':0, 'Nome':sys.argv[2], 'Etapas':[]})
 curso_id = int(res.text)
 curso = sess.get(SERVER+'/curso/get/'+str(curso_id)).json()

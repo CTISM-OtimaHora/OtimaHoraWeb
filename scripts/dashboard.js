@@ -126,19 +126,23 @@ function save_item(obj = undefined) {
 document.addEventListener('DOMContentLoaded', async function() {
     const params = new URLSearchParams(window.location.search)
     let disp;
-    let url = "";
+    let obj;
     if (params.get("tipo") === "turma") {
-        url = `http://localhost:3000/turma/get/${params.get("curso_pai")}/${params.get("etapa_pai")}/${params.get("id")}`
+        const res = await fetch(`http://localhost:3000/curso/get/${params.get("curso_pai")}`, {credentials:"include"})
+        const curso = await res.json()
+        obj = curso.Etapas[params.get("etapa_pai")].Turmas[params.get("id")]
     } else if (params.get("tipo") === "etapa") {
-        url = `http://localhost:3000/etapa/get/${params.get("curso_pai")}/${params.get("id")}`
+        const res = await fetch(`http://localhost:3000/curso/get/${params.get("curso_pai")}`, {credentials:"include"})
+        const curso = await res.json()
+        console.log(curso)
+        obj = curso.Etapas[params.get("id")]
     } else {
-        url = `http://localhost:3000/${params.get("tipo")}/get/${params.get("id")}`
+        const res = await fetch(`http://localhost:3000/${params.get("tipo")}/get/${params.get("id")}`, {credentials: "include"})
+        obj = await res.json()
+        disp = obj.Dispo
     }
-    const res = await fetch(url, {credentials: "include"})
-    const obj = await res.json()
     console.log(obj)
 
-    disp = obj.Dispo
 
     if (params.get("tipo") == "contrato") {
         handle_contrato(obj)
@@ -180,21 +184,17 @@ document.addEventListener('DOMContentLoaded', async function() {
 })
 
 function handle_contrato(obj) {
-    const params = new URLSearchParams(window.location.search)
     const part = document.getElementById("adicional")
 
-    for (const p of obj.Participantes) {
+    for (const [i, p] of obj.Participantes.entries()) {
         console.log(p)
         const child = document.createElement("div")   
 
-        child.textContent = `${p.Tipo} - ${p.Nome}`
+        child.textContent = `${obj.Tipo_por_participante[i]} - ${p.Nome}  `
 
-        const bttn = document.createElement("button")
-        bttn.textContent = ""
-        bttn.onclick = () => {
-            window.location.replace(`/OtimaHoraWeb/dashboard.html?tipo=${p.Tipo}&${p.Tipo}=${p.Nome}&id=${p.Id}`);
+        child.onclick = () => {
+            window.location.replace(`/OtimaHoraWeb/dashboard.html?tipo=${obj.Tipo_por_participante[i]}&${obj.Tipo_por_participante[i]}=${p.Nome}&id=${p.Id}`);
         }
-        child.appendChild(bttn)
         part.appendChild(child)
     }
     document.getElementById("save").style.display = "none"
@@ -253,19 +253,23 @@ function handle_curso(obj) {
         for (let [etidx, et] of obj.Etapas.entries()) {
             // et_ é a cada caixinha que tem várias turmas dentro
             const et_d = document.createElement("div")
-            for (const t of et.Turmas) {
+            for (const [tidx, t] of et.Turmas.entries()) {
                 // child é cada turminha
                 const child = document.createElement("div")
-                child.textContent = t.Nome 
+                const p = document.createElement("p")
+                p.textContent = t.Nome 
                 // renomear a turma
-                child.onclick = () => {
+                child.onclick = async () => {
                     const str = prompt("Insira o novo nome da turma " + t.Nome)
                     if (!str || str === "" || str.length == 0 ) {
                         return
                     }
 
-                    t.Nome = str
-                    fetch(`http://localhost:3000/turma/set/${obj.Id}/${etidx}/${t.Id}`, {credentials: "include", method: "PUT", body:JSON.stringify(t)}).then(reload_etapas())
+                    curso.Etapas[obj.Idx_in_Curso].Turmas[tidx].Nome = str
+                    await fetch(
+                        `http://localhost:3000/curso/set/${obj.Curso_id}`,
+                        {credentials: "include", method: "PUT", body:JSON.stringify(curso)})
+                    window.location.reload()
                 }
 
                 const bttn = document.createElement("button")
@@ -277,13 +281,13 @@ function handle_curso(obj) {
 
                 const del_bttn = document.createElement("button")
                 del_bttn.textContent = "Del"
-                del_bttn.onclick = () => {
-                    save_item(obj)
-                    fetch(`http://localhost:3000/turma/delete/${obj.Id}/${etidx}/${t.Id}`, {credentials: "include", method: "DELETE"}).then(reload_etapas())
-                    obj.Etapas[etidx] = et.filter((e) => e.Id != t.Id) // delete turma on client
-                    reload_etapas()
+                del_bttn.onclick = async () => {
+                    curso.Etapas[obj.Idx_in_Curso].Turmas = curso.Etapas[obj.Idx_in_Curso].Turmas.splice(tidx, tidx)
+                    await fetch(`http://localhost:3000/curso/set/${obj.Curso_id}`, {credentials: "include", method: "PUT", body:JSON.stringify(curso)})
+                    window.location.reload()
                 }
 
+                child.appendChild(p)
                 child.appendChild(bttn)
                 child.appendChild(del_bttn)
                 child.classList.add("turma")
@@ -300,7 +304,7 @@ function handle_curso(obj) {
                 t_count.textContent = "Turma_count: " + count
                 et_d.innerHTML = ""
                 for (let i = 0; i < count; i++) {
-                    const new_t = {Id: 0, Curso_id: obj.Id, Etapa_idx: etidx, Nome:"0", Tipo:"turma"}
+                    const new_t = {Id: 0, Curso_id: obj.Id, Etapa_idx: etidx, Nome:"0", Dispo: Array(5).fill(Array(5).fill(1))}
                     const res = await  fetch(`http://localhost:3000/turma/add`, {
                         credentials: "include",
                         method: "post",
@@ -359,6 +363,9 @@ function handle_curso(obj) {
 
 async function handle_etapa(obj) {
     const params = new URLSearchParams(window.location.search)
+    const response = await fetch(`http://localhost:3000/curso/get/${params.get("curso_pai")}`, {credentials:"include"})
+    const curso = await response.json() 
+
     document.getElementById("dispo").parentNode.removeChild(document.getElementById("dispo"))
 
     const ad = document.getElementById("adicional");
@@ -378,11 +385,12 @@ async function handle_etapa(obj) {
             btn.textContent = "remove"
             btn.onclick = async () => {
                 obj.Curriculo[dis.Id] = undefined
+                curso.Etapas[obj.Idx_in_Curso] = obj
 
-                await fetch(`http://localhost:3000/etapa/set/${obj.Curso_id}/${params.get("id")}`, {
+                await fetch(`http://localhost:3000/curso/set/${obj.Curso_id}`, {
                     credentials: "include",
                     method: "PUT",
-                    body: JSON.stringify(obj),
+                    body: JSON.stringify(curso),
                 })
                 window.location.reload()
             }
@@ -410,11 +418,12 @@ async function handle_etapa(obj) {
                 }
 
                 obj.Curriculo[dis.Id] = {Horas: parseInt(str[0]), Formato: str[1]}
+                curso.Etapas[obj.Idx_in_Curso].Curriculo[dis.Id] ={Horas: parseInt(str[0]), Formato: str[1]}
 
-                await fetch(`http://localhost:3000/etapa/set/${obj.Curso_id}/${params.get("id")}`, {
+                await fetch(`http://localhost:3000/curso/set/${obj.Curso_id}`, {
                     credentials: "include",
                     method: "PUT",
-                    body: JSON.stringify(obj),
+                    body: JSON.stringify(curso),
                 })
                 window.location.reload()
             }
@@ -444,21 +453,22 @@ async function handle_etapa(obj) {
     ad.appendChild(turmas_div)
     ad.style.flexDirection = "column"
 
-    for (t of obj.Turmas) {
+    for (const[tidx, t] of obj.Turmas.entries()) {
         // child é cada turminha
         const child = document.createElement("div")
-        child.textContent = t.Nome 
+        const p = document.createElement("p")
+        p.textContent = t.Nome
         // renomear a turma
-        child.onclick = async () => {
+        p.onclick = async () => {
             const str = prompt("Insira o novo nome da turma " + t.Nome)
             if (!str || str === "" || str.length == 0 ) {
                 return
             }
 
-            t.Nome = str
+            curso.Etapas[obj.Idx_in_Curso].Turmas[tidx].Nome = str
             await fetch(
-                `http://localhost:3000/turma/set/${obj.Curso_id}/${params.get("id")}/${t.Id}`,
-                {credentials: "include", method: "PUT", body:JSON.stringify(t)})
+                `http://localhost:3000/curso/set/${obj.Curso_id}`,
+                {credentials: "include", method: "PUT", body:JSON.stringify(curso)})
             window.location.reload()
         }
 
@@ -466,18 +476,18 @@ async function handle_etapa(obj) {
         bttn.textContent = "Ver"
         bttn.onclick = () => {
             save_item(obj)
-            window.location.replace(`/OtimaHoraWeb/dashboard.html?curso_pai=${obj.Curso_id}&etapa_pai=${t.Etapa_idx}&tipo=turma&$turma=${t.Nome}&id=${t.Id}`);
+            window.location.replace(`/OtimaHoraWeb/dashboard.html?curso_pai=${obj.Curso_id}&etapa_pai=${t.Etapa_idx}&tipo=turma&turma=${t.Nome}&id=${t.Id}`);
         }
 
         const del_bttn = document.createElement("button")
         del_bttn.textContent = "Del"
-        del_bttn.onclick = () => {
-            save_item(obj)
-            fetch(`http://localhost:3000/turma/delete/${obj.Id}/${etidx}/${t.Id}`, {credentials: "include", method: "DELETE"}).then(reload_etapas())
-            obj.Etapas[etidx] = et.filter((e) => e.Id != t.Id) // delete turma on client
-            reload_etapas()
+        del_bttn.onclick = async () => {
+            curso.Etapas[obj.Idx_in_Curso].Turmas = curso.Etapas[obj.Idx_in_Curso].Turmas.splice(tidx, tidx)
+            await fetch(`http://localhost:3000/curso/set/${obj.Curso_id}`, {credentials: "include", method: "PUT", body:JSON.stringify(curso)})
+            window.location.reload()
         }
 
+        child.appendChild(p)
         child.appendChild(bttn)
         child.appendChild(del_bttn)
         child.classList.add("turma")

@@ -3,10 +3,13 @@ package models
 import (
 	"encoding/binary"
 	"encoding/json"
-	"slices"
 
 	"github.com/google/uuid"
 )
+
+type SessionItem interface {
+    GetId() int
+}
 
 type Session struct {
 	Id          int
@@ -81,48 +84,48 @@ func (s *Session) AddContrato(c Contrato) int {
 	return c.Id
 }
 
-func (s *Session) UpdateContratos(changed Entidade) {
-	for i, c := range s.Contratos {
-		if !slices.ContainsFunc(c.Participantes, func(e SearchEntidade) bool { return e.Tipo == changed.GetTipo() && e.GetId() == changed.GetId() }) {
-			continue
-		}
+// func (s *Session) UpdateContratos(changed Entidade) {
+// 	for i, c := range s.Contratos {
+// 		if !slices.ContainsFunc(c.Participantes, func(e SearchEntidade) bool { return e.Tipo == changed.GetTipo() && e.GetId() == changed.GetId() }) {
+// 			continue
+// 		}
+//
+// 		new_c := NewContrato(0, make([]Entidade, 0)) // empty
+//
+// 		c.Participantes[slices.IndexFunc(c.Participantes, func(e SearchEntidade) bool {
+// 			return e.Tipo == changed.GetTipo() && e.GetId() == changed.GetId()
+// 		})] = ToSearch(changed)
+//
+// 		new_c.Participantes = c.Participantes
+// 		new_c.Id = c.Id
+// 		new_c.Dispo = AndDisp(GetEntidadesOrNilSlice(c.Participantes, s)) // garanteed to not be nil
+//
+// 		delete(s.Contratos, i)
+// 		s.Contratos[i] = new_c
+// 	}
+// }
 
-		new_c := NewContrato(0, make([]Entidade, 0)) // empty
-
-		c.Participantes[slices.IndexFunc(c.Participantes, func(e SearchEntidade) bool {
-			return e.Tipo == changed.GetTipo() && e.GetId() == changed.GetId()
-		})] = ToSearch(changed)
-
-		new_c.Participantes = c.Participantes
-		new_c.Id = c.Id
-		new_c.Dispo = AndDisp(GetEntidadesOrNilSlice(c.Participantes, s)) // garanteed to not be nil
-
-		delete(s.Contratos, i)
-		s.Contratos[i] = new_c
-	}
-}
-
-func (s *Session) UpdateSessionFromDelete(changed Entidade) {
-	for i, c := range s.Contratos {
-		if !slices.ContainsFunc(c.Participantes, func(e SearchEntidade) bool { return e.Id == changed.GetId() && e.Tipo == changed.GetTipo() }) {
-			continue
-		}
-
-		delete(s.Contratos, i)
-	}
-
-	// deve também alterar currículos
-	if changed.GetTipo() == "disciplina" {
-		for _, c := range s.Cursos {
-			for _, e := range c.Etapas {
-				_, ok := e.Curriculo[changed.GetId()]
-				if ok {
-					delete(e.Curriculo, changed.GetId())
-				}
-			}
-		}
-	}
-}
+// func (s *Session) UpdateSessionFromDelete(changed Entidade) {
+// 	for i, c := range s.Contratos {
+// 		if !slices.ContainsFunc(c.Participantes, func(e SearchEntidade) bool { return e.Id == changed.GetId() && e.Tipo == changed.GetTipo() }) {
+// 			continue
+// 		}
+//
+// 		delete(s.Contratos, i)
+// 	}
+//
+// 	// deve também alterar currículos
+// 	if changed.GetTipo() == "disciplina" {
+// 		for _, c := range s.Cursos {
+// 			for _, e := range c.Etapas {
+// 				_, ok := e.Curriculo[changed.GetId()]
+// 				if ok {
+// 					delete(e.Curriculo, changed.GetId())
+// 				}
+// 			}
+// 		}
+// 	}
+// }
 
 func ProfessorGeter(s *Session) map[int]Professor {
 	return s.Professores
@@ -140,7 +143,7 @@ func RecursoGetter(s *Session) map[int]Recurso {
 	return s.Recursos
 }
 
-func map_to_slice[T Entidade, A comparable](m map[A]T) []T {
+func map_to_slice[T SessionItem, A comparable](m map[A]T) []T {
 	slice := make([]T, 0, len(m))
 	for _, v := range m {
 		slice = append(slice, v)
@@ -148,7 +151,7 @@ func map_to_slice[T Entidade, A comparable](m map[A]T) []T {
 	return slice
 }
 
-func slice_to_map[T Entidade](s []T) map[int]T {
+func slice_to_map[T SessionItem](s []T) map[int]T {
 	m := make(map[int]T)
 	for _, v := range s {
 		m[v.GetId()] = v

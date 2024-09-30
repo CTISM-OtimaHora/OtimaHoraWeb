@@ -2,8 +2,6 @@ package models
 
 import (
 	"encoding/binary"
-	"fmt"
-
 	"github.com/google/uuid"
 )
 
@@ -28,15 +26,6 @@ type Etapa struct {
 func (c Curso) GetId() int {
 	return c.Id
 }
-func (c Curso) GetNome() string {
-	return c.Nome
-}
-func (c Curso) GetDispo() *Disponibilidade {
-	return &Disponibilidade{}
-}
-func (c Curso) GetTipo() string {
-	return "curso"
-}
 
 func NewEtapa() Etapa {
 	return Etapa{
@@ -47,21 +36,6 @@ func NewEtapa() Etapa {
 	}
 }
 
-func (e Etapa) GetId() int {
-	return e.Idx_in_Curso
-}
-
-func (e Etapa) GetTipo() string {
-	return "etapa"
-}
-
-func (e Etapa) GetNome() string {
-	return fmt.Sprint(e.Idx_in_Curso)
-}
-
-func (e Etapa) GetDispo() *Disponibilidade {
-	return &Disponibilidade{}
-}
 
 func NewCurso(id int, nome string) Curso {
 	return Curso{

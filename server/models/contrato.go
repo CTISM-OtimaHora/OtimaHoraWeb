@@ -1,44 +1,36 @@
 package models
 
 import (
-	"fmt"
 )
 
-// Participantes deve ser do tipo SearchEntidade pois quando convertido "de" ou "para" JSON
-// é importante que a informação seja independende da Session, coisa que uma simples Entidade
-// não é
+type ParticipanteContrato interface {
+    GetId() int
+    GetNome() string
+    GetDispo() Disponibilidade
+}
+
+type Participante_to_json struct {
+    Id int
+    Nome string
+    Tipo string
+}
+
 type Contrato struct {
     Id int
-    Participantes []SearchEntidade
+    Participantes []ParticipanteContrato
+    Tipo_por_participante []string      // Tipo_por_participante[i] é o tipo do participante Participantes[i]
     Dispo       Disponibilidade
 }
 
-func NewContrato(id int, entidades []Entidade) Contrato {
+func (c Contrato) GetId() int{
+    return c.Id
+}
+
+func NewContrato(id int, entidades []ParticipanteContrato) Contrato {
     return Contrato {
         Id: id,
-        Participantes: ToSearchSlice(entidades),
+        Participantes: entidades,
         Dispo: AndDisp(entidades),
     }
 }
 
-type json_contrato struct {
-    Id int
-    Participantes []SearchEntidade
-    Dispo Disponibilidade
-}
-
-func (c Contrato) GetId() int {
-    return c.Id
-}
-
-func (c Contrato) GetNome() string {
-    return fmt.Sprintf("Contrato %d", c.Id)
-}
-
-func (c Contrato) GetDispo() *Disponibilidade {
-    return  &c.Dispo
-}
-
-func (c Contrato) GetTipo() string {
-    return "contrato"
-}

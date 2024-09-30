@@ -19,10 +19,12 @@ body {
     height: fit-content;
 }
 .adicionalDiv{
-
     display: flex;
     flex-wrap: wrap;
     align-items:  baseline;
+}
+.adicionalDiv > div {
+    margin: 5%;
 }
 
  iframe[seamless] {
