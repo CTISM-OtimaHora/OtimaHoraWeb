@@ -61,6 +61,7 @@ func (c *Curso) AddTurma(etapa int, t Turma) int {
 	t.Id = int(binary.BigEndian.Uint32([]byte(uuid.NewString())[:4]))
 	t.Curso_id = c.Id
 	t.Etapa_idx = etapa
+    t.Idx_in_etapa = len(c.Etapas[etapa].Turmas)
 	c.Etapas[etapa].Turmas = append(c.Etapas[etapa].Turmas, t)
 	return t.Id
 }

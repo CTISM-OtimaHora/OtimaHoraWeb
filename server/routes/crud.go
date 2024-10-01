@@ -55,7 +55,7 @@ func AddBuilder[T SessionItem] (slice_adder func(sess *Session, en T) int) func 
     }
 }
 
-func SetBuilder[T SessionItem] (map_geter func(*Session) map[int]T) func(http.ResponseWriter, * http.Request) {
+func SetBuilder[T SessionItem] (map_geter func(*Session) map[int]T, contrato_updater func(*Session, T, *T)) func(http.ResponseWriter, * http.Request) {
     return func (w http.ResponseWriter, r * http.Request) {
         s := Session_or_nil(r)
         if s == nil {
@@ -67,6 +67,13 @@ func SetBuilder[T SessionItem] (map_geter func(*Session) map[int]T) func(http.Re
         id, conv_err := strconv.Atoi(r.PathValue("id"))
         if conv_err != nil {
             w.WriteHeader(http.StatusBadRequest)
+            return
+        }
+
+        old, ok := map_geter(s)[id]
+        if !ok {
+            w.WriteHeader(http.StatusBadRequest)
+            w.Write([]byte("Item not found"))
             return
         }
         
@@ -81,13 +88,12 @@ func SetBuilder[T SessionItem] (map_geter func(*Session) map[int]T) func(http.Re
         delete (map_geter(s), id)
         map_geter(s)[id] = e
 
-        // s.UpdateContratos(e)
-
+        contrato_updater(s, old, &e)
         return   
     }
 }
 
-func DeleteBuilder[T SessionItem] (map_geter func(*Session) map[int]T) func(http.ResponseWriter, * http.Request) {
+func DeleteBuilder[T SessionItem] (map_geter func(*Session) map[int]T, contrato_updater func(*Session, T, *T)) func(http.ResponseWriter, * http.Request) {
     return func (w http.ResponseWriter, r * http.Request) {
         s := Session_or_nil(r)
         if s == nil {
@@ -109,8 +115,15 @@ func DeleteBuilder[T SessionItem] (map_geter func(*Session) map[int]T) func(http
         //     return
         // }
         
+        old, ok := map_geter(s)[id]
+        if !ok {
+            w.WriteHeader(http.StatusBadRequest)
+            w.Write([]byte("Item not found"))
+            return
+        }
+
         delete(map_geter(s), id)
-        // s.UpdateSessionFromDelete(ent)
+        contrato_updater(s, old, nil)
     
         return   
     }

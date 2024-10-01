@@ -109,10 +109,24 @@ function save_item(obj = undefined) {
     obj.Dispo = dispo
     let url = `http://localhost:3000/${params.get("tipo")}/set/${params.get("id")}`
     if (params.get("tipo") === "turma") {
-        url = `http://localhost:3000/${params.get("tipo")}/set/${params.get("curso_pai")}/${params.get("etapa_pai")}/${params.get("id")}`
+        fetch(`http://localhost:3000/curso/get/${params.get("curso_pai")}`, {credentials: "include"})
+            .then(res => res.json().then( curso => {
+                curso.Etapas[obj.Etapa_idx].Turmas[obj.Idx_in_etapa] = obj
+                url = `http://localhost:3000/curso/set/${params.get("curso_pai")}`
+                fetch(url, 
+                    {
+                        credentials: "include",
+                        method: "PUT",
+                        body: JSON.stringify(curso)
+                    }).then(alert("saved"))
+                
+            }
+            )
+            )
+        return
     }
     if (params.get("tipo") === "etapa") {
-        url = `http://localhost:3000/${params.get("tipo")}/set/${params.get("curso_pai")}/${params.get("id")}`
+        url = `http://localhost:3000/curso/set/${params.get("curso_pai")}`
     }
     fetch(url, 
         {
@@ -130,7 +144,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (params.get("tipo") === "turma") {
         const res = await fetch(`http://localhost:3000/curso/get/${params.get("curso_pai")}`, {credentials:"include"})
         const curso = await res.json()
-        obj = curso.Etapas[params.get("etapa_pai")].Turmas[params.get("id")]
+        obj = curso.Etapas[params.get("etapa_pai")].Turmas.filter(t => t.Id == params.get("id"))[0]
+        disp = obj.Dispo
     } else if (params.get("tipo") === "etapa") {
         const res = await fetch(`http://localhost:3000/curso/get/${params.get("curso_pai")}`, {credentials:"include"})
         const curso = await res.json()
@@ -192,8 +207,14 @@ function handle_contrato(obj) {
 
         child.textContent = `${obj.Tipo_por_participante[i]} - ${p.Nome}  `
 
+        let url = ""
+        if (obj.Tipo_por_participante[i] == "turma") {
+            url = `/OtimaHoraWeb/dashboard.html?etapa_pai=${p.Etapa_idx}&curso_pai=${p.Curso_id}&tipo=${obj.Tipo_por_participante[i]}&${obj.Tipo_por_participante[i]}=${p.Nome}&id=${p.Id}`
+        } else {
+            url = `/OtimaHoraWeb/dashboard.html?tipo=${obj.Tipo_por_participante[i]}&${obj.Tipo_por_participante[i]}=${p.Nome}&id=${p.Id}`
+        }
         child.onclick = () => {
-            window.location.replace(`/OtimaHoraWeb/dashboard.html?tipo=${obj.Tipo_por_participante[i]}&${obj.Tipo_por_participante[i]}=${p.Nome}&id=${p.Id}`);
+            window.location.replace(url)
         }
         part.appendChild(child)
     }

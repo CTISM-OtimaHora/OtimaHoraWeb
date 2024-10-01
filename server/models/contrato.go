@@ -1,7 +1,6 @@
 package models
 
-import (
-)
+import "errors"
 
 type ParticipanteContrato interface {
     GetId() int
@@ -26,11 +25,14 @@ func (c Contrato) GetId() int{
     return c.Id
 }
 
-func NewContrato(id int, entidades []ParticipanteContrato) Contrato {
-    return Contrato {
-        Id: id,
-        Participantes: entidades,
-        Dispo: AndDisp(entidades),
+func (c Contrato) HasParticipante(find ParticipanteContrato) (int, error) {
+    for i, p := range c.Participantes {
+        if p.GetId() == find.GetId() && p.GetNome() == find.GetNome() {
+            return i, nil
+        }
     }
+    return -1, errors.New("Cant find item in Contrato")
 }
+
+
 
