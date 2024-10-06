@@ -17,7 +17,7 @@ func AddContrato (w http.ResponseWriter, r * http.Request) {
         return 
     }
 
-    var ents_real []Participante_to_json
+    var ents_real []SearchEntidade
 
     if err := json.NewDecoder(r.Body).Decode(&ents_real); err != nil {
         w.WriteHeader(http.StatusBadRequest)
@@ -25,69 +25,19 @@ func AddContrato (w http.ResponseWriter, r * http.Request) {
         return
     }
     
-    ents := make([]ParticipanteContrato, len(ents_real))
-    tipos := make([]string, len(ents_real))
+    ents := make([]Entidade, len(ents_real))
 
-    for i, p := range ents_real {
-        found := false
-        var e ParticipanteContrato
-        switch p.Tipo {
-        case "disciplina":
-            item, ok := s.Disciplinas[p.Id]
-            e = item
-            if !ok{
-                w.WriteHeader(http.StatusBadRequest)
-                w.Write([]byte("malformed body 2"))
-                return
-            }
-            found = true
-        case "professor":
-            item, ok := s.Professores[p.Id]
-            e = item
-            if !ok{
-                w.WriteHeader(http.StatusBadRequest)
-                w.Write([]byte("malformed body 2"))
-                return
-            }
-            found = true
-        case "turma":
-            for _, c := range s.Cursos {
-                for _, et := range c.Etapas {
-                    for _, t := range  et.Turmas {
-                        if t.Id == p.Id && t.Nome == p.Nome {
-                            e = t 
-                            found = true
-                            goto out
-                        }
-                    }
-                }
-            }
-            w.WriteHeader(http.StatusBadRequest)
-            w.Write([]byte("malformed body 2"))
-            return
-        case "recurso":
-            item, ok := s.Recursos[p.Id]
-            e = item
-            if !ok{
-                w.WriteHeader(http.StatusBadRequest)
-                w.Write([]byte("malformed body 2"))
-                return
-            }
-            found = true
-        }
-        out:
-        if !found {
+    for i := range ents_real {
+        e := ents_real[i].GetEntidadeOrNil(s)
+        if e == nil {
             w.WriteHeader(http.StatusBadRequest)
             w.Write([]byte("malformed body 2"))
             return
         }
-        fmt.Println("found")
-        fmt.Println(e)
         ents[i] = e
-        tipos[i] = p.Tipo
     }
     
-    w.Write([]byte(fmt.Sprint(s.AddContrato(Contrato{Id:0, Participantes: ents, Tipo_por_participante: tipos, Dispo: AndDisp(ents)}))))
+    w.Write([]byte(fmt.Sprint(s.AddContrato(NewContrato(len(s.Contratos), ents)))))
 }
 
 func GetContrato(w http.ResponseWriter, r * http.Request) {

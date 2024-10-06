@@ -1,38 +1,44 @@
 package models
 
-import "errors"
+import (
+	"fmt"
+)
 
-type ParticipanteContrato interface {
-    GetId() int
-    GetNome() string
-    GetDispo() Disponibilidade
-}
-
-type Participante_to_json struct {
-    Id int
-    Nome string
-    Tipo string
-}
-
+// Participantes deve ser do tipo SearchEntidade pois quando convertido "de" ou "para" JSON
+// é importante que a informação seja independende da Session, coisa que uma simples Entidade
+// não é
 type Contrato struct {
     Id int
-    Participantes []ParticipanteContrato
-    Tipo_por_participante []string      // Tipo_por_participante[i] é o tipo do participante Participantes[i]
+    Participantes []SearchEntidade
     Dispo       Disponibilidade
 }
 
-func (c Contrato) GetId() int{
+func NewContrato(id int, entidades []Entidade) Contrato {
+    return Contrato {
+        Id: id,
+        Participantes: ToSearchSlice(entidades),
+        Dispo: AndDisp(entidades),
+    }
+}
+
+type json_contrato struct {
+    Id int
+    Participantes []SearchEntidade
+    Dispo Disponibilidade
+}
+
+func (c Contrato) GetId() int {
     return c.Id
 }
 
-func (c Contrato) HasParticipante(find ParticipanteContrato) (int, error) {
-    for i, p := range c.Participantes {
-        if p.GetId() == find.GetId() && p.GetNome() == find.GetNome() {
-            return i, nil
-        }
-    }
-    return -1, errors.New("Cant find item in Contrato")
+func (c Contrato) GetNome() string {
+    return fmt.Sprintf("Contrato %d", c.Id)
 }
 
+func (c Contrato) GetDispo() *Disponibilidade {
+    return  &c.Dispo
+}
 
-
+func (c Contrato) GetTipo() string {
+    return "contrato"
+}

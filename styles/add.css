@@ -39,6 +39,8 @@
 }
 
 .add{
+    width: fit-content;
+    height: fit-content;
     text-decoration: none;
     color: white;
     border: 1px solid rgb(0, 141, 160); 

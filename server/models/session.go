@@ -3,13 +3,10 @@ package models
 import (
 	"encoding/binary"
 	"encoding/json"
+	"slices"
 
 	"github.com/google/uuid"
 )
-
-type SessionItem interface {
-    GetId() int
-}
 
 type Session struct {
 	Id          int
@@ -84,58 +81,48 @@ func (s *Session) AddContrato(c Contrato) int {
 	return c.Id
 }
 
-func (s *Session) FindContratosWith(p ParticipanteContrato) map[int]*Contrato {
-    r := make(map[int]*Contrato)
-    for _, c := range s.Contratos {
-        if idx, err := c.HasParticipante(p); err == nil {
-            r[idx] = &c
-        }
-    }
-    return r
+func (s *Session) UpdateContratos(changed Entidade) {
+	for i, c := range s.Contratos {
+		if !slices.ContainsFunc(c.Participantes, func(e SearchEntidade) bool { return e.Tipo == changed.GetTipo() && e.GetId() == changed.GetId() }) {
+			continue
+		}
+
+		new_c := NewContrato(0, make([]Entidade, 0)) // empty
+
+		c.Participantes[slices.IndexFunc(c.Participantes, func(e SearchEntidade) bool {
+			return e.Tipo == changed.GetTipo() && e.GetId() == changed.GetId()
+		})] = ToSearch(changed)
+
+		new_c.Participantes = c.Participantes
+		new_c.Id = c.Id
+		new_c.Dispo = AndDisp(GetEntidadesOrNilSlice(c.Participantes, s)) // garanteed to not be nil
+
+		delete(s.Contratos, i)
+		s.Contratos[i] = new_c
+	}
 }
 
-func ParticipanteUpdater[T ParticipanteContrato](s *Session, old T, novo *T) {
-    delete_mode := novo == nil
-    for id, c := range s.Contratos {
-        if idx_in, err := c.HasParticipante(old); err == nil {
-            if delete_mode {
-                delete(s.Contratos, id)
-            } else {
-                con := c
-                con.Participantes[idx_in] = *novo
-                con.Dispo = AndDisp(con.Participantes)
-                s.Contratos[id] = con
-            }
-        }
-    }
+func (s *Session) UpdateSessionFromDelete(changed Entidade) {
+	for i, c := range s.Contratos {
+		if !slices.ContainsFunc(c.Participantes, func(e SearchEntidade) bool { return e.Id == changed.GetId() && e.Tipo == changed.GetTipo() }) {
+			continue
+		}
+
+		delete(s.Contratos, i)
+	}
+
+	// deve também alterar currículos
+	if changed.GetTipo() == "disciplina" {
+		for _, c := range s.Cursos {
+			for _, e := range c.Etapas {
+				_, ok := e.Curriculo[changed.GetId()]
+				if ok {
+					delete(e.Curriculo, changed.GetId())
+				}
+			}
+		}
+	}
 }
-
-func CursoUpdater(s * Session, old Curso, novo *Curso) {
-    delete_mode := novo == nil
-    turmas := make([]Turma, 0)
-    for _, e := range old.Etapas {
-        for _, t := range e.Turmas {
-            turmas = append(turmas, t)
-        }
-    }
-
-    for _, t := range turmas {
-        for id, c := range s.Contratos {
-            if idx_in, err := c.HasParticipante(t); err == nil {
-                if delete_mode {
-                    delete(s.Contratos, id)
-                } else {
-                    con := c
-                    con.Participantes[idx_in] = novo.Etapas[t.Etapa_idx].Turmas[t.Idx_in_etapa]
-                    con.Dispo = AndDisp(con.Participantes)
-                    s.Contratos[id] = con
-                }
-            }
-        }
-    }
-}
-
-
 
 func ProfessorGeter(s *Session) map[int]Professor {
 	return s.Professores
@@ -146,18 +133,6 @@ func DisciplinaGeter(s *Session) map[int]Disciplina {
 func CursoGetter(s *Session) map[int]Curso {
 	return s.Cursos
 }
-func TurmaGetter(s *Session) map[int]Turma {
-    ts := make(map[int]Turma)
-    for _, c := range s.Cursos {
-        for _, e := range c.Etapas {
-            for _, t := range e.Turmas {
-                ts[t.Id] = t
-            }
-        }
-    }
-    return ts
-}
-
 func ContratoGetter(s *Session) map[int]Contrato {
 	return s.Contratos
 }
@@ -165,7 +140,7 @@ func RecursoGetter(s *Session) map[int]Recurso {
 	return s.Recursos
 }
 
-func map_to_slice[T SessionItem, A comparable](m map[A]T) []T {
+func map_to_slice[T Entidade, A comparable](m map[A]T) []T {
 	slice := make([]T, 0, len(m))
 	for _, v := range m {
 		slice = append(slice, v)
@@ -173,7 +148,7 @@ func map_to_slice[T SessionItem, A comparable](m map[A]T) []T {
 	return slice
 }
 
-func slice_to_map[T SessionItem](s []T) map[int]T {
+func slice_to_map[T Entidade](s []T) map[int]T {
 	m := make(map[int]T)
 	for _, v := range s {
 		m[v.GetId()] = v

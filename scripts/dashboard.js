@@ -109,38 +109,10 @@ function save_item(obj = undefined) {
     obj.Dispo = dispo
     let url = `http://localhost:3000/${params.get("tipo")}/set/${params.get("id")}`
     if (params.get("tipo") === "turma") {
-        fetch(`http://localhost:3000/curso/get/${params.get("curso_pai")}`, {credentials: "include"})
-            .then(res => res.json().then(curso => {
-                curso.Etapas[obj.Etapa_idx].Turmas[obj.Idx_in_etapa] = obj
-                url = `http://localhost:3000/curso/set/${params.get("curso_pai")}`
-                fetch(url, 
-                    {
-                        credentials: "include",
-                        method: "PUT",
-                        body: JSON.stringify(curso)
-                    }).then(alert("saved"))
-                
-            }
-            )
-            )
-        return
+        url = `http://localhost:3000/${params.get("tipo")}/set/${params.get("curso_pai")}/${params.get("etapa_pai")}/${params.get("id")}`
     }
     if (params.get("tipo") === "etapa") {
-        fetch(`http://localhost:3000/curso/get/${params.get("curso_pai")}`, {credentials: "include"})
-            .then(res => res.json().then((curso) => {
-                curso.Etapas[obj.Idx_in_Curso] = obj
-                url = `http://localhost:3000/curso/set/${params.get("curso_pai")}`
-                fetch(url, 
-                    {
-                        credentials: "include",
-                        method: "PUT",
-                        body: JSON.stringify(curso)
-                    }).then(alert("saved"))
-                
-            }
-            )
-            )
-        return
+        url = `http://localhost:3000/${params.get("tipo")}/set/${params.get("curso_pai")}/${params.get("id")}`
     }
     fetch(url, 
         {
@@ -154,24 +126,19 @@ function save_item(obj = undefined) {
 document.addEventListener('DOMContentLoaded', async function() {
     const params = new URLSearchParams(window.location.search)
     let disp;
-    let obj;
+    let url = "";
     if (params.get("tipo") === "turma") {
-        const res = await fetch(`http://localhost:3000/curso/get/${params.get("curso_pai")}`, {credentials:"include"})
-        const curso = await res.json()
-        obj = curso.Etapas[params.get("etapa_pai")].Turmas.filter(t => t.Id == params.get("id"))[0]
-        disp = obj.Dispo
+        url = `http://localhost:3000/turma/get/${params.get("curso_pai")}/${params.get("etapa_pai")}/${params.get("id")}`
     } else if (params.get("tipo") === "etapa") {
-        const res = await fetch(`http://localhost:3000/curso/get/${params.get("curso_pai")}`, {credentials:"include"})
-        const curso = await res.json()
-        console.log(curso)
-        obj = curso.Etapas[params.get("id")]
+        url = `http://localhost:3000/etapa/get/${params.get("curso_pai")}/${params.get("id")}`
     } else {
-        const res = await fetch(`http://localhost:3000/${params.get("tipo")}/get/${params.get("id")}`, {credentials: "include"})
-        obj = await res.json()
-        disp = obj.Dispo
+        url = `http://localhost:3000/${params.get("tipo")}/get/${params.get("id")}`
     }
+    const res = await fetch(url, {credentials: "include"})
+    const obj = await res.json()
     console.log(obj)
 
+    disp = obj.Dispo
 
     if (params.get("tipo") == "contrato") {
         handle_contrato(obj)
@@ -213,23 +180,21 @@ document.addEventListener('DOMContentLoaded', async function() {
 })
 
 function handle_contrato(obj) {
+    const params = new URLSearchParams(window.location.search)
     const part = document.getElementById("adicional")
 
-    for (const [i, p] of obj.Participantes.entries()) {
+    for (const p of obj.Participantes) {
         console.log(p)
         const child = document.createElement("div")   
 
-        child.textContent = `${obj.Tipo_por_participante[i]} - ${p.Nome}  `
+        child.textContent = `${p.Tipo} - ${p.Nome}`
 
-        let url = ""
-        if (obj.Tipo_por_participante[i] == "turma") {
-            url = `/OtimaHoraWeb/dashboard.html?etapa_pai=${p.Etapa_idx}&curso_pai=${p.Curso_id}&tipo=${obj.Tipo_por_participante[i]}&${obj.Tipo_por_participante[i]}=${p.Nome}&id=${p.Id}`
-        } else {
-            url = `/OtimaHoraWeb/dashboard.html?tipo=${obj.Tipo_por_participante[i]}&${obj.Tipo_por_participante[i]}=${p.Nome}&id=${p.Id}`
+        const bttn = document.createElement("button")
+        bttn.textContent = ""
+        bttn.onclick = () => {
+            window.location.replace(`/OtimaHoraWeb/dashboard.html?tipo=${p.Tipo}&${p.Tipo}=${p.Nome}&id=${p.Id}`);
         }
-        child.onclick = () => {
-            window.location.replace(url)
-        }
+        child.appendChild(bttn)
         part.appendChild(child)
     }
     document.getElementById("save").style.display = "none"
@@ -259,10 +224,15 @@ async function handle_professor(obj) {
         check.value= dis.Id
         check.id = dis.Nome
         const label = document.createElement("label")
+        const breakline = document.createElement("div")
+        breakline.classList.add("break")
         label.textContent = dis.Nome
         label.for = dis.Nome
-        dis_div.appendChild(check)
-        dis_div.appendChild(label)
+        breakline.appendChild(check)
+        breakline.appendChild(label)
+        dis_div.appendChild(breakline)
+        
+        
     }
 }
 
@@ -288,23 +258,19 @@ function handle_curso(obj) {
         for (let [etidx, et] of obj.Etapas.entries()) {
             // et_ é a cada caixinha que tem várias turmas dentro
             const et_d = document.createElement("div")
-            for (const [tidx, t] of et.Turmas.entries()) {
+            for (const t of et.Turmas) {
                 // child é cada turminha
                 const child = document.createElement("div")
-                const p = document.createElement("p")
-                p.textContent = t.Nome 
+                child.textContent = t.Nome 
                 // renomear a turma
-                p.onclick = async () => {
+                child.onclick = () => {
                     const str = prompt("Insira o novo nome da turma " + t.Nome)
                     if (!str || str === "" || str.length == 0 ) {
                         return
                     }
 
-                    obj.Etapas[t.Etapa_idx].Turmas[tidx].Nome = str
-                    await fetch(
-                        `http://localhost:3000/curso/set/${obj.Id}`,
-                        {credentials: "include", method: "PUT", body:JSON.stringify(obj)})
-                    window.location.reload()
+                    t.Nome = str
+                    fetch(`http://localhost:3000/turma/set/${obj.Id}/${etidx}/${t.Id}`, {credentials: "include", method: "PUT", body:JSON.stringify(t)}).then(reload_etapas())
                 }
 
                 const bttn = document.createElement("button")
@@ -316,13 +282,13 @@ function handle_curso(obj) {
 
                 const del_bttn = document.createElement("button")
                 del_bttn.textContent = "Del"
-                del_bttn.onclick = async () => {
-                    obj.Etapas[t.Etapa_idx].Turmas = obj.Etapas[t.Etapa_idx].Turmas.splice(tidx, tidx)
-                    await fetch(`http://localhost:3000/curso/set/${obj.Id}`, {credentials: "include", method: "PUT", body:JSON.stringify(obj)})
-                    window.location.reload()
+                del_bttn.onclick = () => {
+                    save_item(obj)
+                    fetch(`http://localhost:3000/turma/delete/${obj.Id}/${etidx}/${t.Id}`, {credentials: "include", method: "DELETE"}).then(reload_etapas())
+                    obj.Etapas[etidx] = et.filter((e) => e.Id != t.Id) // delete turma on client
+                    reload_etapas()
                 }
 
-                child.appendChild(p)
                 child.appendChild(bttn)
                 child.appendChild(del_bttn)
                 child.classList.add("turma")
@@ -339,7 +305,7 @@ function handle_curso(obj) {
                 t_count.textContent = "Turma_count: " + count
                 et_d.innerHTML = ""
                 for (let i = 0; i < count; i++) {
-                    const new_t = {Id: 0, Curso_id: obj.Id, Etapa_idx: etidx, Nome:"0", Dispo: Array(5).fill(Array(5).fill(1))}
+                    const new_t = {Id: 0, Curso_id: obj.Id, Etapa_idx: etidx, Nome:"0", Tipo:"turma"}
                     const res = await  fetch(`http://localhost:3000/turma/add`, {
                         credentials: "include",
                         method: "post",
@@ -398,9 +364,6 @@ function handle_curso(obj) {
 
 async function handle_etapa(obj) {
     const params = new URLSearchParams(window.location.search)
-    const response = await fetch(`http://localhost:3000/curso/get/${params.get("curso_pai")}`, {credentials:"include"})
-    const curso = await response.json() 
-
     document.getElementById("dispo").parentNode.removeChild(document.getElementById("dispo"))
 
     const ad = document.getElementById("adicional");
@@ -420,12 +383,11 @@ async function handle_etapa(obj) {
             btn.textContent = "remove"
             btn.onclick = async () => {
                 obj.Curriculo[dis.Id] = undefined
-                curso.Etapas[obj.Idx_in_Curso] = obj
 
-                await fetch(`http://localhost:3000/curso/set/${obj.Curso_id}`, {
+                await fetch(`http://localhost:3000/etapa/set/${obj.Curso_id}/${params.get("id")}`, {
                     credentials: "include",
                     method: "PUT",
-                    body: JSON.stringify(curso),
+                    body: JSON.stringify(obj),
                 })
                 window.location.reload()
             }
@@ -453,12 +415,11 @@ async function handle_etapa(obj) {
                 }
 
                 obj.Curriculo[dis.Id] = {Horas: parseInt(str[0]), Formato: str[1]}
-                curso.Etapas[obj.Idx_in_Curso].Curriculo[dis.Id] ={Horas: parseInt(str[0]), Formato: str[1]}
 
-                await fetch(`http://localhost:3000/curso/set/${obj.Curso_id}`, {
+                await fetch(`http://localhost:3000/etapa/set/${obj.Curso_id}/${params.get("id")}`, {
                     credentials: "include",
                     method: "PUT",
-                    body: JSON.stringify(curso),
+                    body: JSON.stringify(obj),
                 })
                 window.location.reload()
             }
@@ -488,22 +449,21 @@ async function handle_etapa(obj) {
     ad.appendChild(turmas_div)
     ad.style.flexDirection = "column"
 
-    for (const[tidx, t] of obj.Turmas.entries()) {
+    for (t of obj.Turmas) {
         // child é cada turminha
         const child = document.createElement("div")
-        const p = document.createElement("p")
-        p.textContent = t.Nome
+        child.textContent = t.Nome 
         // renomear a turma
-        p.onclick = async () => {
+        child.onclick = async () => {
             const str = prompt("Insira o novo nome da turma " + t.Nome)
             if (!str || str === "" || str.length == 0 ) {
                 return
             }
 
-            curso.Etapas[obj.Idx_in_Curso].Turmas[tidx].Nome = str
+            t.Nome = str
             await fetch(
-                `http://localhost:3000/curso/set/${obj.Curso_id}`,
-                {credentials: "include", method: "PUT", body:JSON.stringify(curso)})
+                `http://localhost:3000/turma/set/${obj.Curso_id}/${params.get("id")}/${t.Id}`,
+                {credentials: "include", method: "PUT", body:JSON.stringify(t)})
             window.location.reload()
         }
 
@@ -511,18 +471,18 @@ async function handle_etapa(obj) {
         bttn.textContent = "Ver"
         bttn.onclick = () => {
             save_item(obj)
-            window.location.replace(`/OtimaHoraWeb/dashboard.html?curso_pai=${obj.Curso_id}&etapa_pai=${t.Etapa_idx}&tipo=turma&turma=${t.Nome}&id=${t.Id}`);
+            window.location.replace(`/OtimaHoraWeb/dashboard.html?curso_pai=${obj.Curso_id}&etapa_pai=${t.Etapa_idx}&tipo=turma&$turma=${t.Nome}&id=${t.Id}`);
         }
 
         const del_bttn = document.createElement("button")
         del_bttn.textContent = "Del"
-        del_bttn.onclick = async () => {
-            curso.Etapas[obj.Idx_in_Curso].Turmas = curso.Etapas[obj.Idx_in_Curso].Turmas.splice(tidx, tidx)
-            await fetch(`http://localhost:3000/curso/set/${obj.Curso_id}`, {credentials: "include", method: "PUT", body:JSON.stringify(curso)})
-            window.location.reload()
+        del_bttn.onclick = () => {
+            save_item(obj)
+            fetch(`http://localhost:3000/turma/delete/${obj.Id}/${etidx}/${t.Id}`, {credentials: "include", method: "DELETE"}).then(reload_etapas())
+            obj.Etapas[etidx] = et.filter((e) => e.Id != t.Id) // delete turma on client
+            reload_etapas()
         }
 
-        child.appendChild(p)
         child.appendChild(bttn)
         child.appendChild(del_bttn)
         child.classList.add("turma")

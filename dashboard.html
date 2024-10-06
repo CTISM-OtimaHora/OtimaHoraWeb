@@ -8,7 +8,10 @@
     </head>
     <body>
         <div w3-include-html="/OtimaHoraWeb/header.html"></div>
-        <h2 id="nome"></h2>
+        <div style="display: flex;"> 
+            <h2>Titulo: </h2>
+            <h2 id="nome"></h2>
+        </div>
 
         <div id="dispo" class="calendar">
             <div class="calendar-header" onclick="toggleAll()">Horas</div>
@@ -62,7 +65,7 @@
         
 
         <div class="center">
-            <div id="adicional" class="adicionalDiv"></div>
+            <div id="adicional" class="adicionalDiv"> </div>
             <a id="save" class="add" onclick="save_item()">Salvar</a>
         </div>
 

@@ -11,20 +11,19 @@ body {
 }
 
 .center{
+    padding: 10px 30px;
+    width: 300px;
     background-color: rgb(220, 210, 210);
-    padding: 40px 30px;
-    margin:  10px 30%;
+    padding: 0px 20px;
+    margin: 30px;
     display: flex;
-    
-    height: fit-content;
+    flex-direction: column;
 }
 .adicionalDiv{
+
     display: flex;
     flex-wrap: wrap;
     align-items:  baseline;
-}
-.adicionalDiv > div {
-    margin: 5%;
 }
 
  iframe[seamless] {

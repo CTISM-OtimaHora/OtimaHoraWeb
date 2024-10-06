@@ -18,6 +18,9 @@ func (p Professor) GetId() int {
 func (p  Professor) GetNome() string {
     return p.Nome
 }
-func (p  Professor) GetDispo() Disponibilidade {
-    return p.Dispo
+func (p  Professor) GetDispo() *Disponibilidade {
+    return &p.Dispo
+}
+func (p  Professor) GetTipo() string {
+    return "professor"
 }

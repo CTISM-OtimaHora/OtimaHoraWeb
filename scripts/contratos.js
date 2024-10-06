@@ -1,14 +1,13 @@
 function adicionar_contrato() {
     const profs = document.getElementById('professores');
     const dis = document.getElementById('disciplinas');
-    // CURSO NÂO TEM DISPO // const cursos = document.getElementById('cursos');
-    const turmas = document.getElementById('turmas');
+    const cursos = document.getElementById('cursos');
     const recs = document.getElementById('recursos');
 
     let selected = [
         profs.options[profs.selectedIndex],
         dis.options[dis.selectedIndex],
-        turmas.options[turmas.selectedIndex],
+        cursos.options[cursos.selectedIndex],
         recs.options[recs.selectedIndex],
     ]
 
@@ -27,11 +26,11 @@ function adicionar_contrato() {
     }).then(alert("saved")).then(window.location.reload())
 }
 
-function new_contrato(id, participantes, tipos) {
+function new_contrato(id, participantes) {
     const contrato = document.createElement("div")
     let string  = ""
-    for (const [idx, i] of participantes.entries()) {
-        string += ` ${tipos[idx]}: ${i.Nome} + `
+    for (const i of participantes) {
+        string += ` ${i.Tipo}: ${i.Nome} + `
     }
     contrato.textContent = string.slice(0, -3)
 
@@ -176,7 +175,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (s.Contratos) {
         for (const c of s.Contratos) {
-            document.getElementById("contratos").appendChild(new_contrato(c.Id, c.Participantes, c.Tipo_por_participante))
+            document.getElementById("contratos").appendChild(new_contrato(c.Id, c.Participantes))
         }
     }
 
