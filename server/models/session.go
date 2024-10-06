@@ -3,7 +3,6 @@ package models
 import (
 	"encoding/binary"
 	"encoding/json"
-	"fmt"
 
 	"github.com/google/uuid"
 )

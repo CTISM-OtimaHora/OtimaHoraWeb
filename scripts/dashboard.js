@@ -110,7 +110,7 @@ function save_item(obj = undefined) {
     let url = `http://localhost:3000/${params.get("tipo")}/set/${params.get("id")}`
     if (params.get("tipo") === "turma") {
         fetch(`http://localhost:3000/curso/get/${params.get("curso_pai")}`, {credentials: "include"})
-            .then(res => res.json().then( curso => {
+            .then(res => res.json().then(curso => {
                 curso.Etapas[obj.Etapa_idx].Turmas[obj.Idx_in_etapa] = obj
                 url = `http://localhost:3000/curso/set/${params.get("curso_pai")}`
                 fetch(url, 
@@ -126,7 +126,21 @@ function save_item(obj = undefined) {
         return
     }
     if (params.get("tipo") === "etapa") {
-        url = `http://localhost:3000/curso/set/${params.get("curso_pai")}`
+        fetch(`http://localhost:3000/curso/get/${params.get("curso_pai")}`, {credentials: "include"})
+            .then(res => res.json().then((curso) => {
+                curso.Etapas[obj.Idx_in_Curso] = obj
+                url = `http://localhost:3000/curso/set/${params.get("curso_pai")}`
+                fetch(url, 
+                    {
+                        credentials: "include",
+                        method: "PUT",
+                        body: JSON.stringify(curso)
+                    }).then(alert("saved"))
+                
+            }
+            )
+            )
+        return
     }
     fetch(url, 
         {
@@ -280,16 +294,16 @@ function handle_curso(obj) {
                 const p = document.createElement("p")
                 p.textContent = t.Nome 
                 // renomear a turma
-                child.onclick = async () => {
+                p.onclick = async () => {
                     const str = prompt("Insira o novo nome da turma " + t.Nome)
                     if (!str || str === "" || str.length == 0 ) {
                         return
                     }
 
-                    curso.Etapas[obj.Idx_in_Curso].Turmas[tidx].Nome = str
+                    obj.Etapas[t.Etapa_idx].Turmas[tidx].Nome = str
                     await fetch(
-                        `http://localhost:3000/curso/set/${obj.Curso_id}`,
-                        {credentials: "include", method: "PUT", body:JSON.stringify(curso)})
+                        `http://localhost:3000/curso/set/${obj.Id}`,
+                        {credentials: "include", method: "PUT", body:JSON.stringify(obj)})
                     window.location.reload()
                 }
 
@@ -303,8 +317,8 @@ function handle_curso(obj) {
                 const del_bttn = document.createElement("button")
                 del_bttn.textContent = "Del"
                 del_bttn.onclick = async () => {
-                    curso.Etapas[obj.Idx_in_Curso].Turmas = curso.Etapas[obj.Idx_in_Curso].Turmas.splice(tidx, tidx)
-                    await fetch(`http://localhost:3000/curso/set/${obj.Curso_id}`, {credentials: "include", method: "PUT", body:JSON.stringify(curso)})
+                    obj.Etapas[t.Etapa_idx].Turmas = obj.Etapas[t.Etapa_idx].Turmas.splice(tidx, tidx)
+                    await fetch(`http://localhost:3000/curso/set/${obj.Id}`, {credentials: "include", method: "PUT", body:JSON.stringify(obj)})
                     window.location.reload()
                 }
 
