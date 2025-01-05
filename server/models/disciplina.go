@@ -16,10 +16,7 @@ func (d Disciplina) GetId() int {
 func (d  Disciplina) GetNome() string {
     return d.Nome
 }
-func (d  Disciplina) GetDispo() *Disponibilidade {
-    return &d.Dispo
-}
-func (d  Disciplina) GetTipo() string {
-    return "disciplina"
+func (d  Disciplina) GetDispo() Disponibilidade {
+    return d.Dispo
 }
 

@@ -4,6 +4,7 @@ type Turma struct {
     Id      int
     Curso_id int
     Etapa_idx int
+    Idx_in_etapa int
     Nome    string
     Dispo Disponibilidade
 }
@@ -14,17 +15,6 @@ func (t Turma) GetId() int {
 func (t Turma) GetNome() string {
     return t.Nome
 }
-func (t Turma) GetDispo() *Disponibilidade {
-    return &t.Dispo
+func (t Turma) GetDispo() Disponibilidade {
+    return t.Dispo
 }
-func (t Turma) GetTipo() string {
-    return "turma"
-}
-
-func NewTurma (Id int, Nome string, dias, periodos int) Turma {
-    return Turma {
-        Id: Id,
-        Nome: Nome,
-        Dispo: NewDisponibilidade(),
-    }
-} 

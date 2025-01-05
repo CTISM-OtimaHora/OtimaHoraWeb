@@ -101,8 +101,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             let child = document.createElement("li")
             
             let string = ""
-            for (const p of c.Participantes) {
-                string += `${p.Tipo}: ${p.Nome} + `
+            for (const [i, p] of c.Participantes.entries()) {
+                string += `${c.Tipo_por_participante[i]}: ${p.Nome} + `
             }
             string = string.slice(0, -3)
             child.textContent = string
