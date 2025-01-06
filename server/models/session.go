@@ -186,17 +186,23 @@ type json_session struct {
 	Cursos      []Curso
 	Professores []Professor
 	Disciplinas []Disciplina
-	Contratos   []Contrato
+	Contratos   []Json_contrato
 	Recursos    []Recurso
 }
 
 func (s Session) MarshalJSON() ([]byte, error) {
+    contratos := map_to_slice(s.Contratos)
+    jc := make([]Json_contrato, len(contratos))
+    for i := range jc {
+        jc[i] = Contrato_to_json_contrato(contratos[i])
+    }
+
 	a := json_session{
 		s.Id,
 		map_to_slice(s.Cursos),
 		map_to_slice(s.Professores),
 		map_to_slice(s.Disciplinas),
-		map_to_slice(s.Contratos),
+		jc,
 		map_to_slice(s.Recursos),
 	}
 	return json.Marshal(a)
@@ -208,13 +214,23 @@ func (s *Session) UnmarshalJSON(bs []byte) error {
 	if err != nil {
 		return err
 	}
+    
 	*s = Session{
 		a.Id,
 		slice_to_map(a.Cursos),
 		slice_to_map(a.Professores),
 		slice_to_map(a.Disciplinas),
-		slice_to_map(a.Contratos),
+		make(map[int]Contrato, len(a.Contratos)),
 		slice_to_map(a.Recursos),
 	}
+    
+    for _, c := range a.Contratos {
+        c2, err := Json_contrato_to_contrato(c, s)
+        if err != nil {
+            return err
+        }
+        s.Contratos[c2.Id] = c2
+    }
+
 	return nil
 }

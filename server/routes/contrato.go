@@ -29,60 +29,13 @@ func AddContrato (w http.ResponseWriter, r * http.Request) {
     tipos := make([]string, len(ents_real))
 
     for i, p := range ents_real {
-        found := false
-        var e ParticipanteContrato
-        switch p.Tipo {
-        case "disciplina":
-            item, ok := s.Disciplinas[p.Id]
-            e = item
-            if !ok{
-                w.WriteHeader(http.StatusBadRequest)
-                w.Write([]byte("malformed body 2"))
-                return
-            }
-            found = true
-        case "professor":
-            item, ok := s.Professores[p.Id]
-            e = item
-            if !ok{
-                w.WriteHeader(http.StatusBadRequest)
-                w.Write([]byte("malformed body 2"))
-                return
-            }
-            found = true
-        case "turma":
-            for _, c := range s.Cursos {
-                for _, et := range c.Etapas {
-                    for _, t := range  et.Turmas {
-                        if t.Id == p.Id && t.Nome == p.Nome {
-                            e = t 
-                            found = true
-                            goto out
-                        }
-                    }
-                }
-            }
+        e, err := Pjson_to_P(p, s)
+        if err != nil {
             w.WriteHeader(http.StatusBadRequest)
-            w.Write([]byte("malformed body 2"))
-            return
-        case "recurso":
-            item, ok := s.Recursos[p.Id]
-            e = item
-            if !ok{
-                w.WriteHeader(http.StatusBadRequest)
-                w.Write([]byte("malformed body 2"))
-                return
-            }
-            found = true
-        }
-        out:
-        if !found {
-            w.WriteHeader(http.StatusBadRequest)
-            w.Write([]byte("malformed body 2"))
+            w.Write([]byte(err.Error()))
             return
         }
-        fmt.Println("found")
-        fmt.Println(e)
+
         ents[i] = e
         tipos[i] = p.Tipo
     }

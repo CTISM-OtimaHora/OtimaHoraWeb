@@ -38,6 +38,7 @@ func AddSessionFromDocument(w http.ResponseWriter, r * http.Request) {
     if err := json.NewDecoder(file).Decode(&file_session); err != nil {
         w.WriteHeader(http.StatusBadRequest)
         w.Write([]byte("Bad request: " + err.Error()))
+        println(err.Error())
         return
     }
 
